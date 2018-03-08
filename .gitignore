@@ -1,0 +1,10 @@
+.DS_Store
+*.pyc
+.idea/
+*.iml
+/static
+/media
+db.sqlite3
+*.log
+.env
+.venv
