@@ -37,7 +37,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     # Third-party modules
     'rest_framework',
-    'rest_framework.authtoken',
 ]
 
 MIDDLEWARE = [
@@ -116,18 +115,8 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-# API configuration
-
-REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework.authentication.SessionAuthentication',
-        'rest_framework.authentication.BasicAuthentication',
-        'rest_framework.authentication.TokenAuthentication',
-    ),
-}
-
 # Twilio
 
-TWILIO_ACCOUNT_SID = os.environ.get('PLATFORM_TWILIO_ACCOUNT_SID')
-TWILIO_AUTH_TOKEN = os.environ.get('PLATFORM_TWILIO_AUTH_TOKEN')
-TWILIO_SMS_FROM = os.environ.get('PLATFORM_TWILIO_SMS_FROM')
+TWILIO_ACCOUNT_SID = os.environ.get('TWILIO_ACCOUNT_SID')
+TWILIO_AUTH_TOKEN = os.environ.get('TWILIO_AUTH_TOKEN')
+TWILIO_SMS_FROM = os.environ.get('TWILIO_SMS_FROM')
