@@ -8,7 +8,7 @@ __copyright__ = 'Copyright 2018, Alex Laird'
 __version__ = '0.1.0'
 
 
-class TestCaseMyAppViews(TestCase):
+class TestCasePortalViews(TestCase):
     def test_portal_view(self):
         # GIVEN
         userhelper.given_a_user_exists_and_is_logged_in(self.client)

@@ -1,6 +1,7 @@
 [run]
 branch = True
 omit =
+    .venv/**
     conf/**
     chachatwilio/common/sitemaps.py
     chachatwilio/common/cache/locmemkeys.py

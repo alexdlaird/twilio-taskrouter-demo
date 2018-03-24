@@ -172,8 +172,8 @@ PIPELINE = {
     'JAVASCRIPT': {
         'base': {
             'source_filenames': (
-                'js/moment.js',
-                'js/moment-timezone.js',
+                'js/vendors/moment.js',
+                'js/vendors/moment-timezone.js',
             ),
             'output_filename': 'js/chachatwilio_{}.min.js'.format(PROJECT_VERSION)
         },

@@ -78,7 +78,7 @@ class TestCaseAuthViews(TestCase):
         response = self.client.post(reverse('register'),
                                     {'email': 'test@not-a-valid-email', 'username': 'my_test_user',
                                      'password1': 'test_pass_1!', 'password2': 'test_pass_1!',
-                                     'time_zone': 'America/Chicago'})
+                                     'time_zone': 'America/Chicago', 'language': enums.SPANISH})
 
         # THEN
         userhelper.verify_user_not_logged_in(self)
@@ -93,7 +93,7 @@ class TestCaseAuthViews(TestCase):
         response = self.client.post(reverse('register'),
                                     {'email': 'test@test.com', 'username': 'my_test_user',
                                      'password1': 'short', 'password2': 'short',
-                                     'time_zone': 'America/Chicago'})
+                                     'time_zone': 'America/Chicago', 'language': enums.SPANISH})
 
         # THEN
         userhelper.verify_user_not_logged_in(self)
@@ -108,7 +108,7 @@ class TestCaseAuthViews(TestCase):
         response = self.client.post(reverse('register'),
                                     {'email': 'test@test.com', 'username': 'my_test_user',
                                      'password1': 'test_pass_1', 'password2': 'test_pass_2',
-                                     'time_zone': 'America/Chicago'})
+                                     'time_zone': 'America/Chicago', 'language': enums.SPANISH})
 
         # THEN
         userhelper.verify_user_not_logged_in(self)

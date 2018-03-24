@@ -44,7 +44,7 @@ class User(AbstractBaseUser, BaseModel):
 
     time_zone = models.CharField(default='America/Los_Angeles', max_length=255, choices=enums.TIME_ZONE_CHOICES)
 
-    language = models.CharField(default='English', max_length=255, choices=enums.LANGUAGE_CHOICES)
+    language = models.PositiveIntegerField(default=enums.ENGLISH, choices=enums.LANGUAGE_CHOICES)
 
     # Set the manager
     objects = UserManager()
