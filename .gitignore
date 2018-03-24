@@ -2,9 +2,12 @@
 *.pyc
 .idea/
 *.iml
+.venv
 /static
-/media
 db.sqlite3
+db.test.sqlite3
+db.sqlite3-journal
+.coverage
 *.log
 .env
-.venv
+htmlcov

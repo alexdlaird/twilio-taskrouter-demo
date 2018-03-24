@@ -1,0 +1,7 @@
+# robots.txt for http://chachatwilio.alexlaird.com/
+User-agent: *
+Disallow: /admin
+Disallow: /admin/
+Disallow: /portal
+Disallow: /portal/
+Sitemap: http://chachatwilio.alexlaird.com/sitemap.xml

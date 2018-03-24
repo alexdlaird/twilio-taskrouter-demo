@@ -1,0 +1,26 @@
+[run]
+branch = True
+omit =
+    conf/**
+    chachatwilio/common/sitemaps.py
+    chachatwilio/common/cache/locmemkeys.py
+    */admin.py
+    */apps.py
+    */tests/**
+    */migrations/**
+
+[report]
+fail_under = 90
+precision = 2
+exclude_lines =
+    pragma: no cover
+    def __repr__
+    if self\.debug
+    if settings.DEBUG
+    raise AssertionError
+    raise NotImplementedError
+    if 0:
+    if __name__ == .__main__.:
+
+[html]
+title = ChaCha Twilio Coverage Report
