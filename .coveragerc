@@ -1,5 +1,4 @@
 [run]
-branch = True
 omit =
     .venv/**
     conf/**
@@ -11,7 +10,7 @@ omit =
     */migrations/**
 
 [report]
-fail_under = 90
+fail_under = 80
 precision = 2
 exclude_lines =
     pragma: no cover

@@ -41,9 +41,18 @@
                             <div class="form-group">
                                 <div class="input-group">
                                     <label class="col-sm-4 control-label" style="margin-top: 3px;"
-                                           for="{{ form.language.id }}">{{ form.language.label }}</label>
+                                           for="{{ form.languages.id }}">{{ form.languages.label }}</label>
 
-                                    {% render_field form.language class+="form-control" %}
+                                    {% render_field form.languages class+="form-control" %}
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <label class="col-sm-4 control-label" style="margin-top: 3px;"
+                                           for="{{ form.skills.id }}">{{ form.skills.label }}</label>
+
+                                    {% render_field form.skills class+="form-control" %}
                                 </div>
                             </div>
 
@@ -67,7 +76,7 @@
                         <p>Send a text message to the number below and we'll get back to you as soon as we can.</p>
 
                         <div class="text-center">
-                            <h3><span class="label label-primary">{{ TWILIO_SMS_FROM }}</span></h3>
+                            <h3><span class="label label-primary">{{ PHONE_NUMBER }}</span></h3>
                         </div>
                     </div>
                 </div>

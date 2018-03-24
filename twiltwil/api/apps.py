@@ -5,6 +5,6 @@ __copyright__ = 'Copyright 2018, Alex Laird'
 __version__ = '0.1.0'
 
 
-class MessagingConfig(AppConfig):
-    name = 'twiltwil.messaging'
-    verbose_name = 'Messaging'
+class ApiConfig(AppConfig):
+    name = 'twiltwil.api'
+    verbose_name = 'API'

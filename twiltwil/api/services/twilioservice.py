@@ -1,5 +1,5 @@
 """
-Messaging view entrance functions.
+Service functions for interacting with Twilio's TaskRouter.
 """
 
 import logging

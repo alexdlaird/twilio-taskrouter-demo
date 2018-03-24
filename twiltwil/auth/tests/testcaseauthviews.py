@@ -1,31 +1,35 @@
+import mock
 from django.contrib.auth import get_user_model
-from django.test import TestCase
 from django.urls import reverse
 
-from twiltwil.auth.tests.helpers import userhelper
+from twiltwil.auth.tests.helpers import userhelper, twiliohelper
 from twiltwil.common import enums
+from twiltwil.common.tests.twiltwiltestcase import TwilTwilTestCase
 
 __author__ = 'Alex Laird'
 __copyright__ = 'Copyright 2018, Alex Laird'
 __version__ = '0.1.0'
 
 
-class TestCaseAuthViews(TestCase):
-    def test_registration_success(self):
+class TestCaseAuthViews(TwilTwilTestCase):
+    @mock.patch('twiltwil.auth.services.authservice.twilioauthservice.create_worker')
+    def test_registration_success(self, mock_create_worker):
         # GIVEN
         userhelper.verify_user_not_logged_in(self)
+        mock_create_worker.return_value = twiliohelper.get_worker_instance()
 
         # WHEN
         response = self.client.post(reverse('home'),
                                     {'username': 'my_test_user', 'time_zone': 'America/Chicago',
-                                     'language': enums.SPANISH})
+                                     'languages': enums.SPANISH, 'skills': enums.ANIMALS})
 
         # THEN
         userhelper.verify_user_logged_in(self)
         user = get_user_model().objects.get(username='my_test_user')
         self.assertEqual(user.username, 'my_test_user')
         self.assertEqual(user.time_zone, 'America/Chicago')
-        self.assertEqual(user.language, enums.SPANISH)
+        self.assertEqual(user.languages.all()[0].id, enums.SPANISH)
+        self.assertEqual(user.skills.all()[0].id, enums.ANIMALS)
         self.assertRedirects(response, reverse('portal'))
 
     def test_registration_bad_data(self):
@@ -34,14 +38,16 @@ class TestCaseAuthViews(TestCase):
 
         # WHEN
         response = self.client.post(reverse('home'),
-                                    {'username': 'my_test_user', 'time_zone': 'America/Chicago', 'language': 'invalid'})
+                                    {'username': 'my_test_user', 'time_zone': 'America/Chicago', 'languages': 'invalid',
+                                     'skills': enums.ANIMALS})
 
         # THEN
         userhelper.verify_user_not_logged_in(self)
         self.assertFalse(get_user_model().objects.filter(username='my_test_user').exists())
         self.assertContains(response, 'invalid is not one of the available choices')
 
-    def test_logout_success(self):
+    @mock.patch('twiltwil.auth.handlers.signals.twilioauthservice.delete_worker')
+    def test_logout_success(self, mock_delete_worker):
         # GIVEN
         userhelper.given_a_user_exists_and_is_logged_in(self.client)
 

@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load pipeline %}
 
 {% block title %}{{ PROJECT_NAME }} | Portal{% endblock %}
 
@@ -16,4 +17,6 @@
 
 {% block page_footer %}
     <script type="text/javascript" src="//media.twiliocdn.com/taskrouter/js/v1.12/taskrouter.min.js"></script>
+
+    {% javascript "portal" %}
 {% endblock %}

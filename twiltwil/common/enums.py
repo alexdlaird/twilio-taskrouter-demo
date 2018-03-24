@@ -173,16 +173,34 @@ TIME_ZONE_CHOICES = (
       ('Pacific/Wake', 'Wake'), ('Pacific/Wallis', 'Wallis')])
 )
 
-ENGLISH = 0
-MANDARIN = 1
-SPANISH = 2
-FRENCH = 3
-GERMAN = 4
-PORTUGUESE = 5
+ENGLISH = 'english'
+SPANISH = 'spanish'
+FRENCH = 'french'
+GERMAN = 'german'
+PORTUGUESE = 'portuguese'
 LANGUAGE_CHOICES = (
     (ENGLISH, 'English'),
     (SPANISH, 'Español'),
     (FRENCH, 'Français'),
     (GERMAN, 'Deutsche'),
     (PORTUGUESE, 'Portuguese'),
+)
+
+GENERAL = 'general'
+POLITICS = 'politics'
+MATH = 'math'
+COMPUTERS = 'computers'
+HEALTH = 'health'
+FAMILY = 'family'
+ANIMALS = 'animals'
+MUSIC = 'music'
+SKILL_CHOICES = (
+    (GENERAL, 'General'),
+    (POLITICS, 'Politics'),
+    (MATH, 'Math'),
+    (COMPUTERS, 'Computers'),
+    (HEALTH, 'Health'),
+    (FAMILY, 'Family'),
+    (ANIMALS, 'Animals'),
+    (MUSIC, 'Music'),
 )

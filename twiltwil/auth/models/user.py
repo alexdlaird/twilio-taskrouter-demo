@@ -35,11 +35,15 @@ class User(AbstractBaseUser, BaseModel):
 
     # Info fields
 
+    workspace_sid = models.CharField(max_length=255, blank=None, null=None)
+
     worker_sid = models.CharField(max_length=255, blank=None, null=None)
 
     time_zone = models.CharField(default='America/Los_Angeles', max_length=255, choices=enums.TIME_ZONE_CHOICES)
 
-    language = models.PositiveIntegerField(default=enums.ENGLISH, choices=enums.LANGUAGE_CHOICES)
+    languages = models.ManyToManyField('Language', blank=True, default=None)
+
+    skills = models.ManyToManyField('Skill', blank=True, default=None)
 
     # Set the manager
     objects = UserManager()

@@ -47,7 +47,7 @@ DEFAULT_INSTALLED_APPS = (
     'twiltwil.common',
     'twiltwil.auth',
     'twiltwil.portal',
-    'twiltwil.messaging',
+    'twiltwil.api',
 )
 
 DEFAULT_MIDDLEWARE = (
@@ -176,7 +176,14 @@ PIPELINE = {
                 'js/vendors/moment.js',
                 'js/vendors/moment-timezone.js',
             ),
-            'output_filename': 'js/twiltwil_{}.min.js'.format(PROJECT_VERSION)
+            'output_filename': 'js/twiltwil_base_{}.min.js'.format(PROJECT_VERSION)
+        },
+        'portal': {
+            'source_filenames': (
+                'js/api.js',
+                'js/portal.js',
+            ),
+            'output_filename': 'js/twiltwil_portal_{}.min.js'.format(PROJECT_VERSION)
         },
     }
 }
