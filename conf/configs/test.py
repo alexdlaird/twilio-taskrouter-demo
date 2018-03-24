@@ -68,7 +68,7 @@ if os.environ.get('TEST_DEBUG', 'False') == 'True':
                 'level': 'ERROR',
                 'propagate': False,
             },
-            'chachatwilio': {
+            'twiltwil': {
                 'handlers': ['console'],
                 'level': 'DEBUG',
             }

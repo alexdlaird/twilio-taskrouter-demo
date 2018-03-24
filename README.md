@@ -2,7 +2,7 @@
 [![codecov](https://codecov.io/gh/alexdlaird/twilio-taskrouter-demo/branch/master/graph/badge.svg)](https://codecov.io/gh/alexdlaird/twilio-taskrouter-demo)
 
 
-ChaCha Twilio
+TwilTwil
 ================
 
 ## Prerequisites
@@ -12,7 +12,7 @@ ChaCha Twilio
 ## Getting Started
 The project is developed using Python and [Django](https://www.djangoproject.com).
 
-This repository contains the source code for the ChaCha Twilio project.
+This repository contains the source code for the TwilTwil project, ChaCha using [Twilio's TaskRouter](https://www.twilio.com/taskrouter).
 
 ### Project Setup
 To setup the Python/Django build environment, execute:

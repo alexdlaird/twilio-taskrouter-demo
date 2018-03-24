@@ -1,0 +1,68 @@
+from django.contrib.auth import get_user_model
+from django.test import TestCase
+from django.urls import reverse
+
+from twiltwil.auth.tests.helpers import userhelper
+from twiltwil.common import enums
+
+__author__ = 'Alex Laird'
+__copyright__ = 'Copyright 2018, Alex Laird'
+__version__ = '0.1.0'
+
+
+class TestCaseAuthViews(TestCase):
+    def test_registration_success(self):
+        # GIVEN
+        userhelper.verify_user_not_logged_in(self)
+
+        # WHEN
+        response = self.client.post(reverse('home'),
+                                    {'username': 'my_test_user', 'time_zone': 'America/Chicago',
+                                     'language': enums.SPANISH})
+
+        # THEN
+        userhelper.verify_user_logged_in(self)
+        user = get_user_model().objects.get(username='my_test_user')
+        self.assertEqual(user.username, 'my_test_user')
+        self.assertEqual(user.time_zone, 'America/Chicago')
+        self.assertEqual(user.language, enums.SPANISH)
+        self.assertRedirects(response, reverse('portal'))
+
+    def test_registration_bad_data(self):
+        # GIVEN
+        userhelper.verify_user_not_logged_in(self)
+
+        # WHEN
+        response = self.client.post(reverse('home'),
+                                    {'username': 'my_test_user', 'time_zone': 'America/Chicago', 'language': 'invalid'})
+
+        # THEN
+        userhelper.verify_user_not_logged_in(self)
+        self.assertFalse(get_user_model().objects.filter(username='my_test_user').exists())
+        self.assertContains(response, 'invalid is not one of the available choices')
+
+    def test_logout_success(self):
+        # GIVEN
+        userhelper.given_a_user_exists_and_is_logged_in(self.client)
+
+        # WHEN
+        response = self.client.post(reverse('logout'))
+
+        # THEN
+        self.assertEqual(response.status_code, 302)
+        userhelper.verify_user_not_logged_in(self)
+        self.assertFalse(get_user_model().objects.filter(username='my_test_user').exists())
+
+    def test_authenticated_view_success(self):
+        # GIVEN
+        user = userhelper.given_a_user_exists(self.client)
+
+        # WHEN
+        response1 = self.client.get(reverse('portal'))
+        self.client.login(username=user.get_username(), password='test_pass_1!')
+        response2 = self.client.get(reverse('portal'))
+
+        # THEN
+        self.assertRedirects(response1, reverse('home') + '?next={}'.format(reverse('portal')),
+                             fetch_redirect_response=False)
+        self.assertEqual(response2.status_code, 200)

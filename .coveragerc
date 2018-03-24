@@ -3,8 +3,8 @@ branch = True
 omit =
     .venv/**
     conf/**
-    chachatwilio/common/sitemaps.py
-    chachatwilio/common/cache/locmemkeys.py
+    twiltwil/common/sitemaps.py
+    twiltwil/common/cache/locmemkeys.py
     */admin.py
     */apps.py
     */tests/**
@@ -24,4 +24,4 @@ exclude_lines =
     if __name__ == .__main__.:
 
 [html]
-title = ChaCha Twilio Coverage Report
+title = TwilTwil Coverage Report

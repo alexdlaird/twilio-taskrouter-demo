@@ -53,7 +53,7 @@ LOGGING = {
         'django_log': {
             'level': 'ERROR',
             'class': 'logging.handlers.RotatingFileHandler',
-            'filename': '/var/log/chachatwilio/django.log',
+            'filename': '/var/log/twiltwil/django.log',
             'maxBytes': 50000000,
             'backupCount': 3,
             'formatter': 'standard',
@@ -63,18 +63,18 @@ LOGGING = {
             'class': 'django.utils.log.AdminEmailHandler',
             'include_html': True,
         },
-        'chachatwilio_common_log': {
+        'twiltwil_common_log': {
             'level': 'INFO',
             'class': 'logging.handlers.RotatingFileHandler',
-            'filename': '/var/log/chachatwilio/chachatwilio_common.log',
+            'filename': '/var/log/twiltwil/twiltwil_common.log',
             'maxBytes': 50000000,
             'backupCount': 3,
             'formatter': 'standard',
         },
-        'chachatwilio_auth_log': {
+        'twiltwil_auth_log': {
             'level': 'INFO',
             'class': 'logging.handlers.RotatingFileHandler',
-            'filename': '/var/log/chachatwilio/chachatwilio_auth.log',
+            'filename': '/var/log/twiltwil/twiltwil_auth.log',
             'maxBytes': 50000000,
             'backupCount': 3,
             'formatter': 'standard',
@@ -86,12 +86,12 @@ LOGGING = {
             'level': 'ERROR',
             'propagate': False,
         },
-        'chachatwilio.common': {
-            'handlers': ['chachatwilio_common_log', 'mail_admins'],
+        'twiltwil.common': {
+            'handlers': ['twiltwil_common_log', 'mail_admins'],
             'level': 'INFO',
         },
-        'chachatwilio.auth': {
-            'handlers': ['chachatwilio_auth_log', 'mail_admins'],
+        'twiltwil.auth': {
+            'handlers': ['twiltwil_auth_log', 'mail_admins'],
             'level': 'INFO',
         },
     }
@@ -102,7 +102,7 @@ LOGGING = {
 CACHES = {
     'default': {
         'BACKEND': 'django_redis.cache.RedisCache',
-        'LOCATION': os.environ.get('CHACHATWILIO_REDIS_HOST'),
+        'LOCATION': os.environ.get('TWILTWIL_REDIS_HOST'),
         'OPTIONS': {
             'CLIENT_CLASS': 'django_redis.client.DefaultClient',
         }
@@ -113,10 +113,10 @@ CACHES = {
 
 DATABASES = {
     'default': {
-        'NAME': os.environ.get('CHACHATWILIO_DB_NAME'),
+        'NAME': os.environ.get('TWILTWIL_DB_NAME'),
         'ENGINE': 'django.db.backends.mysql',
-        'HOST': os.environ.get('CHACHATWILIO_DB_HOST'),
-        'USER': os.environ.get('CHACHATWILIO_DB_USER'),
-        'PASSWORD': os.environ.get('CHACHATWILIO_DB_PASSWORD'),
+        'HOST': os.environ.get('TWILTWIL_DB_HOST'),
+        'USER': os.environ.get('TWILTWIL_DB_USER'),
+        'PASSWORD': os.environ.get('TWILTWIL_DB_PASSWORD'),
     }
 }

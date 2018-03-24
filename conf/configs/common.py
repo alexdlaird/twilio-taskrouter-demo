@@ -18,9 +18,9 @@ BASE_DIR = os.path.normpath(os.path.join(os.path.abspath(os.path.dirname(__file_
 
 # Project information
 
-PROJECT_NAME = os.environ.get('CHACHATWILIO_NAME')
+PROJECT_NAME = os.environ.get('TWILTWIL_NAME')
 
-PROJECT_HOST = os.environ.get('CHACHATWILIO_HOST')
+PROJECT_HOST = os.environ.get('TWILTWIL_HOST')
 
 # Version information
 
@@ -44,9 +44,10 @@ DEFAULT_INSTALLED_APPS = (
     'pipeline',
     'widget_tweaks',
     # Project modules
-    'chachatwilio.common',
-    'chachatwilio.auth',
-    'chachatwilio.portal',
+    'twiltwil.common',
+    'twiltwil.auth',
+    'twiltwil.portal',
+    'twiltwil.messaging',
 )
 
 DEFAULT_MIDDLEWARE = (
@@ -70,9 +71,9 @@ DEFAULT_TEMPLATES = [{
             'django.template.context_processors.tz',
             'django.contrib.messages.context_processors.messages',
             'django.template.context_processors.request',
-            'chachatwilio.common.handlers.processors.template',
+            'twiltwil.common.handlers.processors.template',
         ],
-        'debug': os.environ.get('CHACHATWILIO_TEMPLATE_DEBUG', 'False') == 'True'
+        'debug': os.environ.get('TWILTWIL_TEMPLATE_DEBUG', 'False') == 'True'
     },
 }]
 
@@ -83,8 +84,8 @@ DEFAULT_TEMPLATES = [{
 # Application definition
 
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
-AUTH_USER_MODEL = 'chachatwilio_auth.User'
-LOGIN_URL = '/login'
+AUTH_USER_MODEL = 'twiltwil_auth.User'
+LOGIN_URL = '/'
 LOGOUT_URL = '/logout'
 ROOT_URLCONF = 'conf.urls'
 WSGI_APPLICATION = 'conf.wsgi.application'
@@ -106,16 +107,16 @@ HE_DATE_TIME_STRING = HE_DATE_STRING + " " + HE_TIME_STRING
 # Email settings
 
 
-ADMIN_EMAIL_ADDRESS = os.environ.get('CHACHATWILIO_ADMIN_EMAIL')
+ADMIN_EMAIL_ADDRESS = os.environ.get('TWILTWIL_ADMIN_EMAIL')
 SERVER_EMAIL = ADMIN_EMAIL_ADDRESS
-EMAIL_USE_TLS = os.environ.get('CHACHATWILIO_EMAIL_USE_TLS', 'True') == 'True'
-EMAIL_PORT = os.environ.get('CHACHATWILIO_EMAIL_PORT')
-EMAIL_ADDRESS = os.environ.get('CHACHATWILIO_CONTACT_EMAIL')
+EMAIL_USE_TLS = os.environ.get('TWILTWIL_EMAIL_USE_TLS', 'True') == 'True'
+EMAIL_PORT = os.environ.get('TWILTWIL_EMAIL_PORT')
+EMAIL_ADDRESS = os.environ.get('TWILTWIL_CONTACT_EMAIL')
 DEFAULT_FROM_EMAIL = '{} <{}>'.format(PROJECT_NAME, EMAIL_ADDRESS)
-EMAIL_HOST = os.environ.get('CHACHATWILIO_EMAIL_HOST')
+EMAIL_HOST = os.environ.get('TWILTWIL_EMAIL_HOST')
 
-EMAIL_HOST_USER = os.environ.get('CHACHATWILIO_EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD = os.environ.get('CHACHATWILIO_EMAIL_HOST_PASSWORD')
+EMAIL_HOST_USER = os.environ.get('TWILTWIL_EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.environ.get('TWILTWIL_EMAIL_HOST_PASSWORD')
 
 # Authentication
 
@@ -136,15 +137,15 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # Security
 
-SECRET_KEY = os.environ.get('CHACHATWILIO_SECRET_KEY')
-CSRF_COOKIE_SECURE = os.environ.get('CHACHATWILIO_CSRF_COOKIE_SECURE', 'True') == 'True'
-SESSION_COOKIE_SECURE = os.environ.get('CHACHATWILIO_SESSION_COOKIE_SECURE', 'True') == 'True'
-ALLOWED_HOSTS = os.environ.get('CHACHATWILIO_ALLOWED_HOSTS').split(' ')
-CSRF_MIDDLEWARE_SECRET = os.environ.get('CHACHATWILIO_CSRF_MIDDLEWARE_SECRET')
+SECRET_KEY = os.environ.get('TWILTWIL_SECRET_KEY')
+CSRF_COOKIE_SECURE = os.environ.get('TWILTWIL_CSRF_COOKIE_SECURE', 'True') == 'True'
+SESSION_COOKIE_SECURE = os.environ.get('TWILTWIL_SESSION_COOKIE_SECURE', 'True') == 'True'
+ALLOWED_HOSTS = os.environ.get('TWILTWIL_ALLOWED_HOSTS').split(' ')
+CSRF_MIDDLEWARE_SECRET = os.environ.get('TWILTWIL_CSRF_MIDDLEWARE_SECRET')
 
 # Logging
 
-DEBUG = os.environ.get('CHACHATWILIO_DEBUG', 'False') == 'True'
+DEBUG = os.environ.get('TWILTWIL_DEBUG', 'False') == 'True'
 
 # Static files (CSS, JavaScript, Images)
 
@@ -175,13 +176,13 @@ PIPELINE = {
                 'js/vendors/moment.js',
                 'js/vendors/moment-timezone.js',
             ),
-            'output_filename': 'js/chachatwilio_{}.min.js'.format(PROJECT_VERSION)
+            'output_filename': 'js/twiltwil_{}.min.js'.format(PROJECT_VERSION)
         },
     }
 }
 
 # Twilio
 
-TWILIO_ACCOUNT_SID = os.environ.get('CHACHATWILIO_TWILIO_ACCOUNT_SID')
-TWILIO_AUTH_TOKEN = os.environ.get('CHACHATWILIO_TWILIO_AUTH_TOKEN')
-TWILIO_SMS_FROM = os.environ.get('CHACHATWILIO_TWILIO_SMS_FROM')
+TWILIO_ACCOUNT_SID = os.environ.get('TWILTWIL_TWILIO_ACCOUNT_SID')
+TWILIO_AUTH_TOKEN = os.environ.get('TWILTWIL_TWILIO_AUTH_TOKEN')
+TWILIO_SMS_FROM = os.environ.get('TWILTWIL_TWILIO_SMS_FROM')

@@ -74,7 +74,7 @@ LOGGING = {
             'level': 'ERROR',
             'propagate': False,
         },
-        'chachatwilio': {
+        'twiltwil': {
             'handlers': ['console'],
             'level': 'DEBUG',
         }
@@ -90,7 +90,7 @@ warnings.filterwarnings('error', r"DateTimeField .* received a naive datetime", 
 if os.environ.get('USE_IN_MEMORY_DB', 'True') == 'True':
     CACHES = {
         'default': {
-            'BACKEND': 'chachatwilio.common.cache.locmemkeys.LocMemKeysCache',
+            'BACKEND': 'twiltwil.common.cache.locmemkeys.LocMemKeysCache',
             'LOCATION': 'unique-snowflake',
         }
     }

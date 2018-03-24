@@ -47,8 +47,8 @@ else:
 
 # Load conf properties into the local scope
 print('Using conf.configs.{}'.format(conf))
-common_conf_module = __import__('conf.configs.common', globals(), locals(), 'chachatwilio')
-conf_module = __import__('conf.configs.{}'.format(conf), globals(), locals(), 'chachatwilio')
+common_conf_module = __import__('conf.configs.common', globals(), locals(), 'twiltwil')
+conf_module = __import__('conf.configs.{}'.format(conf), globals(), locals(), 'twiltwil')
 
 # Load common conf properties into the local scope
 for setting in dir(common_conf_module):
