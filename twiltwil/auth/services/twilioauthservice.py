@@ -17,6 +17,13 @@ logger = logging.getLogger(__name__)
 client = Client(settings.TWILIO_ACCOUNT_SID, settings.TWILIO_AUTH_TOKEN)
 
 
+def _get_offline_activity(workspace_sid):
+    # TODO: cache this
+    for activity in client.taskrouter.workspaces(workspace_sid).activities.list():
+        if activity.friendly_name == 'Offline':
+            return activity
+
+
 def create_worker(workspace_sid, friendly_name, attributes):
     return client.taskrouter.workspaces(workspace_sid).workers.create(
         friendly_name=friendly_name,
@@ -25,7 +32,9 @@ def create_worker(workspace_sid, friendly_name, attributes):
 
 
 def delete_worker(workspace_sid, worker_sid):
-    client.taskrouter.workspaces(workspace_sid).workers(worker_sid).delete()
+    worker = client.taskrouter.workspaces(workspace_sid).workers(worker_sid).fetch()
+    worker = worker.update(activity_sid=_get_offline_activity(workspace_sid).sid)
+    worker.delete()
 
 
 def get_worker_token(workspace_sid, worker_sid):
@@ -39,9 +48,3 @@ def get_worker_token(workspace_sid, worker_sid):
     capability.allow_update_reservations()
 
     return capability.to_jwt()
-
-
-def get_formatted_number(phone_number):
-    number = client.lookups.phone_numbers(phone_number).fetch()
-
-    return number.national_format

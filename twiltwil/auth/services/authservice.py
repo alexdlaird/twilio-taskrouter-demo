@@ -27,6 +27,7 @@ def process_register(request, user):
     logger.info('Registered new user with username: {}'.format(user.get_username()))
 
     # TODO: either get this from a .env or query for it on startup
+    # TODO: if workspaces are dynamically created, ensure default and timeout activities are set to "idle" not "offline"
     workspace_sid = 'WS86557ca494226e8435fe0c7aff420556'
 
     user = get_user_model().objects.get(username=user.username)
