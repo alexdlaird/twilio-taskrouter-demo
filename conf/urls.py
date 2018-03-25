@@ -11,6 +11,7 @@ from django.views import static
 import twiltwil.auth.urls
 import twiltwil.common.urls
 import twiltwil.portal.urls
+import twiltwil.api.urls
 
 __author__ = 'Alex Laird'
 __copyright__ = 'Copyright 2018, Alex Laird'
@@ -21,6 +22,7 @@ urlpatterns = [
     url(r'^', include(twiltwil.common.urls)),
     url(r'^', include(twiltwil.auth.urls)),
     url(r'^', include(twiltwil.portal.urls)),
+    url(r'^', include(twiltwil.api.urls)),
 ]
 
 if config.DEBUG:

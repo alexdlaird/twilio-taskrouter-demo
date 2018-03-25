@@ -43,6 +43,7 @@ DEFAULT_INSTALLED_APPS = (
     # Third-party modules
     'pipeline',
     'widget_tweaks',
+    'rest_framework',
     # Project modules
     'twiltwil.common',
     'twiltwil.auth',

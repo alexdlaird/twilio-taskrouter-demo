@@ -18,4 +18,4 @@ def delete_user(sender, instance, **kwargs):
     # TODO: there needs to be a service that checks each hour (which is how often the JS token is refreshed) if the Worker is still active and, if not, deletes them
 
     if not instance.is_superuser:
-        twilioauthservice.delete_worker(instance.workspace_sid, instance.worker_sid)
+        twilioauthservice.delete_worker(instance.worker_sid)
