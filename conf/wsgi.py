@@ -1,5 +1,5 @@
 """
-WSGI configuration for Django environment.
+Detects changes and restarts the WSGI daemon process. Should only be used in development.
 """
 
 import os

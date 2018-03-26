@@ -18,11 +18,11 @@ logger = logging.getLogger(__name__)
 
 def process_register(request, user):
     """
-    At this point the user will be created in the database and a worker created.
+    At this point the user will be created in the database and a Twilio Worker instantiated.
 
     :param request: the request
     :param user: the user that has been created
-    :return: a redirect for the next page in the registration flow
+    :return: a redirect to the next page in the registration flow
     """
     logger.info('Registered new user with username: {}'.format(user.get_username()))
 
@@ -47,7 +47,7 @@ def process_register(request, user):
 
 def process_logout(request):
     """
-    Log the authenticated user out, then delete them.
+    Logout the currently authenticated user, then delete the associated database entry and its Twilio Worker.
 
     :param request: the request
     :return:

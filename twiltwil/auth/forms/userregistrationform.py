@@ -20,8 +20,3 @@ class UserRegisterForm(forms.ModelForm, BaseForm):
     class Meta:
         model = get_user_model()
         fields = ['username', 'time_zone', 'languages', 'skills']
-
-    def clean(self):
-        cleaned_data = super().clean()
-
-        return cleaned_data

@@ -5,6 +5,7 @@ Settings specific to running tests, reading values from `.env`.
 import logging
 import os
 
+from conf.settings import PROJECT_ID
 from .common import DEFAULT_TEMPLATES, DEFAULT_MIDDLEWARE, DEFAULT_INSTALLED_APPS, PIPELINE
 
 __author__ = 'Alex Laird'
@@ -35,45 +36,10 @@ CSRF_MIDDLEWARE_SECRET = None
 
 DEBUG = False
 
-if os.environ.get('TEST_DEBUG', 'False') == 'True':
-    LOGGING = {
-        'version': 1,
-        'disable_existing_loggers': False,
-        'formatters': {
-            'standard': {
-                'format': '[%(asctime)s] %(levelname)s [%(name)s:%(lineno)s] %(message)s',
-                'datefmt': '%Y-%m-%d %H:%M:%S'
-            },
-        },
-        'handlers': {
-            'console': {
-                'level': 'DEBUG',
-                'class': 'logging.StreamHandler',
-                'formatter': 'standard'
-            },
-        },
-        'loggers': {
-            'django': {
-                'handlers': ['console'],
-                'propagate': True,
-                'level': 'WARN',
-            },
-            'django.db.backends': {
-                'handlers': ['console'],
-                'level': 'INFO',
-                'propagate': False,
-            },
-            'django.request': {
-                'handlers': ['console'],
-                'level': 'ERROR',
-                'propagate': False,
-            },
-            'twiltwil': {
-                'handlers': ['console'],
-                'level': 'DEBUG',
-            }
-        }
-    }
+if os.environ.get('TEST_LOGGING', 'False') == 'True':
+    from conf.configs import dev
+
+    LOGGING = dev.LOGGING
 else:
     logging.disable(logging.ERROR)
 

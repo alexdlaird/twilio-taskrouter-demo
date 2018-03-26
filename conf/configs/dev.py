@@ -5,6 +5,7 @@ Settings specific to a development environemnt using Django's `runserver` comman
 import os
 import warnings
 
+from conf.settings import PROJECT_ID
 from .common import DEFAULT_TEMPLATES, DEFAULT_MIDDLEWARE, DEFAULT_INSTALLED_APPS, PIPELINE
 
 __author__ = 'Alex Laird'
@@ -74,7 +75,7 @@ LOGGING = {
             'level': 'ERROR',
             'propagate': False,
         },
-        'twiltwil': {
+        PROJECT_ID: {
             'handlers': ['console'],
             'level': 'DEBUG',
         }

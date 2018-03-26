@@ -5,6 +5,8 @@ Settings common to all deployment methods.
 import os
 import socket
 
+from conf.settings import PROJECT_ID
+
 __author__ = 'Alex Laird'
 __copyright__ = 'Copyright 2018, Alex Laird'
 __version__ = '0.1.0'
@@ -177,14 +179,14 @@ PIPELINE = {
                 'js/vendors/moment.js',
                 'js/vendors/moment-timezone.js',
             ),
-            'output_filename': 'js/twiltwil_base_{}.min.js'.format(PROJECT_VERSION)
+            'output_filename': 'js/{}_base_{}.min.js'.format(PROJECT_ID, PROJECT_VERSION)
         },
         'portal': {
             'source_filenames': (
                 'js/api.js',
                 'js/portal.js',
             ),
-            'output_filename': 'js/twiltwil_portal_{}.min.js'.format(PROJECT_VERSION)
+            'output_filename': 'js/{}_portal_{}.min.js'.format(PROJECT_ID, PROJECT_VERSION)
         },
     }
 }

@@ -4,6 +4,7 @@ Settings specific to prod-like deployable code, reading values from system envir
 
 import os
 
+from conf.settings import PROJECT_ID
 from .common import DEFAULT_TEMPLATES, DEFAULT_MIDDLEWARE, DEFAULT_INSTALLED_APPS, DEBUG, PROJECT_NAME, \
     ADMIN_EMAIL_ADDRESS
 
@@ -53,7 +54,7 @@ LOGGING = {
         'django_log': {
             'level': 'ERROR',
             'class': 'logging.handlers.RotatingFileHandler',
-            'filename': '/var/log/twiltwil/django.log',
+            'filename': '/var/log/{}/django.log'.format(PROJECT_ID),
             'maxBytes': 50000000,
             'backupCount': 3,
             'formatter': 'standard',
@@ -63,18 +64,34 @@ LOGGING = {
             'class': 'django.utils.log.AdminEmailHandler',
             'include_html': True,
         },
-        'twiltwil_common_log': {
+        '{}_common_log'.format(PROJECT_ID): {
             'level': 'INFO',
             'class': 'logging.handlers.RotatingFileHandler',
-            'filename': '/var/log/twiltwil/twiltwil_common.log',
+            'filename': '/var/log/{}/common.log'.format(PROJECT_ID),
             'maxBytes': 50000000,
             'backupCount': 3,
             'formatter': 'standard',
         },
-        'twiltwil_auth_log': {
+        '{}_auth_log'.format(PROJECT_ID): {
             'level': 'INFO',
             'class': 'logging.handlers.RotatingFileHandler',
-            'filename': '/var/log/twiltwil/twiltwil_auth.log',
+            'filename': '/var/log/{}/auth.log'.format(PROJECT_ID),
+            'maxBytes': 50000000,
+            'backupCount': 3,
+            'formatter': 'standard',
+        },
+        '{}_portal_log'.format(PROJECT_ID): {
+            'level': 'INFO',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': '/var/log/{}/portal.log'.format(PROJECT_ID),
+            'maxBytes': 50000000,
+            'backupCount': 3,
+            'formatter': 'standard',
+        },
+        '{}_api_log'.format(PROJECT_ID): {
+            'level': 'INFO',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': '/var/log/{}/api.log'.format(PROJECT_ID),
             'maxBytes': 50000000,
             'backupCount': 3,
             'formatter': 'standard',
@@ -87,11 +104,19 @@ LOGGING = {
             'propagate': False,
         },
         'twiltwil.common': {
-            'handlers': ['twiltwil_common_log', 'mail_admins'],
+            'handlers': ['{}_common_log'.format(PROJECT_ID), 'mail_admins'],
             'level': 'INFO',
         },
         'twiltwil.auth': {
-            'handlers': ['twiltwil_auth_log', 'mail_admins'],
+            'handlers': ['{}_auth_log'.format(PROJECT_ID), 'mail_admins'],
+            'level': 'INFO',
+        },
+        'twiltwil.portal': {
+            'handlers': ['{}_portal_log'.format(PROJECT_ID), 'mail_admins'],
+            'level': 'INFO',
+        },
+        'twiltwil.api': {
+            'handlers': ['{}_api_log'.format(PROJECT_ID), 'mail_admins'],
             'level': 'INFO',
         },
     }
