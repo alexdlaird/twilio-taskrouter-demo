@@ -14,9 +14,6 @@ class AuthConfig(AppConfig):
     verbose_name = 'Authentication'
 
     def ready(self):
-        # noinspection PyUnresolvedReferences
-        import twiltwil.auth.handlers
-
         AuthConfig.init_languages_and_skills()
 
     @staticmethod

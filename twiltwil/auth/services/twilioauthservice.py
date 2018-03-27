@@ -51,6 +51,19 @@ def _get_idle_activity():
     return _idle_activity
 
 
+def _create_workspace(workspace_name):
+    workspace = client.taskrouter.workspaces.create(
+        friendly_name=workspace_name,
+        event_callback_url=settings.PROJECT_HOST + reverse('api_webhook_taskrouter_workspace'),
+    )
+
+    # TODO: create FIFO Queues here, one for each expression to match
+
+    # TODO: create Workflows for Queues here
+
+    return workspace
+
+
 def get_workspace():
     global _workspace
 
@@ -64,11 +77,7 @@ def get_workspace():
                 break
 
     if not _workspace:
-        _workspace = client.taskrouter.workspaces.create(
-            friendly_name=workspace_name,
-            event_callback_url=settings.PROJECT_HOST + reverse('api_webhook_taskrouter_workspace'),
-            template='FIFO'
-        )
+        _workspace = _create_workspace(workspace_name)
 
     return _workspace
 

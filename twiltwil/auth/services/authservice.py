@@ -59,4 +59,8 @@ def process_logout(request):
     if not user.is_superuser:
         user.delete()
 
+        # TODO: there needs to be a service that checks each hour (which is how often the JS token is refreshed) if the Worker is still active and, if not, deletes them
+
+        twilioauthservice.delete_worker(user.worker_sid)
+
     logger.info('Logged out and deleted user {}'.format(username))
