@@ -46,7 +46,7 @@ class TestCaseAuthViews(TwilTwilTestCase):
         self.assertFalse(get_user_model().objects.filter(username='my_test_user').exists())
         self.assertContains(response, 'invalid is not one of the available choices')
 
-    @mock.patch('twiltwil.auth.handlers.signals.twilioauthservice.delete_worker')
+    @mock.patch('twiltwil.auth.services.authservice.twilioauthservice.delete_worker')
     def test_logout_success(self, mock_delete_worker):
         # GIVEN
         userhelper.given_a_user_exists_and_is_logged_in(self.client)
