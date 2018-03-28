@@ -17,4 +17,4 @@ deploy:
     secret_access_key: $AWS_SECRET_KEY
     application: twilio-taskrouter-demo
     deployment_group: demo
-    region: us-east-1a
+    region: us-east-1
