@@ -9,7 +9,6 @@ from django.shortcuts import render
 from django.urls import reverse
 
 from twiltwil.auth.forms.userregistrationform import UserRegisterForm
-from twiltwil.auth.models import Skill
 from twiltwil.auth.services import authservice
 from twiltwil.common.utils.viewutils import set_request_status, get_request_status
 

@@ -6,6 +6,7 @@ import logging
 
 from django.contrib.auth import logout, get_user_model, login
 from django.core.urlresolvers import reverse
+from twilio.base.exceptions import TwilioRestException
 
 from twiltwil.auth.services import twilioauthservice
 
@@ -28,17 +29,6 @@ def process_register(request, user):
 
     user = get_user_model().objects.get(username=user.username)
 
-    attributes = {
-        "time_zone": user.time_zone,
-        "languages": list(user.languages.all().values_list('id', flat=True)),
-        "skills": list(user.skills.all().values_list('id', flat=True))
-    }
-
-    worker = twilioauthservice.create_worker(user.username, attributes)
-
-    user.worker_sid = worker.sid
-    user.save()
-
     user.backend = 'django.contrib.auth.backends.ModelBackend'
     login(request, user)
 
@@ -57,10 +47,23 @@ def process_logout(request):
 
     user = get_user_model().objects.get(username=username)
     if not user.is_superuser:
-        user.delete()
-
-        # TODO: there needs to be a service that checks each hour (which is how often the JS token is refreshed) if the Worker is still active and, if not, deletes them
-
-        twilioauthservice.delete_worker(user.worker_sid)
+        delete_user(user)
 
     logger.info('Logged out and deleted user {}'.format(username))
+
+
+def delete_user(user):
+    """
+    Delete the given user from the database as well as Twilio's TaskRouter.
+
+    :param user: the user to be deleted
+    """
+    worker_sid = user.worker_sid
+
+    user.delete()
+
+    try:
+        twilioauthservice.delete_worker(worker_sid)
+    except TwilioRestException as e:
+        if e.status != 404:
+            raise e
