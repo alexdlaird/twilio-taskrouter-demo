@@ -1,6 +1,6 @@
 language: python
 python:
-  - "3.6"
+  - '3.6'
 install:
   - python -m pip install virtualenv
   - python -m virtualenv .venv
@@ -10,3 +10,14 @@ install:
 script: make env test
 after_success:
   - codecov
+deploy:
+  matrix:
+  - provider: codedeploy
+    revision_type: github
+    application: twilio-taskrouter-demo
+    deployment_group: demo
+    region: us-east-1a
+  access_key_id:
+    secure: X0iiInoiYuLHx2JEd1B6jt6mVeAdlW6F8pOZlXzuCfFtmHi7qe8JSn8VHcZP0C9jNtRD49/+bSuJqnY7JEgIeNCWEXPiN7xj+N9BOZyEp16Giptf9dEHsMQW4SkkLIX2Z+kuLmhX6pPpOLgdEHBJP2jDNhBy0PsWK/KpODQn3dg++PT3KZtn0yA1QlSUEbu/gs+LeF3gQZxSURC97iziXCfP4OT0Wjlw7GQkPKzvr7NnwuaGLWK3Ihjddi2Ho2Vz6xGgiA9TSLOcs3AyVRHVK3YrUX9mBPPNv/fLUd0ghhuToyMpcsjSixmV5KTW0+oE7Q5BkYjxJkv4KE6micsiJJEP+eDP2e3V6179WOnwHw8ouMyj9/LC9VXn1ThCAjYn++THao8R6EQDtDlro4iwfvpOocccAwaJHi6qb0fY4dAg9p8MOr2xMyUaeYtOxLYo2dnQ9jnF6cAXy3nezdv27o4dm9Jgu5qpQnmqXjjzlL9XBPcoI+zjXdjdXYvHg5RwFwuPtcg374blwmSUV9NkFclbem1zsgwtFQHKz+zgamJWaIN47KSFDf/S+5xQVwLPIgMjrUC4Y8OOJ4xrDM7JPqsieYrMeT1S1F5D6P759NRZQcfJwJkQl4154GSNFtDXuzHokFRctOb3wrI9ia8ShSGRuqXiaQLSgrPD2W75Nfk=
+  secret_access_key:
+    secure: XIb0ayaN7MBYB0VDlEqbsbRQDgEAat+vrBFvK8ZrlX9brE9o4eGh5p6uraZp09cHm5Jj64rf4MS6MIzv25SUYd+Ct6GdGSxwBBPPKAEtBg6y+Z43LdO9U0soJC5bCT9dRFllrrDDEr5qQEr9B/OIJZqyVYb4dYNtN2WTvoL5RWqkTqD021DMuwzpLHzkP+POgv9+eAXzyLNgyND8BLG+HMsBqf/FaFtmDb1hOUKAdteB4TjTR4BmEK68/8AMRlPPapS7L4NehXiVkEIHmegpuQa+A85GZi/bA9fw3Mz27IZ8s94lqDQfCWbuyX6zoZ+/DlTsa4C0NeQYTcAZOo7WJbg3cvUKHtTri6WjZ8pfTJipt2rNh4Ps89fJPYxCw277O8QZjC7uTJnlQnnYg0TSTJbNKUq5narnTIWajlgVtJTyjcTN5jHbnVoeFaZIGPLKIDXZvnfXM9djj0elEvoz6Gw8LTcbN+qjhfFvRwAgiRQj+s6Nk2uV1x9T9cgDnufw8cRoDRn9avIVTWJ94Q242B47Ta/XUnJHtBzip96b3pS6A0ID1ubOtWEFRpJx6TY5ORKVGSZeuahfmHvW0dCSWpOApKJqK35vVzGLjkKbEhYhMSRtMZToGJaXTadWsute1EUzzDzjpEdEFBZspPneKbgxNt6ofhD9XF22J+IpuL8=
