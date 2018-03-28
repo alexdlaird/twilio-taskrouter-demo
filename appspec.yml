@@ -1,0 +1,27 @@
+version: 0.0
+os: linux
+files:
+  - source: /
+    destination: /srv/twilio-taskrouter-demo/
+hooks:
+  AfterInstall:
+    - location: deploy/scripts/install_os_dependencies.sh
+      timeout: 300
+      runas: ubuntu
+    - location: deploy/scripts/install_python_dependencies.sh
+      timeout: 300
+      runas: ubuntu
+    - location: deploy/scripts/install_apache_dependencies.sh
+      timeout: 300
+      runas: ubuntu
+    - location: deploy/scripts/install_twiltwil.sh
+      timeout: 300
+      runas: ubuntu
+  ApplicationStart:
+    - location: deploy/scripts/start_server.sh
+      timeout: 300
+      runas: ubuntu
+  ApplicationStop:
+    - location: deploy/scripts/stop_server.sh
+      timeout: 300
+      runas: ubuntu
