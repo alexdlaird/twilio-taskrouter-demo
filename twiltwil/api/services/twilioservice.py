@@ -22,8 +22,8 @@ def get_task(task_sid):
     return client.taskrouter.workspaces(twilioauthservice.get_workspace().sid).tasks(task_sid).fetch()
 
 
-def create_task(message):
+def create_task(attributes):
     return client.taskrouter.workspaces(twilioauthservice.get_workspace().sid).tasks.create(
         workflow_sid=twilioauthservice.get_workflow().sid,
-        attributes=json.dumps(message)
+        attributes=json.dumps(attributes)
     )

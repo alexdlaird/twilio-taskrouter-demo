@@ -1,8 +1,6 @@
 import json
 import logging
 
-from django.conf import settings
-from django.forms import model_to_dict
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -27,8 +25,7 @@ class WebhookSmsView(APIView):
             "channel": enums.CHANNEL_SMS,
             "sender": request.data['From'],
             "receiver": request.data['To'],
-            "direction": enums.MESSAGE_INBOUND if request.data[
-                                                      'To'] == settings.TWILIO_SMS_FROM else enums.MESSAGE_OUTBOUND,
+            "direction": enums.MESSAGE_INBOUND,
             "status": request.data['SmsStatus'],
             "text": request.data['Body'],
             "addons": messageutils.cleanup_json(request.data['AddOns']) if 'AddOns' in request.data else None,
@@ -46,6 +43,21 @@ class WebhookSmsView(APIView):
 
         # If no open Task was found, create a new one
         if not task:
-            twilioservice.create_task(model_to_dict(message))
+            attributes = {
+                "from": message.sender
+            }
+
+            message_addons = json.loads(message.addons)
+            if message_addons and \
+                            "ibm_watson_insights" in message_addons and \
+                            "result" in message_addons["ibm_watson_insights"] and \
+                            "language" in message_addons["ibm_watson_insights"]["result"]:
+                attributes["language"] = message_addons["ibm_watson_insights"]["result"]["language"]
+
+            attributes["skill"] = enums.GENERAL
+
+            task = twilioservice.create_task(attributes)
+
+        # TODO: send message to Worker with Task
 
         return Response()

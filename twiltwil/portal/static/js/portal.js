@@ -46,8 +46,6 @@ init_worker = function (token) {
         console.log(reservation.task.age);
         console.log(reservation.task.attributes);
 
-        reservation.accept();
-
         WORKER.activities.fetch(
             function (error, activities) {
                 for (var i = 0; i < activities.data.length; i++) {
@@ -59,6 +57,8 @@ init_worker = function (token) {
                 }
             }
         );
+
+        reservation.accept();
     });
 
     // Refresh token every 55 minutes
