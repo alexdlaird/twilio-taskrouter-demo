@@ -1,0 +1,22 @@
+{
+  "SmsSid": "SMc9fce3f439a87dcf53bc141b5e141817",
+  "To": "+14153606659",
+  "ToZip": "94111",
+  "AccountSid": "ACCOUNTSID12345",
+  "NumSegments": "1",
+  "FromCountry": "US",
+  "Body": "I just got a new dog, and he seems really lethargic. Should I take him to the vet?",
+  "ToState": "CA",
+  "From": "+15555555555",
+  "ToCity": "SAN FRANCISCO",
+  "AddOns": "{\"status\":\"successful\",\"message\":null,\"code\":null,\"results\":{\"twilio_caller_name\":{\"request_sid\":\"XR3c97db3eaa0a8705b1e0593e435e9ccc\",\"status\":\"successful\",\"message\":null,\"code\":null,\"result\":{\"caller_name\":{\"caller_name\":null,\"caller_type\":null,\"error_code\":null},\"phone_number\":\"+15555555555\"}},\"twilio_carrier_info\":{\"request_sid\":\"XRae5f61e61f7465b54a19e313b76c5e2b\",\"status\":\"successful\",\"message\":null,\"code\":null,\"result\":{\"phone_number\":\"+15555555555\",\"carrier\":{\"mobile_country_code\":\"310\",\"mobile_network_code\":\"160\",\"name\":\"T-Mobile USA, Inc.\",\"type\":\"mobile\",\"error_code\":null}}},\"ibm_watson_insights\":{\"request_sid\":\"XR552e524a67f61d05aa8bd7bf8c85d565\",\"status\":\"successful\",\"message\":null,\"code\":null,\"result\":{\"status\":\"OK\",\"language\":\"english\",\"concepts\":[{\"text\":\"Veterans Stadium\",\"relevance\":\"0.91136\",\"geo\":\"39.906666666666666 -75.17111111111112\",\"dbpedia\":\"http://dbpedia.org/resource/Veterans_Stadium\",\"freebase\":\"http://rdf.freebase.com/ns/m.01nv4_\",\"yago\":\"http://yago-knowledge.org/resource/Veterans_Stadium\"}],\"entities\":[],\"keywords\":[{\"relevance\":\"0.989281\",\"sentiment\":{\"score\":\"0.406245\",\"type\":\"positive\"},\"text\":\"new dog\"},{\"relevance\":\"0.805664\",\"sentiment\":{\"score\":\"-0.500609\",\"type\":\"negative\"},\"text\":\"vet\"}]}}}}",
+  "NumMedia": "0",
+  "SmsMessageSid": "SMc9fce3f439a87dcf53bc141b5e141817",
+  "FromState": "CA",
+  "FromCity": "",
+  "ToCountry": "US",
+  "MessageSid": "SMc9fce3f439a87dcf53bc141b5e141817",
+  "SmsStatus": "received",
+  "FromZip": "",
+  "ApiVersion": "2010-04-01"
+}

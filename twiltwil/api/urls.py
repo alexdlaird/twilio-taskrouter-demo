@@ -18,7 +18,7 @@ urlpatterns = [
     # TwilTwil REST URLs
     url(r'^api/user$', UserView.as_view(), name='api_user'),
 
-    # Twilio REST URLs
+    # Twilio REST Webhook URLs
     url(r'^api/workers/token$', WorkerTokenView.as_view(), name='api_workers_token'),
     url(r'^api/webhooks/voice$', WebhookVoiceView.as_view(), name='api_webhooks_voice'),
     url(r'^api/webhooks/sms$', WebhookSmsView.as_view(), name='api_webhooks_sms'),

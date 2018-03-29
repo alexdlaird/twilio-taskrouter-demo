@@ -187,20 +187,56 @@ LANGUAGE_CHOICES = (
 )
 
 GENERAL = 'general'
-POLITICS = 'politics'
-MATH = 'math'
-COMPUTERS = 'computers'
+MATHEMATICS = 'mathematics'
+TECHNOLOGY = 'technology'
 HEALTH = 'health'
-FAMILY = 'family'
 ANIMALS = 'animals'
 MUSIC = 'music'
 SKILL_CHOICES = (
     (GENERAL, 'General'),
-    (POLITICS, 'Politics'),
-    (MATH, 'Math'),
-    (COMPUTERS, 'Computers'),
+    (MATHEMATICS, 'Mathematics'),
+    (TECHNOLOGY, 'Technology'),
     (HEALTH, 'Health'),
-    (FAMILY, 'Family'),
     (ANIMALS, 'Animals'),
     (MUSIC, 'Music'),
+)
+
+MESSAGE_INBOUND = 'inbound'
+MESSAGE_OUTBOUND = 'outbound'
+DIRECTION_CHOICES = (
+    (MESSAGE_INBOUND, 'Inbound'),
+    (MESSAGE_OUTBOUND, 'Outbound'),
+)
+
+MESSAGE_INBOUND = 'inbound'
+MESSAGE_OUTBOUND = 'outbound'
+MESSAGE_DIRECTION_CHOICES = (
+    (MESSAGE_INBOUND, 'Inbound'),
+    (MESSAGE_OUTBOUND, 'Outbound'),
+)
+
+MESSAGE_STATUS_ACCEPTED = 'accepted'
+MESSAGE_STATUS_QUEUED = 'queued'
+MESSAGE_STATUS_SENDING = 'sending'
+MESSAGE_STATUS_SENT = 'sent'
+MESSAGE_STATUS_RECEIVING = 'receiving'
+MESSAGE_STATUS_RECEIVED = 'received'
+MESSAGE_STATUS_DELIVERED = 'delivered'
+MESSAGE_STATUS_UNDELIVERED = 'undelivered'
+MESSAGE_STATUS_FAILED = 'failed'
+MESSAGE_STATUS_CHOICES = (
+    (MESSAGE_STATUS_ACCEPTED, 'Accepted'),
+    (MESSAGE_STATUS_QUEUED, 'Queued'),
+    (MESSAGE_STATUS_SENDING, 'Sending'),
+    (MESSAGE_STATUS_SENT, 'Sent'),
+    (MESSAGE_STATUS_RECEIVING, 'Receiving'),
+    (MESSAGE_STATUS_RECEIVED, 'Received'),
+    (MESSAGE_STATUS_DELIVERED, 'Delivered'),
+    (MESSAGE_STATUS_UNDELIVERED, 'Undelivered'),
+    (MESSAGE_STATUS_FAILED, 'Failed'),
+)
+
+CHANNEL_SMS = 'sms'
+CHANNEL_CHOICES = (
+    (CHANNEL_SMS, 'SMS'),
 )
