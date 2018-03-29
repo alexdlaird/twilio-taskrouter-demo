@@ -77,12 +77,9 @@ def _create_workflows():
             # Specific filters will be appended below
             'filters': [
             ],
-            # If the Task does not match any of the defined filters (below), the default Queue will catch it, sending
-            # it to any Worker whose skill includes "general"—if no "general" Worker is logged in, the Task will
-            # immediately be cancelled as no mapping could be made
+            # If the Task does not match any of the defined filters (below), the default Queue will catch it
             'default_filter': {
-                'queue': _queues['default'].sid,
-                'expression': '(worker.skills HAS task.skill) OR (worker.skills HAS "general")'
+                'queue': _queues['default'].sid
             }
         }
     }
