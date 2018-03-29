@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 
-cd /srv/twiltwil
+sudo mkdir -p /usr/local/venvs
+sudo chown ubuntu:ubuntu /usr/local/venvs
 
-sudo mkdir -p ${TWILTWIL_VENV}
+cd /srv/twiltwil
 
 make install
 make migrate
