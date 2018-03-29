@@ -1,13 +1,13 @@
 {
-  "TaskPriority": "0",
-  "TaskAttributes": "{\"skill\":\"general\",\"language\":\"english\"}",
-  "TaskAge": "0",
-  "WorkflowSid": "WWbed1b0584ad69267f1ddb9e1f6400f8d",
   "AccountSid": "ACCOUNTSID12345",
-  "ReservationSid": "WR3c5fda7b1a96ce67a36e9d67940f7583",
-  "WorkerSid": "WK7fafca15cb96050be261748d19397a1d",
-  "TaskQueueSid": "WQ881ed7a0a7d8ac0ff54051560a7cae38",
-  "WorkerAttributes": "{\"skills\":[\"computers\"],\"languages\":[\"english\"],\"time_zone\":\"America\\/Los_Angeles\"}",
-  "TaskSid": "WT260c5c228b293d0633a937c58309afea",
-  "WorkspaceSid": "WS2f84bdc1063619fc7470cd30269b844f"
+  "TaskPriority": "0",
+  "WorkflowSid": "WWa649336cf9549b6176be7611b7934139",
+  "TaskQueueSid": "WQba7b15b5da2835daf8840999ac359aa1",
+  "WorkspaceSid": "WS0373f9ac28020851e66c8f52fc6ff2bd",
+  "WorkerSid": "WKc50fcd98cdc674342b6248b6c178bb5e",
+  "ReservationSid": "WRa37d19e6b32d8f5809a4a6ff5209553b",
+  "WorkerAttributes": "{\"skills\":[\"computers\",\"general\"],\"languages\":[\"english\"],\"time_zone\":\"America\\/Los_Angeles\"}",
+  "TaskSid": "WTa064deb11caffd9f2e54a1eb88536de2",
+  "TaskAttributes": "{\"skill\":\"general\",\"language\":\"english\"}",
+  "TaskAge": "0"
 }
