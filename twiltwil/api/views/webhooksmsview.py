@@ -36,10 +36,19 @@ class WebhookSmsView(APIView):
         sender_messages_with_tasks = Message.objects.inbound().for_number(request.data['From']).has_task()
         task = None
         if sender_messages_with_tasks.exists():
-            task = twilioservice.get_task(sender_messages_with_tasks[0].task_sid)
+            db_task = sender_messages_with_tasks[0]
+
+            task = twilioservice.get_task(db_task.task_sid)
 
             if task.assignment_status not in ['reserved', 'assigned']:
                 task = None
+            else:
+                logger.info('Found an open Task: {}'.format(task.sid))
+
+                message.task_sid = db_task.task_sid
+                message.worker_sid = db_task.worker_sid
+
+                message.save()
 
         # If no open Task was found, create a new one
         if not task:
