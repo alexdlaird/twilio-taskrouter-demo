@@ -20,13 +20,25 @@ refresh_token = function () {
     }
 };
 
+display_message = function (message) {
+    console.log(message);
+};
+
 init_chat = function (token) {
     CHAT_CLIENT = new Twilio.Chat.Client(token);
+
+    CHAT_CLIENT.getSubscribedChannels().then(join_channel);
 };
 
 init_channel = function (channel) {
     channel.join().then(function (channel) {
         console.log('Join channel ' + channel.sid);
+
+        channel.getMessages().then(function (messages) {
+            $.each(messages, function (message) {
+                display_message(message);
+            });
+        });
     });
 
     channel.on('messageAdded', function (message) {
@@ -34,7 +46,13 @@ init_channel = function (channel) {
     });
 };
 
-join_channel = function () {
+join_channel = function (channel) {
+    channel = typeof channel === "undefined" ? null : channel;
+
+    if (channel) {
+        chat_contact = channel.uniqueName;
+    }
+
     var promise = CHAT_CLIENT.getChannelByUniqueName(chat_contact);
     promise.then(function (channel) {
         console.log('Found ' + channel.sid + ' channel');
