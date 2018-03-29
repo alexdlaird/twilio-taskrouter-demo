@@ -5,10 +5,10 @@
  * @version 0.1.0
  */
 
-const SITE_HOST = location.host;
-const SITE_URL = location.protocol + "//" + SITE_HOST;
+var SITE_HOST = location.host;
+var SITE_URL = location.protocol + "//" + SITE_HOST;
 
-const CSRF_TOKEN = Cookies.get("csrftoken");
+var CSRF_TOKEN = Cookies.get("csrftoken");
 
 function csrfSafeMethod(method) {
     "use strict";

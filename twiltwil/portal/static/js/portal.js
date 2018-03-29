@@ -32,7 +32,7 @@ init_worker = function (token) {
 };
 
 get_user(function (data) {
-    const user = data;
+    var user = data;
 
     get_twilio_worker_token(function (data) {
         init_worker(data.token);
