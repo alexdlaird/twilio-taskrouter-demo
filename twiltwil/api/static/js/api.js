@@ -33,14 +33,14 @@ $.ajaxSetup(
     });
 
 ajax_success = function (callback, data) {
-    console.log(JSON.stringify(data));
+    console.log(data);
 
     callback(data)
 };
 
 ajax_error = function (callback, xhr, textStatus, errorThrown) {
     if (xhr.hasOwnProperty('responseJSON')) {
-        console.log(JSON.stringify(xhr.responseJSON));
+        console.log(xhr.responseJSON);
     }
 
     callback([{

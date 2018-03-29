@@ -28,7 +28,7 @@ init_worker = function (token) {
         console.log(worker.attributes);
     });
 
-    worker.on("reservation.accepted", function (reservation) {
+    WORKER.on("reservation.accepted", function (reservation) {
         console.log(reservation.sid);
         console.log(reservation.task.sid);
         console.log(reservation.task.priority);
