@@ -16,12 +16,12 @@ __version__ = '0.1.0'
 
 urlpatterns = [
     # TwilTwil REST URLs
-    url(r'^api/user/$', UserView.as_view(), name='api_user'),
+    url(r'^api/user$', UserView.as_view(), name='api_user'),
 
     # Twilio REST URLs
-    url(r'^api/workers/token/$', WorkerTokenView.as_view(), name='api_workers_token'),
-    url(r'^api/webhooks/voice/$', WebhookVoiceView.as_view(), name='api_webhooks_voice'),
-    url(r'^api/webhooks/sms/$', WebhookSmsView.as_view(), name='api_webhooks_sms'),
+    url(r'^api/workers/token$', WorkerTokenView.as_view(), name='api_workers_token'),
+    url(r'^api/webhooks/voice$', WebhookVoiceView.as_view(), name='api_webhooks_voice'),
+    url(r'^api/webhooks/sms$', WebhookSmsView.as_view(), name='api_webhooks_sms'),
     url(r'^api/webhooks/taskrouter/workspace/$', WebhookTaskRouterWorkspaceView.as_view(),
         name='api_webhooks_taskrouter_workspace'),
     url(r'^api/webhooks/taskrouter/workflow/$', WebhookTaskRouterWorkflowView.as_view(),
