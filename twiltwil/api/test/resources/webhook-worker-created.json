@@ -1,0 +1,16 @@
+{
+  "EventType": "worker.created",
+  "WorkerSid": "WK2c185a6f5cefcf25681d51b70ca991db",
+  "WorkspaceSid": "WS2f84bdc1063619fc7470cd30269b844f",
+  "TimestampMs": "1522296198000",
+  "ResourceSid": "WK2c185a6f5cefcf25681d51b70ca991db",
+  "AccountSid": "ACCOUNTSID12345",
+  "WorkerName": "test_user",
+  "WorkerActivitySid": "WAb0599080b8cf301fdbdd3a81d7e8ffcc",
+  "ResourceType": "worker",
+  "WorkspaceName": "twiltwil_test",
+  "WorkerAttributes": "{\"skills\":[\"computers\"],\"languages\":[\"english\"],\"time_zone\":\"America\\/Los_Angeles\"}",
+  "EventDescription": "Worker test_user created",
+  "Timestamp": "1522296198",
+  "Sid": "EV6f885a97576daa2c91c3ec86cc3b6f5b"
+}
