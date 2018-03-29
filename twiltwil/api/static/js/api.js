@@ -69,9 +69,9 @@ ajax_request = function (callback, type, url, data) {
 };
 
 get_user = function (callback) {
-    return ajax_request(callback, "GET", "/api/user/");
+    return ajax_request(callback, "GET", "/api/user");
 };
 
 get_twilio_worker_token = function (callback) {
-    return ajax_request(callback, "POST", "/api/workers/token/");
+    return ajax_request(callback, "POST", "/api/workers/token");
 };

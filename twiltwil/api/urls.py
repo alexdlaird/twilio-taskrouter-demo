@@ -22,8 +22,8 @@ urlpatterns = [
     url(r'^api/workers/token$', WorkerTokenView.as_view(), name='api_workers_token'),
     url(r'^api/webhooks/voice$', WebhookVoiceView.as_view(), name='api_webhooks_voice'),
     url(r'^api/webhooks/sms$', WebhookSmsView.as_view(), name='api_webhooks_sms'),
-    url(r'^api/webhooks/taskrouter/workspace/$', WebhookTaskRouterWorkspaceView.as_view(),
+    url(r'^api/webhooks/taskrouter/workspace$', WebhookTaskRouterWorkspaceView.as_view(),
         name='api_webhooks_taskrouter_workspace'),
-    url(r'^api/webhooks/taskrouter/workflow/$', WebhookTaskRouterWorkflowView.as_view(),
+    url(r'^api/webhooks/taskrouter/workflow$', WebhookTaskRouterWorkflowView.as_view(),
         name='api_webhooks_taskrouter_workflow'),
 ]

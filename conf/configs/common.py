@@ -172,15 +172,14 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 PIPELINE = {
     'DISABLE_WRAPPER': True,
     'STYLESHEETS': {
+        'portal': {
+            'source_filenames': (
+                'css/portal.css',
+            ),
+            'output_filename': 'js/{}_portal_{}.min.js'.format(PROJECT_ID, PROJECT_VERSION)
+        },
     },
     'JAVASCRIPT': {
-        'base': {
-            'source_filenames': (
-                'js/vendors/moment.js',
-                'js/vendors/moment-timezone.js',
-            ),
-            'output_filename': 'js/{}_base_{}.min.js'.format(PROJECT_ID, PROJECT_VERSION)
-        },
         'portal': {
             'source_filenames': (
                 'js/api.js',
