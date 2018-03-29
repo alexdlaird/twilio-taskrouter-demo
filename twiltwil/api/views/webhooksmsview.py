@@ -33,7 +33,7 @@ class WebhookSmsView(APIView):
         })
 
         # Check if the other messages exist from this sender that are associated with an open Task
-        sender_messages_with_tasks = Message.objects.inbound().for_number(request.data['From']).has_task()
+        sender_messages_with_tasks = Message.objects.inbound().for_number(request.data['From']).has_worker()
         task = None
         channel = None
         if sender_messages_with_tasks.exists():
@@ -73,6 +73,6 @@ class WebhookSmsView(APIView):
 
             twilioservice.create_task(attributes)
 
-        twilioservice.send_chat_message(channel, message.text)
+        twilioservice.send_chat_message(channel, message)
 
         return Response()

@@ -8,6 +8,7 @@ from django.contrib.auth import logout, get_user_model, login
 from django.core.urlresolvers import reverse
 from twilio.base.exceptions import TwilioRestException
 
+from twiltwil.api.models import Message
 from twiltwil.auth.services import twilioauthservice
 
 __author__ = 'Alex Laird'
@@ -61,6 +62,10 @@ def delete_user(user):
     worker_sid = user.worker_sid
 
     user.delete()
+
+    for message in Message.objects.for_worker(worker_sid).iterator():
+        message.worker_sid = None
+        message.save()
 
     try:
         twilioauthservice.delete_worker(worker_sid)

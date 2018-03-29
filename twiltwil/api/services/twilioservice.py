@@ -45,5 +45,5 @@ def get_or_create_channel(number):
 
 def send_chat_message(channel, message):
     return client.chat.services(twilioauthservice.get_service().sid).channels(channel.sid).messages.create(
-        body=message
+        body=message.text,
     )
