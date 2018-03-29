@@ -5,6 +5,7 @@ import json
 import logging
 
 from django.conf import settings
+from twilio.base.exceptions import TwilioRestException
 from twilio.rest import Client
 
 from twiltwil.auth.services import twilioauthservice
@@ -26,4 +27,23 @@ def create_task(attributes):
     return client.taskrouter.workspaces(twilioauthservice.get_workspace().sid).tasks.create(
         workflow_sid=twilioauthservice.get_workflow().sid,
         attributes=json.dumps(attributes)
+    )
+
+
+def get_or_create_channel(number):
+    try:
+        return client.chat.services(twilioauthservice.get_service().sid).channels(number).fetch()
+    except TwilioRestException as e:
+        if e.status != 404:
+            raise e
+
+        return client.chat.services(twilioauthservice.get_service().sid).channels.create(
+            friendly_name=number,
+            unique_name=number
+        )
+
+
+def send_chat_message(channel, message):
+    return client.chat.services(twilioauthservice.get_service().sid).channels(channel.sid).messages.create(
+        body=message
     )

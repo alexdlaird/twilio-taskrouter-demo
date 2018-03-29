@@ -10,7 +10,7 @@ omit =
     */migrations/**
 
 [report]
-fail_under = 80
+fail_under = 70
 precision = 2
 exclude_lines =
     pragma: no cover

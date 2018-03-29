@@ -35,6 +35,7 @@ class WebhookSmsView(APIView):
         # Check if the other messages exist from this sender that are associated with an open Task
         sender_messages_with_tasks = Message.objects.inbound().for_number(request.data['From']).has_task()
         task = None
+        channel = None
         if sender_messages_with_tasks.exists():
             db_task = sender_messages_with_tasks[0]
 
@@ -50,6 +51,8 @@ class WebhookSmsView(APIView):
 
                 message.save()
 
+                channel = twilioservice.get_or_create_channel(message.sender)
+
         # If no open Task was found, create a new one
         if not task:
             attributes = {
@@ -63,10 +66,13 @@ class WebhookSmsView(APIView):
                             "language" in message_addons["ibm_watson_insights"]["result"]:
                 attributes["language"] = message_addons["ibm_watson_insights"]["result"]["language"]
 
+            channel = twilioservice.get_or_create_channel(message.sender)
+
             attributes["skill"] = enums.GENERAL
+            attributes["channel"] = channel.sid
 
-            task = twilioservice.create_task(attributes)
+            twilioservice.create_task(attributes)
 
-        # TODO: send message to Worker with Task
+        twilioservice.send_chat_message(channel, message.text)
 
         return Response()

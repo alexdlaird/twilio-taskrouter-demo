@@ -5,7 +5,10 @@
  * @version 0.1.0
  */
 
+var CHAT_CLIENT = null;
 var WORKER = null;
+
+var chat_contact = null;
 
 refresh_token = function () {
     if (WORKER) {
@@ -15,6 +18,30 @@ refresh_token = function () {
             WORKER.updateToken(data.token);
         });
     }
+};
+
+init_chat = function (token) {
+    CHAT_CLIENT = new Twilio.Chat.Client(token);
+};
+
+init_channel = function (channel) {
+    channel.join().then(function (channel) {
+        console.log('Join channel ' + channel.sid);
+    });
+
+    channel.on('messageAdded', function (message) {
+        console.log(message);
+    });
+};
+
+join_channel = function () {
+    var promise = CHAT_CLIENT.getChannelByUniqueName(chat_contact);
+    promise.then(function (channel) {
+        console.log('Found ' + channel.sid + ' channel');
+        console.log(channel);
+
+        init_channel(channel);
+    });
 };
 
 init_worker = function (token) {
@@ -59,6 +86,10 @@ init_worker = function (token) {
         );
 
         reservation.accept();
+
+        chat_contact = reservation.task.attributes.from;
+
+        CHAT_CLIENT.getSubscribedChannels().then(join_channel);
     });
 
     // Refresh token every 55 minutes
@@ -72,7 +103,11 @@ get_user(function (data) {
     $("#user-details-5").html("Languages: " + user.languages);
     $("#user-details-6").html("Skills: " + user.skills);
 
-    get_twilio_worker_token(function (data) {
-        init_worker(data.token);
-    });
+    get_twilio_chat_token(function (data) {
+        init_chat(data.token);
+
+        get_twilio_worker_token(function (data) {
+            init_worker(data.token);
+        });
+    }, user.username);
 });

@@ -8,6 +8,8 @@ import os
 from django.conf import settings
 from django.core.cache import cache
 from django.urls import reverse
+from twilio.jwt.access_token import AccessToken
+from twilio.jwt.access_token.grants import SyncGrant, ChatGrant
 from twilio.jwt.taskrouter.capabilities import WorkerCapabilityToken
 from twilio.rest import Client
 
@@ -25,10 +27,25 @@ client = Client(settings.TWILIO_ACCOUNT_SID, settings.TWILIO_AUTH_TOKEN)
 _workspace = None
 _activities = {}
 _workflow = None
+_service = None
 
 
 def _get_activity(friendly_name):
     return get_activities()[friendly_name]
+
+
+def _create_service(service_name):
+    service = client.chat.services.create(
+        friendly_name=service_name,
+    )
+
+    service = client.chat.services(service.sid).update(
+        post_webhook_url=settings.PROJECT_HOST + reverse('api_webhooks_chat_event'),
+        webhook_method='POST',
+        webhook_filters=['onMessageSent', 'onChannelAdded', 'onChannelDestroyed']
+    )
+
+    return service
 
 
 def _create_workspace(workspace_name):
@@ -109,6 +126,24 @@ def _create_workflow(queues):
     )
 
 
+def get_service():
+    global _service
+
+    service_name = 'twiltwil_' + os.environ.get('ENVIRONMENT')
+
+    if not _service:
+        for service in client.chat.services.list():
+            if service.friendly_name == service_name:
+                _service = service
+
+                break
+
+    if not _service:
+        _service = _create_service(service_name)
+
+    return _service
+
+
 def get_workspace():
     global _workspace, _workflow
 
@@ -162,6 +197,22 @@ def delete_worker(worker_sid):
     worker = client.taskrouter.workspaces(get_workspace().sid).workers(worker_sid).fetch()
     worker = worker.update(activity_sid=_get_activity("Offline").sid)
     worker.delete()
+
+
+def get_chat_token(username):
+    # This call is simply to ensure the service exists, though it is not needed to generate token
+    service = get_service()
+
+    token = AccessToken(settings.TWILIO_ACCOUNT_SID, settings.TWILIO_API_KEY, settings.TWILIO_API_SECRET,
+                        identity=username)
+
+    sync_grant = SyncGrant(service_sid=service.sid)
+    token.add_grant(sync_grant)
+
+    chat_grant = ChatGrant(service_sid=service.sid)
+    token.add_grant(chat_grant)
+
+    return token.to_jwt()
 
 
 def get_worker_token(worker_sid):

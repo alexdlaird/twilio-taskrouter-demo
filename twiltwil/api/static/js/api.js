@@ -58,7 +58,7 @@ ajax_request = function (callback, type, url, data) {
             type: type,
             url: SITE_URL + url,
             dataType: "json",
-            data: data,
+            data: JSON.stringify(data),
             success: function (data) {
                 ajax_success(callback, data);
             },
@@ -74,4 +74,8 @@ get_user = function (callback) {
 
 get_twilio_worker_token = function (callback) {
     return ajax_request(callback, "POST", "/api/workers/token");
+};
+
+get_twilio_chat_token = function (callback, username) {
+    return ajax_request(callback, "POST", "/api/chat/token", {"username": username});
 };

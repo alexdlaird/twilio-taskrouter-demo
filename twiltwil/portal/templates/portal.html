@@ -12,7 +12,8 @@
         <div class="well">
             <div class="row">
                 <div class="col-md-4">
-                    <h4><span id="user-details-1" class="label label-primary">Help number: {{ PHONE_NUMBER }}</span></h4>
+                    <h4><span id="user-details-1" class="label label-primary">Help number: {{ PHONE_NUMBER }}</span>
+                    </h4>
                     <h4><span id="user-details-2" class="label label-primary"></span></h4>
                 </div>
                 <div class="col-md-4 text-center">
@@ -38,6 +39,8 @@
 
 {% block page_footer %}
     <script type="text/javascript" src="//media.twiliocdn.com/taskrouter/js/v1.12/taskrouter.min.js"></script>
+    <script type="text/javascript" src="//media.twiliocdn.com/sdk/js/common/v0.1/twilio-common.min.js"></script>
+    <script type="text/javascript" src="//media.twiliocdn.com/sdk/js/chat/v2.1/twilio-chat.min.js"></script>
 
     {% javascript "portal" %}
 {% endblock %}
