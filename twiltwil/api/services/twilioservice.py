@@ -39,7 +39,7 @@ def get_or_create_channel(number):
 
         return client.chat.services(twilioauthservice.get_service().sid).channels.create(
             friendly_name=number,
-            unique_name=number
+            unique_name=number.lstrip('+')
         )
 
 

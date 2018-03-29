@@ -5,77 +5,79 @@
  * @version 0.1.0
  */
 
-var SITE_HOST = location.host;
-var SITE_URL = location.protocol + "//" + SITE_HOST;
+function TwilTwilApi() {
+    this.SITE_HOST = location.host;
+    this.SITE_URL = location.protocol + "//" + this.SITE_HOST;
 
-var CSRF_TOKEN = Cookies.get("csrftoken");
+    this.CSRF_TOKEN = Cookies.get("csrftoken");
 
-function csrfSafeMethod(method) {
-    "use strict";
+    var self = this;
 
-    // These HTTP methods do not require CSRF protection
-    return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
-}
-
-$.ajaxSetup(
-    {
-        beforeSend: function (xhr, settings) {
-            "use strict";
-
-            if (!csrfSafeMethod(settings.type)) {
-                // Send the token to same-origin, relative URLs only.
-                // Send the token only if the method warrants CSRF protection
-                // Using the CSRFToken value acquired earlier
-                xhr.setRequestHeader("X-CSRFToken", CSRF_TOKEN);
-            }
-        },
-        contentType: "application/json; charset=UTF-8"
-    });
-
-ajax_success = function (callback, data) {
-    console.log(data);
-
-    callback(data)
-};
-
-ajax_error = function (callback, xhr, textStatus, errorThrown) {
-    if (xhr.hasOwnProperty('responseJSON')) {
-        console.log(xhr.responseJSON);
+    function csrfSafeMethod(method) {
+        // These HTTP methods do not require CSRF protection
+        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
     }
 
-    callback([{
-        'xhr': xhr,
-        'textStatus': textStatus,
-        'errorThrown': errorThrown
-    }]);
-};
-
-ajax_request = function (callback, type, url, data) {
-    data = typeof data === "undefined" ? null : data;
-
-    return $.ajax(
+    $.ajaxSetup(
         {
-            type: type,
-            url: SITE_URL + url,
-            dataType: "json",
-            data: JSON.stringify(data),
-            success: function (data) {
-                ajax_success(callback, data);
+            beforeSend: function (xhr, settings) {
+                if (!csrfSafeMethod(settings.type)) {
+                    // Send the token to same-origin, relative URLs only.
+                    // Send the token only if the method warrants CSRF protection
+                    // Using the CSRFToken value acquired earlier
+                    xhr.setRequestHeader("X-CSRFToken", self.CSRF_TOKEN);
+                }
             },
-            error: function (xhr, textStatus, errorThrown) {
-                ajax_error(callback, xhr, textStatus, errorThrown);
-            }
+            contentType: "application/json; charset=UTF-8"
         });
-};
 
-get_user = function (callback) {
-    return ajax_request(callback, "GET", "/api/user");
-};
+    function ajaxSuccess(callback, data) {
+        console.log(data);
 
-get_twilio_worker_token = function (callback) {
-    return ajax_request(callback, "POST", "/api/workers/token");
-};
+        callback(data)
+    }
 
-get_twilio_chat_token = function (callback, username) {
-    return ajax_request(callback, "POST", "/api/chat/token", {"username": username});
-};
+    function ajaxError(callback, xhr, textStatus, errorThrown) {
+        if (xhr.hasOwnProperty('responseJSON')) {
+            console.log(xhr.responseJSON);
+        }
+
+        callback([{
+            'xhr': xhr,
+            'textStatus': textStatus,
+            'errorThrown': errorThrown
+        }]);
+    }
+
+    this.ajaxRequest = function (callback, type, url, data) {
+        data = typeof data === "undefined" ? null : data;
+
+        return $.ajax(
+            {
+                type: type,
+                url: self.SITE_URL + url,
+                dataType: "json",
+                data: JSON.stringify(data),
+                success: function (data) {
+                    ajaxSuccess(callback, data);
+                },
+                error: function (xhr, textStatus, errorThrown) {
+                    ajaxError(callback, xhr, textStatus, errorThrown);
+                }
+            });
+    };
+
+    this.getUser = function (callback) {
+        return self.ajaxRequest(callback, "GET", "/api/user");
+    };
+
+    this.getTwilioWorkerToken = function (callback) {
+        return self.ajaxRequest(callback, "POST", "/api/workers/token");
+    };
+
+    this.getTwilioChatToken = function (callback, username) {
+        return self.ajaxRequest(callback, "POST", "/api/chat/token", {"username": username});
+    };
+}
+
+var twiltwilapi = new TwilTwilApi();
