@@ -17,4 +17,4 @@ sudo cp /srv/twilio-taskrouter-demo/deploy/conf/django.conf /etc/apache2/sites-a
 sudo a2dissite 000-default default-ssl
 sudo a2ensite twilio-taskrouter-demo
 
-sudo certbot --apache --authenticator standalone --installer apache --non-interactive --agree-tos --email ${TWILTWIL_ADMIN_EMAIL} --domains twiltwil.alexlaird.com
+sudo certbot --apache --non-interactive --agree-tos --email ${TWILTWIL_ADMIN_EMAIL} --domains twiltwil.alexlaird.com
