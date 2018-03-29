@@ -2,6 +2,7 @@ import json
 import logging
 
 from django.conf import settings
+from django.forms import model_to_dict
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -45,6 +46,6 @@ class WebhookSmsView(APIView):
 
         # If no open Task was found, create a new one
         if not task:
-            twilioservice.create_task(message)
+            twilioservice.create_task(model_to_dict(message))
 
         return Response()

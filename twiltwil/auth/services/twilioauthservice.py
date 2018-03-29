@@ -24,7 +24,6 @@ client = Client(settings.TWILIO_ACCOUNT_SID, settings.TWILIO_AUTH_TOKEN)
 # TODO: refactor to use a class instead of globals
 _workspace = None
 _activities = {}
-_queues = {}
 _workflow = None
 
 
@@ -65,10 +64,11 @@ def _create_queues():
     return queues
 
 
-def _create_workflow():
+def _create_workflow(queues):
     """
     Create a workflow that defines rules for filtering tasks to the appropriate Worker based on language and skills.
 
+    :type queues: the language queues for the Workflow
     :return: the created default Workflow
     """
     workspace_sid = get_workspace().sid
@@ -80,7 +80,7 @@ def _create_workflow():
             ],
             # If the Task does not match any of the defined filters (below), the default Queue will catch it
             'default_filter': {
-                'queue': _queues['default'].sid
+                'queue': queues['default'].sid
             }
         }
     }
@@ -94,7 +94,7 @@ def _create_workflow():
                 'expression': "language=='{}'".format(language[0]),
                 'targets': [
                     {
-                        'queue': _queues[language[0]].sid,
+                        'queue': queues[language[0]].sid,
                         'expression': 'worker.skills HAS task.skill'
                     }
                 ]
@@ -110,7 +110,7 @@ def _create_workflow():
 
 
 def get_workspace():
-    global _workspace, _queues, _workflow
+    global _workspace, _workflow
 
     workspace_name = 'twiltwil_' + os.environ.get('ENVIRONMENT')
 
@@ -124,9 +124,9 @@ def get_workspace():
     if not _workspace:
         _workspace = _create_workspace(workspace_name)
 
-        _queues = _create_queues()
+        queues = _create_queues()
 
-        _workflow = _create_workflow()
+        _workflow = _create_workflow(queues)
 
     return _workspace
 
@@ -134,9 +134,8 @@ def get_workspace():
 def get_workflow():
     global _workflow
 
-    # If the Workflow doesn't exist, a Workspace hasn't been instantiated, so retrieve it to cause the creation of both
     if not _workflow:
-        get_workspace()
+        _workflow = client.taskrouter.workspaces(get_workspace().sid).workflows.list()[0]
 
     return _workflow
 
