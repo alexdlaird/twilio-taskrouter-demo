@@ -41,6 +41,11 @@ def _create_workspace(workspace_name):
 
 
 def _create_queues():
+    """
+    Create one Queue per language, plus a default Queue that is a catch all in case the language is not recognized.
+
+    :return: the created default Queues
+    """
     queues = {
         "default": client.taskrouter.workspaces(get_workspace().sid).task_queues.create(
             friendly_name="Default",
@@ -62,14 +67,22 @@ def _create_queues():
 
 
 def _create_workflows():
+    """
+    Create a workflow that defines rules for filtering tasks to the appropriate Worker based on language and skills.
+    """
     workspace_sid = get_workspace().sid
 
     config = {
         'task_routing': {
+            # Specific filters will be appended below
             'filters': [
             ],
+            # If the Task does not match any of the defined filters (below), the default Queue will catch it, sending
+            # it to any Worker whose skill includes "general"—if no "general" Worker is logged in, the Task will
+            # immediately be cancelled as no mapping could be made
             'default_filter': {
-                'queue': _queues['default'].sid
+                'queue': _queues['default'].sid,
+                'expression': '(worker.skills HAS task.skill) OR (worker.skills HAS "general")'
             }
         }
     }
@@ -77,7 +90,10 @@ def _create_workflows():
     for language in enums.LANGUAGE_CHOICES:
         config['task_routing']['filters'].append(
             {
-                'expression': "type=='{}'".format(language[0]),
+                # Map a Task to the appropriate Queue based on language, then filter to a Worker with the matching
+                # skills, falling back to "default" (above) if no matching is made
+                "filter_friendly_name": language[0],
+                'expression': "language=='{}'".format(language[0]),
                 'targets': [
                     {
                         'queue': _queues[language[0]].sid,
