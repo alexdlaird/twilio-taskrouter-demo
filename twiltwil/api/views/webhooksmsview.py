@@ -22,7 +22,8 @@ class WebhookSmsView(APIView):
         Message.objects.update_or_create(sid=request.data['SmsSid'], defaults={
             "sender": request.data['From'],
             "receiver": request.data['To'],
-            "direction": enums.MESSAGE_INBOUND if request.data['To'] == settings.TWILTWIL_TWILIO_SMS_FROM else enums.MESSAGE_OUTBOUND,
+            "direction": enums.MESSAGE_INBOUND if request.data[
+                                                      'To'] == settings.TWILIO_SMS_FROM else enums.MESSAGE_OUTBOUND,
             "status": request.data['SmsStatus'],
             "text": request.data['Body'],
             "addons": json.dumps(request.data['AddOns']) if 'AddOns' in request.data else None,
