@@ -6,6 +6,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from twiltwil.api.models import Message
+from twiltwil.api.utils import messageutils
 from twiltwil.common import enums
 
 __author__ = 'Alex Laird'
@@ -20,13 +21,14 @@ class WebhookSmsView(APIView):
         logger.info('SMS POST received: {}'.format(json.dumps(request.data)))
 
         Message.objects.update_or_create(sid=request.data['SmsSid'], defaults={
+            "channel": enums.CHANNEL_SMS,
             "sender": request.data['From'],
             "receiver": request.data['To'],
             "direction": enums.MESSAGE_INBOUND if request.data[
                                                       'To'] == settings.TWILIO_SMS_FROM else enums.MESSAGE_OUTBOUND,
             "status": request.data['SmsStatus'],
             "text": request.data['Body'],
-            "addons": json.dumps(request.data['AddOns']) if 'AddOns' in request.data else None,
+            "addons": messageutils.cleanup_addons(request.data['AddOns']) if 'AddOns' in request.data else None,
             "raw": json.dumps(request.data),
         })
 
