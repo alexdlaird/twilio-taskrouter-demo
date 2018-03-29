@@ -9,12 +9,12 @@ sudo apt-get install -y vim apache2 libapache2-mod-wsgi-py3 python-certbot-apach
 sudo a2enmod wsgi ssl
 
 sudo mkdir -p /var/log/apache2
-sudo mkdir -p /var/log/twiltwil
-sudo chown ubuntu:ubuntu /var/log/twiltwil
+sudo mkdir -p /var/log/twilio-taskrouter-demo
+sudo chown ubuntu:ubuntu /var/log/twilio-taskrouter-demo
 
-sudo cp /srv/twiltwil/deploy/conf/django.conf /etc/apache2/sites-available/twiltwil.conf
+sudo cp /srv/twilio-taskrouter-demo/deploy/conf/django.conf /etc/apache2/sites-available/twilio-taskrouter-demo.conf
 
 sudo a2dissite 000-default default-ssl
-sudo a2ensite twiltwil
+sudo a2ensite twilio-taskrouter-demo
 
 sudo certbot --apache --authenticator standalone --installer apache --non-interactive --agree-tos --email ${TWILTWIL_ADMIN_EMAIL} --domains twiltwil.alexlaird.com
