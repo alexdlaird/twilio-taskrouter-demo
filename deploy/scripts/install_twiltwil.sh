@@ -7,4 +7,5 @@ sudo chown -R ubuntu:ubuntu /srv/twilio-taskrouter-demo
 cd /srv/twilio-taskrouter-demo
 
 make install
+make build
 make migrate
