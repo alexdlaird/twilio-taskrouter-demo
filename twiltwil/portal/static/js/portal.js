@@ -25,6 +25,15 @@ init_worker = function (token) {
         console.log(worker.friendlyName);
         console.log(worker.activityName);
         console.log(worker.available);
+        console.log(worker.attributes);
+    });
+
+    worker.on("reservation.accepted", function (reservation) {
+        console.log(reservation.sid);
+        console.log(reservation.task.sid);
+        console.log(reservation.task.priority);
+        console.log(reservation.task.age);
+        console.log(reservation.task.attributes);
     });
 
     // Refresh token every 55 minutes
