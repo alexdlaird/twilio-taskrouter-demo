@@ -21,6 +21,8 @@ init_worker = function (token) {
     WORKER = new Twilio.TaskRouter.Worker(token);
 
     WORKER.on("ready", function (worker) {
+        $("#user-details-2").html("Status: " + worker.activityName);
+
         console.log(worker.sid);
         console.log(worker.friendlyName);
         console.log(worker.activityName);
@@ -42,6 +44,10 @@ init_worker = function (token) {
 
 get_user(function (data) {
     var user = data;
+
+    $("#user-details-3").html("Username: " + user.username);
+    $("#user-details-5").html("Languages: " + user.languages);
+    $("#user-details-6").html("Skills: " + user.skills);
 
     get_twilio_worker_token(function (data) {
         init_worker(data.token);
