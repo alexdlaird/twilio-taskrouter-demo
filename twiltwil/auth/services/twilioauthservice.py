@@ -25,6 +25,7 @@ client = Client(settings.TWILIO_ACCOUNT_SID, settings.TWILIO_AUTH_TOKEN)
 _workspace = None
 _activities = {}
 _queues = {}
+_workflow = None
 
 
 def _get_activity(friendly_name):
@@ -32,12 +33,10 @@ def _get_activity(friendly_name):
 
 
 def _create_workspace(workspace_name):
-    workspace = client.taskrouter.workspaces.create(
+    return client.taskrouter.workspaces.create(
         friendly_name=workspace_name,
         event_callback_url=settings.PROJECT_HOST + reverse('api_webhooks_taskrouter_workspace'),
     )
-
-    return workspace
 
 
 def _create_queues():
@@ -66,9 +65,11 @@ def _create_queues():
     return queues
 
 
-def _create_workflows():
+def _create_workflow():
     """
     Create a workflow that defines rules for filtering tasks to the appropriate Worker based on language and skills.
+
+    :return: the created default Workflow
     """
     workspace_sid = get_workspace().sid
 
@@ -100,7 +101,7 @@ def _create_workflows():
             }
         )
 
-    client.taskrouter.workspaces(workspace_sid).workflows.create(
+    return client.taskrouter.workspaces(workspace_sid).workflows.create(
         friendly_name='Default',
         assignment_callback_url=settings.PROJECT_HOST + reverse('api_webhooks_taskrouter_workflow'),
         task_reservation_timeout='300',
@@ -109,7 +110,7 @@ def _create_workflows():
 
 
 def get_workspace():
-    global _workspace, _queues
+    global _workspace, _queues, _workflow
 
     workspace_name = 'twiltwil_' + os.environ.get('ENVIRONMENT')
 
@@ -125,9 +126,19 @@ def get_workspace():
 
         _queues = _create_queues()
 
-        _create_workflows()
+        _workflow = _create_workflow()
 
     return _workspace
+
+
+def get_workflow():
+    global _workflow
+
+    # If the Workflow doesn't exist, a Workspace hasn't been instantiated, so retrieve it to cause the creation of both
+    if not _workflow:
+        get_workspace()
+
+    return _workflow
 
 
 def get_activities():

@@ -18,6 +18,15 @@ logger = logging.getLogger(__name__)
 
 
 class MessageQuerySet(models.query.QuerySet):
+    def inbound(self):
+        return self.filter(direction=enums.MESSAGE_INBOUND)
+
+    def has_task(self):
+        return self.exclude(task_sid__isnull=True)
+
+    def no_worker(self):
+        return self.filter(worker_sid__isnull=True)
+
     def for_number(self, number):
         return self.filter(
             Q(direction=enums.MESSAGE_OUTBOUND, receiver=number) | Q(direction=enums.MESSAGE_INBOUND, sender=number))
@@ -36,14 +45,23 @@ class MessageManager(BaseUserManager):
     def get_queryset(self):
         return MessageQuerySet(self.model, using=self._db)
 
+    def inbound(self):
+        return self.get_queryset().inbound()
+
+    def has_task(self):
+        return self.get_queryset().has_task()
+
+    def no_worker(self):
+        return self.get_queryset().no_worker()
+
     def for_number(self, number):
-        self.get_queryset().for_number(number)
+        return self.get_queryset().for_number(number)
 
     def for_channel(self, channel):
-        self.get_queryset().for_channel(channel)
+        return self.get_queryset().for_channel(channel)
 
     def for_task(self, task_sid):
-        self.get_queryset().for_task(task_sid)
+        return self.get_queryset().for_task(task_sid)
 
     def for_worker(self, worker_sid):
-        self.get_queryset().for_worker(worker_sid)
+        return self.get_queryset().for_worker(worker_sid)
