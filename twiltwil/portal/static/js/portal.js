@@ -28,7 +28,7 @@ $(function () {
             console.log('Join channel ' + channel.uniqueName);
 
             channel.getMessages().then(function (messages) {
-                $.each(messages, function (message) {
+                $.each(messages.items, function (index, message) {
                     displayMessage(message);
                 });
             });
@@ -52,11 +52,10 @@ $(function () {
     function initChat(token) {
         CHAT_CLIENT = new Twilio.Chat.Client(token);
 
-        CHAT_CLIENT.getSubscribedChannels().then(function () {
-            var chatContact = Cookies.get("chatContact");
-            if (chatContact) {
-                joinChannel(chatContact);
-            }
+        CHAT_CLIENT.getSubscribedChannels().then(function (channels) {
+            $.each(channels.items, function (index, channel) {
+                joinChannel(channel.uniqueName);
+            });
         });
     }
 
@@ -103,10 +102,10 @@ $(function () {
 
             reservation.accept();
 
-            Cookies.set("chatContact", reservation.task.attributes.from.substr(1));
+            var chatContact = reservation.task.attributes.from.substr(1);
 
             CHAT_CLIENT.getSubscribedChannels().then(function () {
-                joinChannel(Cookies.get("chatContact"));
+                joinChannel(chatContact);
             });
         });
 
