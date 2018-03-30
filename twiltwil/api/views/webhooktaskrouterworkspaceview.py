@@ -38,7 +38,7 @@ class WebhookTaskRouterWorkspaceView(APIView):
 
                 for message in Message.objects.for_channel('sms').inbound().for_number(
                         task_attributes['from']).no_worker().iterator():
-                    message.task_sid = request.data['Sid']
+                    message.task_sid = request.data['TaskSid']
 
                     message.save()
             elif request.data['EventType'] == 'task.canceled':
@@ -57,7 +57,7 @@ class WebhookTaskRouterWorkspaceView(APIView):
             elif request.data['EventType'] == 'task.completed':
                 logger.info('Processing task.completed')
 
-                for message in Message.objects.for_task(request.data['Sid']).iterator():
+                for message in Message.objects.for_task(request.data['TaskSid']).iterator():
                     message.worker_sid = None
                     message.save()
 
