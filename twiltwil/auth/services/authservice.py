@@ -69,7 +69,7 @@ def delete_user(user):
         twilioservice.cancel_worker_tasks(username,
                                           Message.objects.not_resolved().inbound().for_worker(worker_sid).values_list(
                                               'task_sid',
-                                              flat=True))
+                                              flat=True).distinct())
 
         for message in Message.objects.for_worker(worker_sid).iterator():
             message.worker_sid = None

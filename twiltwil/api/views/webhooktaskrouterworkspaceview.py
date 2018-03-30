@@ -58,7 +58,8 @@ class WebhookTaskRouterWorkspaceView(APIView):
                 logger.info('Processing task.completed')
 
                 # TODO: this is a bit of a hack simply because TaskRouter does not support Task reassignment
-                if request.data['TaskCompletedReason'].startswith('User logged out'):
+                if 'TaskCompletedReason' in request.data and request.data['TaskCompletedReason'].startswith(
+                        'User logged out'):
                     task_attributes = json.loads(messageutils.cleanup_json(request.data['TaskAttributes']))
 
                     # TODO: detect the originating channel of the inbound message (ex. SMS)
