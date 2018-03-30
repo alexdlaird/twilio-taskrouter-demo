@@ -50,15 +50,29 @@ class WebhookTaskRouterWorkspaceView(APIView):
                 channel = enums.CHANNEL_SMS
 
                 # TODO: here you would execute different "sends" for different originating channels
-                cancelled_message = 'Sorry, the your question could not be answered, probably because an agent was ' \
-                                    'not available to take it in a reasonable amount of time. Try again later!'
+                cancelled_message = 'Sorry, your question could not be answered, probably because an agent was not ' \
+                                    'available to take it in a reasonable amount of time. Try again later!'
                 if channel == enums.CHANNEL_SMS:
                     twilioservice.send_sms(task_attributes['from'], cancelled_message)
             elif request.data['EventType'] == 'task.completed':
                 logger.info('Processing task.completed')
 
+                # TODO: this is a bit of a hack simply because TaskRouter does not support Task reassignment
+                if request.data['EventDescription'].startswith('User logged out'):
+                    task_attributes = json.loads(messageutils.cleanup_json(request.data['TaskAttributes']))
+
+                    # TODO: detect the originating channel of the inbound message (ex. SMS)
+                    channel = enums.CHANNEL_SMS
+
+                    # TODO: here you would execute different "sends" for different originating channels
+                    cancelled_message = 'Sorry, your question could not be answered because the agent assigned to it ' \
+                                        'logged out and another agent was not available. Try again later!'
+                    if channel == enums.CHANNEL_SMS:
+                        twilioservice.send_sms(task_attributes['from'], cancelled_message)
+
                 for message in Message.objects.for_task(request.data['TaskSid']).iterator():
                     message.worker_sid = None
+                    message.task_sid = None
                     message.save()
 
         return Response()

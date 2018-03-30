@@ -31,17 +31,12 @@ def create_task(attributes):
     )
 
 
-def reject_worker_reservations(worker_sid, task_sids):
-    workspace_sid = twilioauthservice.get_workspace().sid
-
+def cancel_worker_tasks(username, task_sids):
     for task_sid in task_sids:
-        for reservation in client.taskrouter.workspaces(workspace_sid).tasks(task_sid).reservations.list(
-                worker_sid=worker_sid,
-                reservation_status='assigned'
-        ):
-            client.taskrouter.workspaces(workspace_sid).tasks(task_sid).reservations(reservation.sid).update(
-                reservation_status='rejected'
-            )
+        client.taskrouter.workspaces(twilioauthservice.get_workspace().sid).tasks(task_sid).update(
+            assignment_status='completed',
+            reason='User logged out: {}'.format(username)
+        )
 
 
 def get_or_create_channel(number, unique_name):
