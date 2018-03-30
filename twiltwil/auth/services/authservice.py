@@ -59,6 +59,7 @@ def delete_user(user):
 
     :param user: the user to be deleted
     """
+    username = user.username
     worker_sid = user.worker_sid
 
     user.delete()
@@ -69,6 +70,8 @@ def delete_user(user):
 
     try:
         twilioauthservice.delete_worker(worker_sid)
+
+        twilioauthservice.delete_chat_user(username)
     except TwilioRestException as e:
         if e.status != 404:
             raise e

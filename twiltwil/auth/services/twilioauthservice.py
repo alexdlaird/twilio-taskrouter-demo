@@ -237,3 +237,13 @@ def get_worker_token(worker_sid):
 
 def get_workers():
     return client.taskrouter.workspaces(get_workspace().sid).workers.list()
+
+
+def delete_chat_user(username):
+    service_sid = get_service().sid
+
+    user = client.chat \
+        .services(service_sid) \
+        .users(username) \
+        .fetch()
+    user.delete()
