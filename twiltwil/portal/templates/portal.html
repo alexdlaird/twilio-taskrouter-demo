@@ -29,11 +29,31 @@
 
         <h3 class="page-header">Portal</h3>
 
-        <div class="row">
-            <div class="col-sm-12">
-                <p>Start building your app here!</p>
+        <div id="chat-window" class="container" style="display: none">
+            <div class="message-wrap col-lg-12">
+                <div id="messages" class="msg-wrap">
+                </div>
+
+                <div class="send-wrap ">
+                    <textarea class="form-control send-message" rows="3" placeholder="Write an answer ..."></textarea>
+                </div>
+                <div class="btn-panel">
+                    <button class=" col-lg-3 btn send-message-btn " role="button"><i class="fa fa-check"></i> Mark
+                        Solved
+                    </button>
+                    <button class=" col-lg-4 text-right btn   send-message-btn pull-right" role="button"><i
+                            class="fa fa-plus"></i> Send Message
+                    </button>
+                </div>
             </div>
         </div>
+
+        <div id="lobby-window" class="container">
+            Waiting for someone to submit a question ...
+        </div>
+    </div>
+    </div>
+    </div>
     </div>
 {% endblock %}
 

@@ -6,8 +6,14 @@
  */
 
 $(function () {
+    var USER;
     var CHAT_CLIENT;
     var WORKER;
+    var CHANNEL;
+
+    var $chatWindow = $("#chat-window");
+    var $lobbyWindow = $("#lobby-window");
+    var $messages = $("#messages");
 
     function refreshToken() {
         if (WORKER) {
@@ -21,11 +27,28 @@ $(function () {
 
     function displayMessage(message) {
         console.log(message);
+
+        var $time = $('<small class="pull-right time"><i class="fa fa-clock-o"></i></small>').text(message.timestamp.toLocaleString());
+        var $user = $('<h5 class="media-heading"></h5>').text(message.author);
+        // TODO: this is not handled properly and should instead match the phone number of the "Help" line
+        if (message.from === USER.username) {
+            $user.addClass('me');
+        }
+        var $body = $('<small class="col-lg-10"></small>').text(message.body);
+        var $container = $('<div class="media msg">');
+        $container.append($time).append($user).append($body);
+        $messages.append($container);
+        $messages.scrollTop($messages[0].scrollHeight);
     }
 
     function initChannel(channel) {
         channel.join().then(function (channel) {
-            console.log('Join channel ' + channel.uniqueName);
+            CHANNEL = channel;
+
+            $lobbyWindow.hide();
+            $chatWindow.show();
+
+            console.log('Joined channel ' + channel.uniqueName);
 
             channel.getMessages().then(function (messages) {
                 $.each(messages.items, function (index, message) {
@@ -105,6 +128,8 @@ $(function () {
             var chatContact = reservation.task.attributes.from.substr(1);
 
             CHAT_CLIENT.getSubscribedChannels().then(function () {
+                $messages.html("");
+
                 joinChannel(chatContact);
             });
         });
@@ -114,11 +139,11 @@ $(function () {
     }
 
     twiltwilapi.getUser(function (data) {
-        var user = data;
+        USER = data;
 
-        $("#user-details-3").html("Username: " + user.username);
-        $("#user-details-5").html("Languages: " + user.languages);
-        $("#user-details-6").html("Skills: " + user.skills);
+        $("#user-details-3").html("Username: " + USER.username);
+        $("#user-details-5").html("Languages: " + USER.languages);
+        $("#user-details-6").html("Skills: " + USER.skills);
 
         twiltwilapi.getTwilioChatToken(function (data) {
             initChat(data.token);
@@ -126,6 +151,10 @@ $(function () {
             twiltwilapi.getTwilioWorkerToken(function (data) {
                 initWorker(data.token);
             });
-        }, user.username);
+        }, USER.username);
     });
+
+    // TODO: add hook for "send" button, which will send the outbound message on the CHANNEL
+
+    // TODO: add hook for "complete" button, which will mark the Worker's current Task as complete, leave the Chat channel, set CHANNEL to null, and show $lobbyWindow again
 });
