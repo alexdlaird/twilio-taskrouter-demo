@@ -206,7 +206,7 @@ def get_chat_token(username):
     token = AccessToken(settings.TWILIO_ACCOUNT_SID, settings.TWILIO_API_KEY, settings.TWILIO_API_SECRET,
                         identity=username)
 
-    sync_grant = SyncGrant(service_sid=service.sid)
+    sync_grant = SyncGrant(service_sid='default')
     token.add_grant(sync_grant)
 
     chat_grant = ChatGrant(service_sid=service.sid)
