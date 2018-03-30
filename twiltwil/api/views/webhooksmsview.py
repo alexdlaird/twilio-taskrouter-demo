@@ -61,10 +61,11 @@ class WebhookSmsView(APIView):
 
             message_addons = json.loads(message.addons)
             if message_addons and \
-                            "ibm_watson_insights" in message_addons and \
-                            "result" in message_addons["ibm_watson_insights"] and \
-                            "language" in message_addons["ibm_watson_insights"]["result"]:
-                attributes["language"] = message_addons["ibm_watson_insights"]["result"]["language"]
+                            "results" in message_addons and \
+                            "ibm_watson_insights" in message_addons["results"] and \
+                            "result" in message_addons["results"]["ibm_watson_insights"] and \
+                            "language" in message_addons["results"]["ibm_watson_insights"]["result"]:
+                attributes["language"] = message_addons["results"]["ibm_watson_insights"]["result"]["language"]
 
             channel = twilioservice.get_or_create_channel(message.sender)
 
