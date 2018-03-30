@@ -33,7 +33,7 @@ class WebhookSmsView(APIView):
         })
 
         # Check if the other messages exist from this sender that are associated with an open Task
-        channel_unique_name = message.sender().lstrip('+')
+        channel_unique_name = message.sender.lstrip('+')
         sender_messages_with_tasks = Message.objects.inbound().for_number(message.sender).has_worker()
         task = None
         channel = None
