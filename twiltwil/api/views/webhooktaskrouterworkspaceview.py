@@ -27,7 +27,7 @@ class WebhookTaskRouterWorkspaceView(APIView):
                 task_attributes = json.loads(messageutils.cleanup_json(request.data['TaskAttributes']))
 
                 for message in Message.objects.for_channel('sms').inbound().for_number(
-                        task_attributes['from']).no_worker().iterator():
+                        task_attributes['from']).no_worker().not_resolved().iterator():
                     message.worker_sid = request.data['WorkerSid']
 
                     message.save()
@@ -37,7 +37,7 @@ class WebhookTaskRouterWorkspaceView(APIView):
                 task_attributes = json.loads(messageutils.cleanup_json(request.data['TaskAttributes']))
 
                 for message in Message.objects.for_channel('sms').inbound().for_number(
-                        task_attributes['from']).no_worker().iterator():
+                        task_attributes['from']).no_worker().not_resolved().iterator():
                     message.task_sid = request.data['TaskSid']
 
                     message.save()
@@ -58,7 +58,7 @@ class WebhookTaskRouterWorkspaceView(APIView):
                 logger.info('Processing task.completed')
 
                 # TODO: this is a bit of a hack simply because TaskRouter does not support Task reassignment
-                if request.data['EventDescription'].startswith('User logged out'):
+                if request.data['TaskCompletedReason'].startswith('User logged out'):
                     task_attributes = json.loads(messageutils.cleanup_json(request.data['TaskAttributes']))
 
                     # TODO: detect the originating channel of the inbound message (ex. SMS)
@@ -73,6 +73,7 @@ class WebhookTaskRouterWorkspaceView(APIView):
                 for message in Message.objects.for_task(request.data['TaskSid']).iterator():
                     message.worker_sid = None
                     message.task_sid = None
+                    message.resolved = True
                     message.save()
 
         return Response()

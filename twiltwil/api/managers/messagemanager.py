@@ -21,6 +21,9 @@ class MessageQuerySet(models.query.QuerySet):
     def inbound(self):
         return self.filter(direction=enums.MESSAGE_INBOUND)
 
+    def not_resolved(self):
+        return self.exclude(resolved=True)
+
     def has_task(self):
         return self.exclude(task_sid__isnull=True)
 
@@ -47,6 +50,9 @@ class MessageManager(BaseUserManager):
 
     def inbound(self):
         return self.get_queryset().inbound()
+
+    def not_resolved(self):
+        return self.get_queryset().not_resolved()
 
     def has_task(self):
         return self.get_queryset().has_task()
