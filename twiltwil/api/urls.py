@@ -6,7 +6,6 @@ from django.conf.urls import url
 from twiltwil.api.views.chattokenview import ChatTokenView
 from twiltwil.api.views.userview import UserView
 from twiltwil.api.views.webhookchateventview import WebhookChatEventView
-from twiltwil.api.views.webhookmessengerview import WebhookMessengerView
 from twiltwil.api.views.webhooksmsview import WebhookSmsView
 from twiltwil.api.views.webhooktaskrouterworkflowview import WebhookTaskRouterWorkflowView
 from twiltwil.api.views.webhooktaskrouterworkspaceview import WebhookTaskRouterWorkspaceView
@@ -31,7 +30,4 @@ urlpatterns = [
         name='api_webhooks_taskrouter_workspace'),
     url(r'^api/webhooks/taskrouter/workflow$', WebhookTaskRouterWorkflowView.as_view(),
         name='api_webhooks_taskrouter_workflow'),
-
-    # Messenger Webhook URLs
-    url(r'^api/webhooks/messenger$', WebhookMessengerView.as_view(), name='api_webhooks_messenger'),
 ]
