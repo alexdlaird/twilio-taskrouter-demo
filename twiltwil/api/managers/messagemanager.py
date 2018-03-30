@@ -21,8 +21,8 @@ class MessageQuerySet(models.query.QuerySet):
     def inbound(self):
         return self.filter(direction=enums.MESSAGE_INBOUND)
 
-    def has_worker(self):
-        return self.exclude(worker_sid__isnull=True)
+    def has_task(self):
+        return self.exclude(task_sid__isnull=True)
 
     def no_worker(self):
         return self.filter(worker_sid__isnull=True)
@@ -48,8 +48,8 @@ class MessageManager(BaseUserManager):
     def inbound(self):
         return self.get_queryset().inbound()
 
-    def has_worker(self):
-        return self.get_queryset().has_worker()
+    def has_task(self):
+        return self.get_queryset().has_task()
 
     def no_worker(self):
         return self.get_queryset().no_worker()
