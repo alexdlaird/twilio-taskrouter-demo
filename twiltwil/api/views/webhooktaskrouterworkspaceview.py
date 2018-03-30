@@ -30,5 +30,14 @@ class WebhookTaskRouterWorkspaceView(APIView):
                     message.worker_sid = request.data['WorkerSid']
 
                     message.save()
+            elif request.data['EventType'] == 'task.canceled':
+                logger.info('Processing task.canceled')
+
+                # TODO: if the 'EventDescription' is 'Task TTL Exceeded', the user's question was never answered, so send them a message
+                # TODO: also may just want to send a message to the user regardless of 'EventDescription'
+            elif request.data['EventType'] == 'task.completed':
+                logger.info('Processing task.completed')
+
+                # TODO: if no reply was sent before the Task was marked complete, send the user a message
 
         return Response()

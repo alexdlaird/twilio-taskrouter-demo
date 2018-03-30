@@ -41,7 +41,7 @@ class WebhookSmsView(APIView):
 
             task = twilioservice.get_task(db_task.task_sid)
 
-            if task.assignment_status not in ['reserved', 'assigned']:
+            if task.assignment_status not in ['pending', 'reserved', 'assigned']:
                 task = None
             else:
                 logger.info('Found an open Task: {}'.format(task.sid))
@@ -73,6 +73,11 @@ class WebhookSmsView(APIView):
 
             twilioservice.create_task(attributes)
 
+            twilioservice.send_sms(message.sender,
+                                   "Hey, your question has been received. Sit tight and we'll get you an answer ASAP!")
+
         twilioservice.send_chat_message(channel, message)
+
+        # TODO: Twilio debugger console receives "Invalid Content-Type: text/x-python supplied" from this endpoint
 
         return Response()
