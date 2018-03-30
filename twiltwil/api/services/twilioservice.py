@@ -32,7 +32,7 @@ def create_task(attributes):
 
 def get_or_create_channel(number):
     try:
-        return client.chat.services(twilioauthservice.get_service().sid).channels(number).fetch()
+        return client.chat.services(twilioauthservice.get_service().sid).channels(number.lstrip('+')).fetch()
     except TwilioRestException as e:
         if e.status != 404:
             raise e
