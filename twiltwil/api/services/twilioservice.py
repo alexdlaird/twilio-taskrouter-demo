@@ -48,3 +48,10 @@ def send_chat_message(channel, message):
         body=message.text,
         from_=message.sender
     )
+
+
+def send_sms(phone, message):
+    client.api.account.messages.create(
+        to=phone,
+        from_=settings.TWILIO_SMS_FROM,
+        body=message)
