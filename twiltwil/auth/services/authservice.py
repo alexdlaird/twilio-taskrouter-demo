@@ -65,14 +65,14 @@ def delete_user(user):
 
     user.delete()
 
-    for message in Message.objects.for_worker(worker_sid).iterator():
-        message.worker_sid = None
-        message.save()
-
     try:
-        twilioservice.cancel_worker_tasks(username,
-                                          Message.objects.inbound().for_worker(worker_sid).values_list('task_sid',
-                                                                                                       flat=True))
+        twilioservice.reject_worker_reservations(worker_sid,
+            Message.objects.inbound().for_worker(worker_sid).values_list('task_sid',
+                                                                         flat=True))
+
+        for message in Message.objects.for_worker(worker_sid).iterator():
+            message.worker_sid = None
+            message.save()
 
         twilioauthservice.delete_worker(worker_sid)
 
