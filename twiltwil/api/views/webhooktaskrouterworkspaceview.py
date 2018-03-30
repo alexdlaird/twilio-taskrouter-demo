@@ -30,6 +30,10 @@ class WebhookTaskRouterWorkspaceView(APIView):
                     message.worker_sid = request.data['WorkerSid']
 
                     message.save()
+            elif request.data['EventType'] == 'task.created':
+                logger.info('Processing task.created')
+
+                # TODO: set task_sid on DB message here
             elif request.data['EventType'] == 'task.canceled':
                 logger.info('Processing task.canceled')
 

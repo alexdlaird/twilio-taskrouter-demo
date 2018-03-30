@@ -46,6 +46,7 @@ class WebhookSmsView(APIView):
             else:
                 logger.info('Found an open Task: {}'.format(task.sid))
 
+                # TODO: remove task_sid from here and set it in the Workspace webhook on task.created
                 message.task_sid = db_task.task_sid
                 message.worker_sid = db_task.worker_sid
 
