@@ -33,6 +33,7 @@ class WebhookSmsView(APIView):
         })
 
         # Check if the other messages exist from this sender that are associated with an open Task
+        # TODO: could instead simply use filters here: https://www.twilio.com/docs/taskrouter/api/tasks#action-list
         sender_messages_with_tasks = Message.objects.inbound().for_number(request.data['From']).has_worker()
         task = None
         channel = None
@@ -46,7 +47,6 @@ class WebhookSmsView(APIView):
             else:
                 logger.info('Found an open Task: {}'.format(task.sid))
 
-                # TODO: remove task_sid from here and set it in the Workspace webhook on task.created
                 message.task_sid = db_task.task_sid
                 message.worker_sid = db_task.worker_sid
 
@@ -70,7 +70,7 @@ class WebhookSmsView(APIView):
 
             channel = twilioservice.get_or_create_channel(message.sender)
 
-            attributes["channel"] = channel.sid
+            attributes["channel"] = channel.uniqueName
 
             twilioservice.create_task(attributes)
 
@@ -78,7 +78,5 @@ class WebhookSmsView(APIView):
                                    "Hey, your question has been received. Sit tight and we'll get you an answer ASAP!")
 
         twilioservice.send_chat_message(channel, message)
-
-        # TODO: Twilio debugger console receives "Invalid Content-Type: text/x-python supplied" from this endpoint
 
         return Response()

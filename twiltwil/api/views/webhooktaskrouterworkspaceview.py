@@ -5,7 +5,9 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from twiltwil.api.models import Message
+from twiltwil.api.services import twilioservice
 from twiltwil.api.utils import messageutils
+from twiltwil.common import enums
 
 __author__ = 'Alex Laird'
 __copyright__ = 'Copyright 2018, Alex Laird'
@@ -26,22 +28,37 @@ class WebhookTaskRouterWorkspaceView(APIView):
 
                 for message in Message.objects.for_channel('sms').inbound().for_number(
                         task_attributes['from']).no_worker().iterator():
-                    message.task_sid = request.data['TaskSid']
                     message.worker_sid = request.data['WorkerSid']
 
                     message.save()
             elif request.data['EventType'] == 'task.created':
                 logger.info('Processing task.created')
 
-                # TODO: set task_sid on DB message here
+                task_attributes = json.loads(messageutils.cleanup_json(request.data['TaskAttributes']))
+
+                for message in Message.objects.for_channel('sms').inbound().for_number(
+                        task_attributes['from']).no_worker().iterator():
+                    message.task_sid = request.data['Sid']
+
+                    message.save()
             elif request.data['EventType'] == 'task.canceled':
                 logger.info('Processing task.canceled')
 
-                # TODO: if the 'EventDescription' is 'Task TTL Exceeded', the user's question was never answered, so send them a message
-                # TODO: also may just want to send a message to the user regardless of 'EventDescription'
+                task_attributes = json.loads(messageutils.cleanup_json(request.data['TaskAttributes']))
+
+                # TODO: detect the originating channel of the inbound message (ex. SMS)
+                channel = enums.CHANNEL_SMS
+
+                # TODO: here you would execute different "sends" for different originating channels
+                cancelled_message = 'Sorry, the your question could not be answered, probably because an agent was ' \
+                                    'not available to take it in a reasonable amount of time. Try again later!'
+                if channel == enums.CHANNEL_SMS:
+                    twilioservice.send_sms(task_attributes['from'], cancelled_message)
             elif request.data['EventType'] == 'task.completed':
                 logger.info('Processing task.completed')
 
-                # TODO: if no reply was sent before the Task was marked complete, send the user a message
+                for message in Message.objects.for_task(request.data['Sid']).iterator():
+                    message.worker_sid = None
+                    message.save()
 
         return Response()

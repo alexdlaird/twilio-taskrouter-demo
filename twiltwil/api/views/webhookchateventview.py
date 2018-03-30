@@ -25,15 +25,19 @@ class WebhookChatEventView(APIView):
             if request.data['EventType'] == 'onMessageSent':
                 logger.info('Processing onMessageSent')
 
-                # TODO: lookup what the last inbound Message type was for this Channel, then send on that type (ex. SMS)
-
                 attributes = json.loads(messageutils.cleanup_json(request.data['Attributes']))
-                twilioservice.send_sms(attributes['To'],
-                                       '{} - {}'.format(request.data['Body'], request.data['ClientIdentity']))
+
+                # TODO: detect the originating channel of the inbound message (ex. SMS)
+                channel = enums.CHANNEL_SMS
+
+                # TODO: here you would execute different "sends" for different originating channels
+                if channel == enums.CHANNEL_SMS:
+                    twilioservice.send_sms(attributes['To'],
+                                           '{} - {}'.format(request.data['Body'], request.data['ClientIdentity']))
 
                 # Store (or update, if this message is redundant) the message in the database
                 Message.objects.update_or_create(sid=request.data['MessageSid'], defaults={
-                    "channel": enums.CHANNEL_SMS,
+                    "channel": channel,
                     "sender": settings.TWILIO_SMS_FROM,
                     "receiver": attributes['To'],
                     "direction": enums.MESSAGE_OUTBOUND,

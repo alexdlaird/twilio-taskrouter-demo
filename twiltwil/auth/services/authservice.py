@@ -69,11 +69,11 @@ def delete_user(user):
         message.save()
 
     try:
+        twilioauthservice.cancel_worker_tasks(username, worker_sid)
+
         twilioauthservice.delete_worker(worker_sid)
 
         twilioauthservice.delete_chat_user(username)
-
-        # TODO: if any Tasks are currently assigned the user, they should be cancelled
     except TwilioRestException as e:
         if e.status != 404:
             raise e

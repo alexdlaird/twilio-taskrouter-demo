@@ -192,6 +192,15 @@ def create_worker(friendly_name, attributes):
     )
 
 
+def cancel_worker_tasks(username, worker_sid):
+    workspace_sid = get_workspace().sid
+
+    for task in client.taskrouter.workspaces(workspace_sid).tasks.list(worker_sid=worker_sid):
+        client.taskrouter.workspaces(workspace_sid).tasks(task.sid).update(
+            assignment_status='canceled', reason='User {} logged out'.format(username)
+        )
+
+
 def delete_worker(worker_sid):
     worker = client.taskrouter.workspaces(get_workspace().sid).workers(worker_sid).fetch()
     worker = worker.update(activity_sid=_get_activity("Offline").sid)
