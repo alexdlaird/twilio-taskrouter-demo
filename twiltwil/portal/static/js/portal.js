@@ -72,7 +72,7 @@ $(function () {
         });
 
         channel.on('messageAdded', function (message) {
-            // TODO: sometimes this doulbe posts, it seems (fine on refresh), so perhaps just filter if already seen
+            // TODO: sometimes this double posts, it seems (fine on refresh), so perhaps just filter if already seen
             displayMessage(message);
         });
     }

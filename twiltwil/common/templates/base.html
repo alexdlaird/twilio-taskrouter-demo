@@ -20,6 +20,8 @@
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
           type="text/css"/>
 
+    {% stylesheet "base" %}
+
     {% block page_header %}{% endblock %}
 </head>
 <body>
@@ -60,6 +62,19 @@
     <div class="row">
         {% block content %}{% endblock %}
     </div>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="pull-right">
+                <small>Copyright &copy; 2018 Alex Laird</small>
+                &nbsp;
+                <a href="https://github.com/alexdlaird/twilio-taskrouter-demo" style="color: #ffffff;" target="_blank">
+                    <img src="{% static 'img/github.png' %}" alt="GitHub" width="38" height="38"
+                         class="inline"/>
+                </a>
+            </div>
+        </div>
+    </footer>
 </div>
 
 <!-- CDN dependencies -->

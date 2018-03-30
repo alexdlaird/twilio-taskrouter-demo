@@ -68,7 +68,6 @@ class WebhookSmsView(APIView):
 
             channel = twilioservice.get_or_create_channel(message.sender)
 
-            attributes["skill"] = enums.GENERAL
             attributes["channel"] = channel.sid
 
             twilioservice.create_task(attributes)

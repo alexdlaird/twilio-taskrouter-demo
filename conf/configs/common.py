@@ -172,6 +172,12 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 PIPELINE = {
     'DISABLE_WRAPPER': True,
     'STYLESHEETS': {
+        'base': {
+            'source_filenames': (
+                'css/base.css',
+            ),
+            'output_filename': 'js/{}_base_{}.min.js'.format(PROJECT_ID, PROJECT_VERSION)
+        },
         'portal': {
             'source_filenames': (
                 'css/portal.css',

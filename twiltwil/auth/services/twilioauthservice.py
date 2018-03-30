@@ -111,8 +111,7 @@ def _create_workflow(queues):
                 'expression': "language=='{}'".format(language[0]),
                 'targets': [
                     {
-                        'queue': queues[language[0]].sid,
-                        'expression': 'worker.skills HAS task.skill'
+                        'queue': queues[language[0]].sid
                     }
                 ]
             }
