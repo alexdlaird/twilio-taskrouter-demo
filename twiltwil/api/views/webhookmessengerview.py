@@ -14,10 +14,10 @@ logger = logging.getLogger(__name__)
 
 class WebhookMessengerView(APIView):
     def get(self, request, *args, **kwargs):
-        token_sent = request.args.get("hub.verify_token")
+        token_sent = request.GET.get("hub.verify_token")
 
         if token_sent == settings.MESSENGER_VERIFY_TOKEN:
-            return request.args.get("hub.challenge")
+            return request.GET.get("hub.challenge")
 
         return 'Invalid verification token'
 
