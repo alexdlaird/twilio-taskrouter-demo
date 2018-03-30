@@ -26,8 +26,8 @@ class WebhookTaskRouterWorkspaceView(APIView):
 
                 task_attributes = json.loads(messageutils.cleanup_json(request.data['TaskAttributes']))
 
-                for message in Message.objects.for_channel('sms').inbound().for_number(
-                        task_attributes['from']).no_worker().not_resolved().iterator():
+                for message in Message.objects.not_resolved().for_channel('sms').inbound().for_number(
+                        task_attributes['from']).no_worker().iterator():
                     message.worker_sid = request.data['WorkerSid']
 
                     message.save()
@@ -36,8 +36,8 @@ class WebhookTaskRouterWorkspaceView(APIView):
 
                 task_attributes = json.loads(messageutils.cleanup_json(request.data['TaskAttributes']))
 
-                for message in Message.objects.for_channel('sms').inbound().for_number(
-                        task_attributes['from']).no_worker().not_resolved().iterator():
+                for message in Message.objects.not_resolved().for_channel('sms').inbound().for_number(
+                        task_attributes['from']).no_worker().iterator():
                     message.task_sid = request.data['TaskSid']
 
                     message.save()
@@ -71,8 +71,6 @@ class WebhookTaskRouterWorkspaceView(APIView):
                         twilioservice.send_sms(task_attributes['from'], cancelled_message)
 
                 for message in Message.objects.for_task(request.data['TaskSid']).iterator():
-                    message.worker_sid = None
-                    message.task_sid = None
                     message.resolved = True
                     message.save()
 
