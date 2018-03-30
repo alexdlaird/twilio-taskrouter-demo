@@ -23,6 +23,8 @@ class WebhookChatEventView(APIView):
 
         if 'EventType' in request.data:
             if request.data['EventType'] == 'onMessageSent':
+                logger.info('Processing onMessageSent')
+
                 # TODO: lookup what the last inbound Message type was for this Channel, then send on that type (ex. SMS)
 
                 attributes = json.loads(messageutils.cleanup_json(request.data['Attributes']))
