@@ -1,0 +1,14 @@
+{
+  "AccountSid": "ACCOUNTSID12345" ,
+  "MessageSid": "IM6f14d8190b5044899fb3344d58491548",
+  "retryCount": "0",
+  "Index": "41",
+  "ChannelSid": "CHc126e49f8ccc4cd79c530c76990f0cb1",
+  "Body": "I'd encourage you to err on the side of caution. Probably worth a trip to the vet.",
+  "DateCreated": "2018-03-30T06:59:31.094Z",
+  "EventType": "onMessageSent",
+  "ClientIdentity": "test_user",
+  "InstanceSid": "ISd4d339bac3904fffa7296d9dce5cc7eb",
+  "Attributes": "{\"To\":\"+15555555555\"}",
+  "From": "test_user"
+}

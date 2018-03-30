@@ -1,0 +1,13 @@
+{
+  "WorkerAttributes": "{\"skills\":[\"general\"],\"languages\":[\"english\"],\"time_zone\":\"America\\/Los_Angeles\"}",
+  "TaskPriority": "0",
+  "WorkspaceSid": "WS83d696ff10fa61d20574bc29294a679f",
+  "TaskSid": "WT4c0ef6723897ecb43afb7ba3bb3018fc",
+  "TaskQueueSid": "WQ6c7757f587df5fc48e3aa4d6eec9d274",
+  "TaskAttributes": "{\"channel\":\"CHc126e49f8ccc4cd79c530c76990f0cb1\",\"language\":\"english\",\"from\":\"+15555555555\"}",
+  "ReservationSid": "WR94a7183792d4ac6cf53fe69db130f625",
+  "AccountSid": "ACCOUNTSID12345" ,
+  "WorkerSid": "WKafa49369465b396765e971773a0f6e8e",
+  "TaskAge": "1",
+  "WorkflowSid": "WW0a2374ff3e580fff3768f5bac05fdf10"
+}
