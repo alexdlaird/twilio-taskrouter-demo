@@ -25,7 +25,7 @@ $(function () {
 
     function initChannel(channel) {
         channel.join().then(function (channel) {
-            console.log('Join channel ' + channel.sid);
+            console.log('Join channel ' + channel.uniqueName);
 
             channel.getMessages().then(function (messages) {
                 $.each(messages, function (message) {
@@ -42,7 +42,7 @@ $(function () {
     function joinChannel(uniqueName) {
         var promise = CHAT_CLIENT.getChannelByUniqueName(uniqueName);
         promise.then(function (channel) {
-            console.log('Found ' + channel.sid + ' channel');
+            console.log('Found ' + channel.uniqueName + ' channel');
             console.log(channel);
 
             initChannel(channel);
