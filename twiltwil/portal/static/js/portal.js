@@ -9,7 +9,6 @@ $(function () {
     var USER;
     var CHAT_CLIENT;
     var WORKER;
-    var CURRENT_TASK;
     var CHANNEL;
 
     var $chatWindow = $("#chat-window");
@@ -46,12 +45,11 @@ $(function () {
 
         var $time = $('<small class="pull-right time"><i class="fa fa-clock-o"></i></small>').text(message.timestamp.toLocaleString());
         var $user = $('<h5 class="media-heading"></h5>').text(message.author);
+        if (message.author === USER.username) {
+            $user.addClass('me');
+        }
         var $body = $('<small class="col-lg-10"></small>').text(message.body);
         var $container = $('<div class="media msg">');
-        if (message.from === USER.username) {
-            $user.addClass('pull-right');
-            $body.addClass('pull-right');
-        }
         $container.append($time).append($user).append($body);
         $messages.append($container);
         $messages.scrollTop($messages[0].scrollHeight);
@@ -74,7 +72,7 @@ $(function () {
         });
 
         channel.on('messageAdded', function (message) {
-            console.log(message);
+            displayMessage(message);
         });
     }
 
@@ -127,7 +125,6 @@ $(function () {
             console.log(reservation.task.age);
             console.log(reservation.task.attributes);
 
-            CURRENT_TASK = reservation.task;
             updateWorkerActivity("Busy");
 
             reservation.accept();
@@ -162,7 +159,12 @@ $(function () {
     });
 
     $("#send-button").on("click", function () {
-        CHANNEL.sendMessage($replyBox.val());
+        var message = $replyBox.val();
+
+        if ($.trim(message) !== "") {
+            CHANNEL.sendMessage($replyBox.val());
+            $replyBox.val("").focus();
+        }
     });
 
     $("#solve-button").on("click", function () {
@@ -171,9 +173,23 @@ $(function () {
         CHANNEL.leave();
         CHANNEL = null;
 
-        WORKER.completeTask(CURRENT_TASK.sid, function () {
-            CURRENT_TASK = null;
-            updateWorkerActivity("Idle");
-        });
+        WORKER.fetchReservations(
+            function(error, reservations) {
+                // WORKER.completeTask(CURRENT_TASK.sid, function () {
+                //     CURRENT_TASK = null;
+                //     updateWorkerActivity("Idle");
+                // });
+
+                if(error) {
+                    console.log(error.code);
+                    console.log(error.message);
+                    return;
+                }
+                var data = reservations.data;
+                for(i=0; i<data.length; i++) {
+                    console.log(data[i].sid);
+                }
+            }
+        );
     });
 });

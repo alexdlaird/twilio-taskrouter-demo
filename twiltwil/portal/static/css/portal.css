@@ -102,6 +102,10 @@
     border-bottom: 1px solid #ddd;
 }
 
+.me {
+    color: lightcoral;
+}
+
 body::-webkit-scrollbar {
     width: 12px;
 }
