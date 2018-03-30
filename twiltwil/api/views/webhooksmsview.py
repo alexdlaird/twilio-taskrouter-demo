@@ -33,8 +33,8 @@ class WebhookSmsView(APIView):
         })
 
         # Check if the other messages exist from this sender that are associated with an open Task
-        # TODO: could instead simply use filters here: https://www.twilio.com/docs/taskrouter/api/tasks#action-list
-        sender_messages_with_tasks = Message.objects.inbound().for_number(request.data['From']).has_worker()
+        channel_unique_name = message.sender().lstrip('+')
+        sender_messages_with_tasks = Message.objects.inbound().for_number(message.sender).has_worker()
         task = None
         channel = None
         if sender_messages_with_tasks.exists():
@@ -52,7 +52,7 @@ class WebhookSmsView(APIView):
 
                 message.save()
 
-                channel = twilioservice.get_or_create_channel(message.sender)
+                channel = twilioservice.get_or_create_channel(message.sender, channel_unique_name)
 
         # If no open Task was found, create a new one
         if not task:
@@ -68,7 +68,7 @@ class WebhookSmsView(APIView):
                             "language" in message_addons["results"]["ibm_watson_insights"]["result"]:
                 attributes["language"] = message_addons["results"]["ibm_watson_insights"]["result"]["language"]
 
-            channel = twilioservice.get_or_create_channel(message.sender)
+            channel = twilioservice.get_or_create_channel(message.sender, channel_unique_name)
 
             attributes["channel"] = channel.uniqueName
 

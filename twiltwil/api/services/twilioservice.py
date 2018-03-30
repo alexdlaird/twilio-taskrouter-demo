@@ -31,16 +31,25 @@ def create_task(attributes):
     )
 
 
-def get_or_create_channel(number):
+def cancel_worker_tasks(username, task_sids):
+    workspace_sid = twilioauthservice.get_workspace().sid
+
+    for task_sid in task_sids:
+        client.taskrouter.workspaces(workspace_sid).tasks(task_sid).update(
+            assignment_status='canceled', reason='User {} logged out'.format(username)
+        )
+
+
+def get_or_create_channel(number, unique_name):
     try:
-        return client.chat.services(twilioauthservice.get_service().sid).channels(number.lstrip('+')).fetch()
+        return client.chat.services(twilioauthservice.get_service().sid).channels(unique_name).fetch()
     except TwilioRestException as e:
         if e.status != 404:
             raise e
 
         return client.chat.services(twilioauthservice.get_service().sid).channels.create(
             friendly_name=number,
-            unique_name=number.lstrip('+')
+            unique_name=unique_name
         )
 
 

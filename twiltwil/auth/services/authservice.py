@@ -9,6 +9,7 @@ from django.core.urlresolvers import reverse
 from twilio.base.exceptions import TwilioRestException
 
 from twiltwil.api.models import Message
+from twiltwil.api.services import twilioservice
 from twiltwil.auth.services import twilioauthservice
 
 __author__ = 'Alex Laird'
@@ -69,7 +70,8 @@ def delete_user(user):
         message.save()
 
     try:
-        twilioauthservice.cancel_worker_tasks(username, worker_sid)
+        twilioservice.cancel_worker_tasks(username,
+                                          Message.objects.for_worker(worker_sid).values_list('task_sid', flat=True))
 
         twilioauthservice.delete_worker(worker_sid)
 
