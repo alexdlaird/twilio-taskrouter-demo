@@ -72,6 +72,7 @@ $(function () {
         });
 
         channel.on('messageAdded', function (message) {
+            // TODO: sometimes this doulbe posts, it seems (fine on refresh), so perhaps just filter if already seen
             displayMessage(message);
         });
     }
@@ -170,9 +171,9 @@ $(function () {
     $("#solve-button").on("click", function () {
         WORKER.fetchReservations(
             function (error, reservations) {
-                for (i = 0; i < data.length; i++) {
+                for (i = 0; i < reservations.data.length; i++) {
                     if (reservations.data[i].task.assignmentStatus === "assigned") {
-                        WORKER.completeTask(CURRENT_TASK.sid, function () {
+                        WORKER.completeTask(reservations.data[i].task.sid, function () {
                             $chatWindow.hide();
                             $lobbyWindow.show();
                             CHANNEL.leave();

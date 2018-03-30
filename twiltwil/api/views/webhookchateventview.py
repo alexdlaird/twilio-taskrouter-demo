@@ -15,4 +15,6 @@ class WebhookChatEventView(APIView):
     def post(self, request, *args, **kwargs):
         logger.info('Chat POST received: {}'.format(json.dumps(request.data)))
 
+        # TODO: when an outbound message is seen here, add it to the "Messages" table and send an outbound SMS
+
         return Response()
