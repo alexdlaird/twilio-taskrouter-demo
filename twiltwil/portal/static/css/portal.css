@@ -103,7 +103,7 @@
 }
 
 .me {
-    color: lightcoral;
+    color: lightcoral !important;
 }
 
 body::-webkit-scrollbar {

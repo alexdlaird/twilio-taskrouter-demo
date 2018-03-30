@@ -168,26 +168,21 @@ $(function () {
     });
 
     $("#solve-button").on("click", function () {
-        $chatWindow.hide();
-        $lobbyWindow.show();
-        CHANNEL.leave();
-        CHANNEL = null;
-
         WORKER.fetchReservations(
-            function(error, reservations) {
-                // WORKER.completeTask(CURRENT_TASK.sid, function () {
-                //     CURRENT_TASK = null;
-                //     updateWorkerActivity("Idle");
-                // });
+            function (error, reservations) {
+                for (i = 0; i < data.length; i++) {
+                    if (reservations.data[i].task.assignmentStatus === "assigned") {
+                        WORKER.completeTask(CURRENT_TASK.sid, function () {
+                            $chatWindow.hide();
+                            $lobbyWindow.show();
+                            CHANNEL.leave();
+                            CHANNEL = null;
 
-                if(error) {
-                    console.log(error.code);
-                    console.log(error.message);
-                    return;
-                }
-                var data = reservations.data;
-                for(i=0; i<data.length; i++) {
-                    console.log(data[i].sid);
+                            updateWorkerActivity("Idle");
+                        });
+
+                        break;
+                    }
                 }
             }
         );
