@@ -9,11 +9,13 @@ $(function () {
     var USER;
     var CHAT_CLIENT;
     var WORKER;
+    var CURRENT_TASK;
     var CHANNEL;
 
     var $chatWindow = $("#chat-window");
     var $lobbyWindow = $("#lobby-window");
     var $messages = $("#messages");
+    var $replyBox = $("#reply-box");
 
     function refreshToken() {
         if (WORKER) {
@@ -25,17 +27,31 @@ $(function () {
         }
     }
 
+    function updateWorkerActivity(activityName) {
+        WORKER.activities.fetch(
+            function (error, activities) {
+                for (var i = 0; i < activities.data.length; i++) {
+                    if (activities.data[i].friendlyName === activityName) {
+                        WORKER.update("ActivitySid", activities.data[i].sid);
+
+                        break;
+                    }
+                }
+            }
+        );
+    }
+
     function displayMessage(message) {
         console.log(message);
 
         var $time = $('<small class="pull-right time"><i class="fa fa-clock-o"></i></small>').text(message.timestamp.toLocaleString());
         var $user = $('<h5 class="media-heading"></h5>').text(message.author);
-        // TODO: this is not handled properly and should instead match the phone number of the "Help" line
-        if (message.from === USER.username) {
-            $user.addClass('me');
-        }
         var $body = $('<small class="col-lg-10"></small>').text(message.body);
         var $container = $('<div class="media msg">');
+        if (message.from === USER.username) {
+            $user.addClass('pull-right');
+            $body.addClass('pull-right');
+        }
         $container.append($time).append($user).append($body);
         $messages.append($container);
         $messages.scrollTop($messages[0].scrollHeight);
@@ -111,17 +127,8 @@ $(function () {
             console.log(reservation.task.age);
             console.log(reservation.task.attributes);
 
-            WORKER.activities.fetch(
-                function (error, activities) {
-                    for (var i = 0; i < activities.data.length; i++) {
-                        if (activities.data[i].friendlyName === "Busy") {
-                            WORKER.update("ActivitySid", activities.data[i].sid);
-
-                            break;
-                        }
-                    }
-                }
-            );
+            CURRENT_TASK = reservation.task;
+            updateWorkerActivity("Busy");
 
             reservation.accept();
 
@@ -154,7 +161,19 @@ $(function () {
         }, USER.username);
     });
 
-    // TODO: add hook for "send" button, which will send the outbound message on the CHANNEL
+    $("#send-button").on("click", function () {
+        CHANNEL.sendMessage($replyBox.val());
+    });
 
-    // TODO: add hook for "complete" button, which will mark the Worker's current Task as complete, leave the Chat channel, set CHANNEL to null, and show $lobbyWindow again
+    $("#solve-button").on("click", function () {
+        $chatWindow.hide();
+        $lobbyWindow.show();
+        CHANNEL.leave();
+        CHANNEL = null;
+
+        WORKER.completeTask(CURRENT_TASK.sid, function () {
+            CURRENT_TASK = null;
+            updateWorkerActivity("Idle");
+        });
+    });
 });
