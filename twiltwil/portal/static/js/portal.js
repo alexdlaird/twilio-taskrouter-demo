@@ -91,8 +91,7 @@ $(function () {
     }
 
     function joinChannel(uniqueName) {
-        var promise = CHAT_CLIENT.getChannelByUniqueName(uniqueName);
-        promise.then(function (channel) {
+        CHAT_CLIENT.getChannelByUniqueName(uniqueName).then(function (channel) {
             console.log('Found ' + channel.uniqueName + ' channel');
             console.log(channel);
 
@@ -100,12 +99,16 @@ $(function () {
         });
     }
 
-    function initChat(token) {
-        CHAT_CLIENT = new Twilio.Chat.Client(token);
+    function initChat(token, callback) {
+        Twilio.Chat.Client.create(token).then(function (client) {
+            CHAT_CLIENT = client;
 
-        CHAT_CLIENT.getSubscribedChannels().then(function (channels) {
-            $.each(channels.items, function (index, channel) {
-                joinChannel(channel.uniqueName);
+            CHAT_CLIENT.getSubscribedChannels().then(function (channels) {
+                $.each(channels.items, function (index, channel) {
+                    initChannel(channel);
+                });
+
+                callback();
             });
         });
     }
@@ -148,8 +151,6 @@ $(function () {
             CHAT_CLIENT.getSubscribedChannels().then(function () {
                 // TODO: if a new reservation for a previous contact comes in, the join seems to happen on an existing session, which causes duplicated messages
 
-                $messages.html("");
-
                 joinChannel(chatContact);
             });
         });
@@ -170,10 +171,10 @@ $(function () {
         });
 
         twiltwilapi.getTwilioChatToken(function (data) {
-            initChat(data.token);
-
-            twiltwilapi.getTwilioWorkerToken(function (data) {
-                initWorker(data.token);
+            initChat(data.token, function () {
+                twiltwilapi.getTwilioWorkerToken(function (data) {
+                    initWorker(data.token);
+                });
             });
         }, USER.username);
     });
@@ -203,6 +204,8 @@ $(function () {
                                 currentContact = null;
 
                                 updateWorkerActivity("Idle");
+
+                                $messages.html("");
                             });
                         });
 
