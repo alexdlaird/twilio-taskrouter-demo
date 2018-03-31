@@ -5,7 +5,7 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from twiltwil.api.models import Message
+from twiltwil.api.models import Message, Contact
 from twiltwil.api.services import twilioservice
 from twiltwil.api.utils import messageutils
 from twiltwil.common import enums
@@ -47,14 +47,15 @@ class WebhookTaskRouterWorkspaceView(APIView):
 
                 task_attributes = json.loads(messageutils.cleanup_json(request.data['TaskAttributes']))
 
-                # TODO: detect the originating channel of the inbound message (ex. SMS)
+                # TODO: detect the originating channel (and query for contact accordingly) of the inbound (ex. SMS)
                 channel = enums.CHANNEL_SMS
+                contact = Contact.objects.get(phone_number=task_attributes['from'])
 
                 # TODO: here you would execute different "sends" for different originating channels
                 cancelled_message = 'Sorry, your question could not be answered, probably because an agent was not ' \
                                     'available to take it in a reasonable amount of time. Try again later!'
                 if channel == enums.CHANNEL_SMS:
-                    twilioservice.send_sms(task_attributes['from'], cancelled_message)
+                    twilioservice.send_sms(contact.phone_number, cancelled_message)
             elif request.data['EventType'] == 'task.completed':
                 logger.info('Processing task.completed')
 
@@ -63,14 +64,15 @@ class WebhookTaskRouterWorkspaceView(APIView):
                         'User logged out'):
                     task_attributes = json.loads(messageutils.cleanup_json(request.data['TaskAttributes']))
 
-                    # TODO: detect the originating channel of the inbound message (ex. SMS)
+                    # TODO: detect the originating channel (and query for contact accordingly) of the inbound (ex. SMS)
                     channel = enums.CHANNEL_SMS
+                    contact = Contact.objects.get(phone_number=task_attributes['from'])
 
                     # TODO: here you would execute different "sends" for different originating channels
                     cancelled_message = 'Sorry, your question could not be answered because the agent assigned to it ' \
                                         'logged out and another agent was not available. Try again later!'
                     if channel == enums.CHANNEL_SMS:
-                        twilioservice.send_sms(task_attributes['from'], cancelled_message)
+                        twilioservice.send_sms(contact.phone_number, cancelled_message)
 
                 for message in Message.objects.for_task(request.data['TaskSid']).iterator():
                     message.resolved = True

@@ -81,7 +81,7 @@ class WebhookSmsView(APIView):
 
             twilioservice.create_task(attributes)
 
-            twilioservice.send_sms(message.sender,
+            twilioservice.send_sms(contact.phone_number,
                                    "Hey, your question has been received. Sit tight and we'll get you an answer ASAP!")
 
         twilioservice.send_chat_message(channel, message)
