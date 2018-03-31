@@ -19,13 +19,13 @@ logger = logging.getLogger(__name__)
 class Contact(BaseModel):
     sid = models.CharField(max_length=255, unique=True)
 
-    first_name = models.CharField(max_length=50)
+    first_name = models.CharField(max_length=50, blank=True, null=True)
 
-    last_name = models.CharField(max_length=50)
+    last_name = models.CharField(max_length=50, blank=True, null=True)
 
     phone_number = models.CharField(max_length=15, unique=True)
 
-    email = models.EmailField(unique=True)
+    email = models.EmailField(blank=True, null=True, unique=True)
 
     @property
     def card(self):

@@ -41,7 +41,7 @@ class User(AbstractBaseUser, BaseModel):
 
     skills = models.ManyToManyField('Skill', blank=True, default=None)
 
-    worker_sid = models.CharField(max_length=255, blank=None, null=None, unique=True)
+    worker_sid = models.CharField(max_length=255, blank=True, null=True, unique=True)
 
     # Set the manager
     objects = UserManager()

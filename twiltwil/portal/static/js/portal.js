@@ -67,29 +67,28 @@ $(function () {
     }
 
     function initChannel(channel) {
-        channel.join().then(function (channel) {
-            currentChannel = channel;
-            twiltwilapi.getContact(function (contact) {
-                currentContact = contact;
+        currentChannel = channel;
 
-                lobbyVideoCommand('pauseVideo');
-                $lobbyWindow.hide();
-                $chatWindow.show();
+        twiltwilapi.getContact(function (contact) {
+            currentContact = contact;
 
-                console.log('Joined channel ' + currentChannel.uniqueName);
+            lobbyVideoCommand('pauseVideo');
+            $lobbyWindow.hide();
+            $chatWindow.show();
 
-                currentChannel.getMessages().then(function (messages) {
-                    $.each(messages.items, function (index, message) {
-                        displayMessage(message);
-                    });
+            console.log('Joined channel ' + currentChannel.uniqueName);
+
+            currentChannel.getMessages().then(function (messages) {
+                $.each(messages.items, function (index, message) {
+                    displayMessage(message);
                 });
-            }, channel.uniqueName);
-        });
+            });
 
-        channel.on('messageAdded', function (message) {
-            // TODO: sometimes this double posts, it seems (fine on refresh), so perhaps just filter if already seen
-            displayMessage(message);
-        });
+            currentChannel.on('messageAdded', function (message) {
+                // TODO: sometimes this double posts, it seems (fine on refresh), so perhaps just filter if already seen
+                displayMessage(message);
+            });
+        }, channel.uniqueName);
     }
 
     function joinChannel(uniqueName) {
@@ -98,7 +97,7 @@ $(function () {
             console.log('Found ' + channel.uniqueName + ' channel');
             console.log(channel);
 
-            initChannel(channel);
+            channel.join().then(initChannel);
         });
     }
 
@@ -198,11 +197,12 @@ $(function () {
                             $chatWindow.hide();
                             $lobbyWindow.show();
                             lobbyVideoCommand('playVideo');
-                            currentChannel.leave();
-                            currentChannel = null;
-                            currentContact = null;
+                            currentChannel.leave().then(function () {
+                                currentChannel = null;
+                                currentContact = null;
 
-                            updateWorkerActivity("Idle");
+                                updateWorkerActivity("Idle");
+                            });
                         });
 
                         break;
