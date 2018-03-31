@@ -9,7 +9,9 @@ $(function () {
     var USER;
     var CHAT_CLIENT;
     var WORKER;
-    var CHANNEL;
+
+    var currentChannel;
+    var currentContact;
 
     var $chatWindow = $("#chat-window");
     var $lobbyWindow = $("#lobby-window");
@@ -43,40 +45,36 @@ $(function () {
     function displayMessage(message) {
         console.log(message);
 
-        function buildMessage(contact) {
-            var $time = $('<small class="pull-right time"><i class="fa fa-clock-o"></i></small>').text(message.timestamp.toLocaleString());
-            var $user = $('<h5 class="media-heading"></h5>').text(message.phone_number);
-            if (contact.phone_number === USER.username) {
-                $user.addClass('me');
-            }
-            var $body = $('<small class="col-lg-10"></small>').text(message.body);
-            var $container = $('<div class="media msg">');
-            $container.append($time).append($user).append($body);
-            $messages.append($container);
-            $messages.scrollTop($messages[0].scrollHeight);
+        var $time = $('<small class="pull-right time"><i class="fa fa-clock-o"></i></small>').text(message.timestamp.toLocaleString());
+        // TODO: user details could be extended with the full contact profile
+        var $user = $('<h5 class="media-heading"></h5>').text(currentContact.phone_number);
+        if (message.author === USER.username) {
+            $user.addClass('me');
         }
-
-        if (message.author !== USER.username) {
-            twiltwilapi.getContact(buildMessage, message.author);
-        } else {
-            buildMessage(USER.username);
-        }
+        var $body = $('<small class="col-lg-10"></small>').text(message.body);
+        var $container = $('<div class="media msg">');
+        $container.append($time).append($user).append($body);
+        $messages.append($container);
+        $messages.scrollTop($messages[0].scrollHeight);
     }
 
     function initChannel(channel) {
         channel.join().then(function (channel) {
-            CHANNEL = channel;
+            currentChannel = channel;
+            twiltwilapi.getContact(function (contact) {
+                currentContact = contact;
 
-            $lobbyWindow.hide();
-            $chatWindow.show();
+                $lobbyWindow.hide();
+                $chatWindow.show();
 
-            console.log('Joined channel ' + channel.uniqueName);
+                console.log('Joined channel ' + currentChannel.uniqueName);
 
-            channel.getMessages().then(function (messages) {
-                $.each(messages.items, function (index, message) {
-                    displayMessage(message);
+                currentChannel.getMessages().then(function (messages) {
+                    $.each(messages.items, function (index, message) {
+                        displayMessage(message);
+                    });
                 });
-            });
+            }, channel.uniqueName);
         });
 
         channel.on('messageAdded', function (message) {
@@ -171,8 +169,8 @@ $(function () {
         var message = $replyBox.val();
 
         if ($.trim(message) !== "") {
-            CHANNEL.sendMessage($replyBox.val(), {
-                "To": CHANNEL.uniqueName
+            currentChannel.sendMessage($replyBox.val(), {
+                "To": currentChannel.uniqueName
             });
             $replyBox.val("").focus();
         }
@@ -186,8 +184,9 @@ $(function () {
                         WORKER.completeTask(reservations.data[i].task.sid, function () {
                             $chatWindow.hide();
                             $lobbyWindow.show();
-                            CHANNEL.leave();
-                            CHANNEL = null;
+                            currentChannel.leave();
+                            currentChannel = null;
+                            currentContact = null;
 
                             updateWorkerActivity("Idle");
                         });
