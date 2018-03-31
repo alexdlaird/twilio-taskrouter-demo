@@ -1,9 +1,9 @@
 import json
 import logging
 
+from rest_framework import status
+from rest_framework.response import Response
 from rest_framework.views import APIView
-
-from twiltwil.common.utils import viewutils
 
 __author__ = 'Alex Laird'
 __copyright__ = 'Copyright 2018, Alex Laird'
@@ -16,4 +16,4 @@ class WebhookTaskRouterWorkflowView(APIView):
     def post(self, request, *args, **kwargs):
         logger.info('Workflow POST received: {}'.format(json.dumps(request.data)))
 
-        return viewutils.get_empty_webhook_response()
+        return Response(status=status.HTTP_204_NO_CONTENT)
