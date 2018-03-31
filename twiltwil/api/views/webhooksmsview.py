@@ -1,10 +1,12 @@
 import json
 import logging
 
+from django.utils import timezone
+from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from twiltwil.api.models import Message
+from twiltwil.api.models import Contact, Message
 from twiltwil.api.services import twilioservice
 from twiltwil.api.utils import messageutils
 from twiltwil.common import enums
@@ -20,11 +22,17 @@ class WebhookSmsView(APIView):
     def post(self, request, *args, **kwargs):
         logger.info('SMS POST received: {}'.format(json.dumps(request.data)))
 
-        # Store (or update, if this message is redundant) the message in the database
+        # Store (or update, if this redundant) the contact and message in the database
+        contact = Contact.objects.update_or_create(phone_number=request.data['From'], defaults={
+            "sid": request.data['MessageSid'],
+            "phone_number": request.data['From'],
+        })
+
         message, created = Message.objects.update_or_create(sid=request.data['SmsSid'], defaults={
+            "timestamp": timezone.now(),
             "channel": enums.CHANNEL_SMS,
-            "sender": request.data['From'],
-            "receiver": request.data['To'],
+            "sender": contact.sid,
+            "recipient": request.data['To'],
             "direction": enums.MESSAGE_INBOUND,
             "status": request.data['SmsStatus'],
             "text": request.data['Body'],
@@ -33,7 +41,6 @@ class WebhookSmsView(APIView):
         })
 
         # Check if the other messages exist from this sender that are associated with an open Task
-        channel_unique_name = message.sender.lstrip('+')
         sender_messages_with_tasks = Message.objects.not_resolved().inbound().for_number(message.sender).has_task()
         task = None
         channel = None
@@ -52,7 +59,7 @@ class WebhookSmsView(APIView):
 
                 message.save()
 
-                channel = twilioservice.get_or_create_channel(message.sender, channel_unique_name)
+                channel = twilioservice.get_or_create_channel(contact.phone_number, contact.sid)
 
         # If no open Task was found, create a new one
         if not task:
@@ -68,7 +75,7 @@ class WebhookSmsView(APIView):
                             "language" in message_addons["results"]["ibm_watson_insights"]["result"]:
                 attributes["language"] = message_addons["results"]["ibm_watson_insights"]["result"]["language"]
 
-            channel = twilioservice.get_or_create_channel(message.sender, channel_unique_name)
+            channel = twilioservice.get_or_create_channel(contact.phone_number, contact.sid)
 
             attributes["channel"] = channel.unique_name
 
@@ -79,4 +86,4 @@ class WebhookSmsView(APIView):
 
         twilioservice.send_chat_message(channel, message)
 
-        return Response()
+        return Response(status=status.HTTP_204_NO_CONTENT, content_type='application/json')

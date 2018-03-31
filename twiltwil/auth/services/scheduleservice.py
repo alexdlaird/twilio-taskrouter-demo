@@ -60,7 +60,16 @@ def delete_orphaned_workers():
     logger.info('Done deleting orphaned Workers task ...')
 
 
+def reconcile_contact_data():
+    logger.info('Deleting reconciling contact data ...')
+
+    # TODO: here we should periodically check to see if two contacts, based on a shared unique value, can be merged
+
+    logger.info('Done reconciling contact data task ...')
+
+
 scheduler = Scheduler()
 scheduler.every(5).minutes.do(delete_inactive_users)
 scheduler.every().hour.do(delete_orphaned_workers)
+scheduler.every().hour.do(reconcile_contact_data)
 scheduler.run_continuously()

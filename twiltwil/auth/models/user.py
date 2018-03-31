@@ -35,7 +35,7 @@ class User(AbstractBaseUser, BaseModel):
 
     # Profile fields
 
-    worker_sid = models.CharField(max_length=255, blank=None, null=None)
+    worker_sid = models.CharField(max_length=255, blank=None, null=None, unique=True)
 
     time_zone = models.CharField(default='America/Los_Angeles', max_length=255, choices=enums.TIME_ZONE_CHOICES)
 

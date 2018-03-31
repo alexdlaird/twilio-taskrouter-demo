@@ -1,6 +1,7 @@
 import json
 import logging
 
+from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -75,4 +76,4 @@ class WebhookTaskRouterWorkspaceView(APIView):
                     message.resolved = True
                     message.save()
 
-        return Response()
+        return Response(status=status.HTTP_204_NO_CONTENT, content_type='application/json')

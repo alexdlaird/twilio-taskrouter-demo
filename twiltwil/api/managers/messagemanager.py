@@ -32,7 +32,7 @@ class MessageQuerySet(models.query.QuerySet):
 
     def for_number(self, number):
         return self.filter(
-            Q(direction=enums.MESSAGE_OUTBOUND, receiver=number) | Q(direction=enums.MESSAGE_INBOUND, sender=number))
+            Q(direction=enums.MESSAGE_OUTBOUND, recipient=number) | Q(direction=enums.MESSAGE_INBOUND, sender=number))
 
     def for_channel(self, channel):
         return self.filter(channel=channel)
