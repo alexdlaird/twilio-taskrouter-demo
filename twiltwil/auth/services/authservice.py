@@ -72,6 +72,8 @@ def delete_user(user):
                                               flat=True).distinct())
 
         for message in Message.objects.for_worker(worker_sid).iterator():
+            logger.debug('Unsetting worker_sid on Message {}'.format(message.pk))
+
             message.worker_sid = None
             message.save()
 

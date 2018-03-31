@@ -185,6 +185,8 @@ def get_activities():
 
 
 def create_worker(friendly_name, attributes):
+    logger.info('Creating Worker {} with attributes {}'.format(friendly_name, attributes))
+
     return client.taskrouter.workspaces(get_workspace().sid).workers.create(
         friendly_name=friendly_name,
         activity_sid=_get_activity("Idle").sid,
@@ -193,6 +195,8 @@ def create_worker(friendly_name, attributes):
 
 
 def delete_worker(worker_sid):
+    logger.info('Deleting Worker {}'.format(worker_sid))
+
     worker = client.taskrouter.workspaces(get_workspace().sid).workers(worker_sid).fetch()
     worker = worker.update(activity_sid=_get_activity("Offline").sid)
     worker.delete()
@@ -239,6 +243,8 @@ def get_workers():
 
 
 def delete_chat_user(username):
+    logger.info('Deleting Chat user '.format(username))
+
     service_sid = get_service().sid
 
     user = client.chat \
