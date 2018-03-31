@@ -43,16 +43,24 @@ $(function () {
     function displayMessage(message) {
         console.log(message);
 
-        var $time = $('<small class="pull-right time"><i class="fa fa-clock-o"></i></small>').text(message.timestamp.toLocaleString());
-        var $user = $('<h5 class="media-heading"></h5>').text(message.author);
-        if (message.author === USER.username) {
-            $user.addClass('me');
+        function buildMessage(contact) {
+            var $time = $('<small class="pull-right time"><i class="fa fa-clock-o"></i></small>').text(message.timestamp.toLocaleString());
+            var $user = $('<h5 class="media-heading"></h5>').text(message.phone_number);
+            if (contact.phone_number === USER.username) {
+                $user.addClass('me');
+            }
+            var $body = $('<small class="col-lg-10"></small>').text(message.body);
+            var $container = $('<div class="media msg">');
+            $container.append($time).append($user).append($body);
+            $messages.append($container);
+            $messages.scrollTop($messages[0].scrollHeight);
         }
-        var $body = $('<small class="col-lg-10"></small>').text(message.body);
-        var $container = $('<div class="media msg">');
-        $container.append($time).append($user).append($body);
-        $messages.append($container);
-        $messages.scrollTop($messages[0].scrollHeight);
+
+        if (message.author !== USER.username) {
+            twiltwilapi.getContact(buildMessage, message.author);
+        } else {
+            buildMessage(USER.username);
+        }
     }
 
     function initChannel(channel) {
