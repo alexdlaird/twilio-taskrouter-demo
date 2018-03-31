@@ -174,31 +174,47 @@ TIME_ZONE_CHOICES = (
 )
 
 ENGLISH = 'english'
-SPANISH = 'spanish'
-FRENCH = 'french'
 GERMAN = 'german'
+FRENCH = 'french'
+ITALIAN = 'italian'
 PORTUGUESE = 'portuguese'
+RUSSIAN = 'russian'
+SPANISH = 'spanish'
+SWEDISH = 'swedish'
 LANGUAGE_CHOICES = (
     (ENGLISH, 'English'),
-    (SPANISH, 'Español'),
-    (FRENCH, 'Français'),
     (GERMAN, 'Deutsche'),
+    (FRENCH, 'Français'),
+    (ITALIAN, 'Italiano'),
     (PORTUGUESE, 'Portuguese'),
+    (RUSSIAN, 'Pусский'),
+    (SPANISH, 'Español'),
+    (SWEDISH, 'Svenska'),
 )
 
 GENERAL = 'general'
 MATHEMATICS = 'mathematics'
 TECHNOLOGY = 'technology'
-HEALTH = 'health'
+CULTURE = 'culture'
+HEALTH_BEAUTY = 'health_beauty'
 ANIMALS = 'animals'
-MUSIC = 'music'
+ENTERTAINMENT = 'entertainment'
+POLITICS = 'politics'
+EDUCATION = 'education'
+FASHION = 'fashion'
+TRAVEL = 'travel'
 SKILL_CHOICES = (
     (GENERAL, 'General'),
     (MATHEMATICS, 'Mathematics'),
     (TECHNOLOGY, 'Technology'),
-    (HEALTH, 'Health'),
+    (CULTURE, 'Culture'),
+    (HEALTH_BEAUTY, 'Health/Beauty'),
     (ANIMALS, 'Animals'),
-    (MUSIC, 'Music'),
+    (ENTERTAINMENT, 'Entertainment'),
+    (POLITICS, 'Politics'),
+    (EDUCATION, 'Education'),
+    (FASHION, 'Fashion'),
+    (TRAVEL, 'Travel'),
 )
 
 MESSAGE_INBOUND = 'inbound'
