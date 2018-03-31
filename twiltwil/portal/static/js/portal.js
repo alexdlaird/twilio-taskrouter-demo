@@ -164,7 +164,7 @@ $(function () {
 
         if ($.trim(message) !== "") {
             CHANNEL.sendMessage($replyBox.val(), {
-                "To": "+" + CHANNEL.uniqueName
+                "To": CHANNEL.uniqueName
             });
             $replyBox.val("").focus();
         }

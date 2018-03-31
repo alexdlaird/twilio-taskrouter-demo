@@ -31,7 +31,7 @@ class WebhookChatEventView(APIView):
 
                 # TODO: detect the originating channel (and query for contact accordingly) of the inbound (ex. SMS)
                 channel = enums.CHANNEL_SMS
-                contact = Contact.objects.get(phone_number=attributes['To'])
+                contact = Contact.objects.get(sid=attributes['To'])
 
                 # TODO: here you would execute different "sends" for different originating channels
                 if channel == enums.CHANNEL_SMS:

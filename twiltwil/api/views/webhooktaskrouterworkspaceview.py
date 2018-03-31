@@ -49,7 +49,7 @@ class WebhookTaskRouterWorkspaceView(APIView):
 
                 # TODO: detect the originating channel (and query for contact accordingly) of the inbound (ex. SMS)
                 channel = enums.CHANNEL_SMS
-                contact = Contact.objects.get(phone_number=task_attributes['from'])
+                contact = Contact.objects.get(sid=task_attributes['from'])
 
                 # TODO: here you would execute different "sends" for different originating channels
                 cancelled_message = 'Sorry, your question could not be answered, probably because an agent was not ' \
@@ -66,7 +66,7 @@ class WebhookTaskRouterWorkspaceView(APIView):
 
                     # TODO: detect the originating channel (and query for contact accordingly) of the inbound (ex. SMS)
                     channel = enums.CHANNEL_SMS
-                    contact = Contact.objects.get(phone_number=task_attributes['from'])
+                    contact = Contact.objects.get(sid=task_attributes['from'])
 
                     # TODO: here you would execute different "sends" for different originating channels
                     cancelled_message = 'Sorry, your question could not be answered because the agent assigned to it ' \
