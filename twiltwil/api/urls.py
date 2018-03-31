@@ -4,6 +4,7 @@ API URLs.
 from django.conf.urls import url
 
 from twiltwil.api.views.chattokenview import ChatTokenView
+from twiltwil.api.views.contactview import ContactView
 from twiltwil.api.views.userview import UserView
 from twiltwil.api.views.webhookchateventview import WebhookChatEventView
 from twiltwil.api.views.webhooksmsview import WebhookSmsView
@@ -19,6 +20,7 @@ __version__ = '0.1.0'
 urlpatterns = [
     # TwilTwil REST URLs
     url(r'^api/user$', UserView.as_view(), name='api_user'),
+    url(r'^api/contacts/(?P<sid>[-\w]+)', ContactView.as_view(), name='api_contacts_detail'),
 
     # Twilio REST URLs
     url(r'^api/chat/token$', ChatTokenView.as_view(), name='api_chat_token'),

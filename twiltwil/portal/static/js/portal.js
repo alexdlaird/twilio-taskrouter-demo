@@ -130,7 +130,7 @@ $(function () {
 
             reservation.accept();
 
-            var chatContact = reservation.task.attributes.from.substr(1);
+            var chatContact = reservation.task.attributes.from;
 
             CHAT_CLIENT.getSubscribedChannels().then(function () {
                 $messages.html("");

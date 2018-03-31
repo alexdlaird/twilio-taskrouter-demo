@@ -23,7 +23,7 @@ class WebhookSmsView(APIView):
         logger.info('SMS POST received: {}'.format(json.dumps(request.data)))
 
         # Store (or update, if this redundant) the contact and message in the database
-        contact = Contact.objects.update_or_create(phone_number=request.data['From'], defaults={
+        contact, created = Contact.objects.update_or_create(phone_number=request.data['From'], defaults={
             "sid": request.data['MessageSid'],
             "phone_number": request.data['From'],
         })
