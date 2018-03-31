@@ -75,6 +75,7 @@ class WebhookTaskRouterWorkspaceView(APIView):
                         twilioservice.send_sms(contact.phone_number, cancelled_message)
 
                 for message in Message.objects.for_task(request.data['TaskSid']).iterator():
+                    message.worker_sid = None
                     message.resolved = True
                     message.save()
 

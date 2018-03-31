@@ -65,21 +65,25 @@ def delete_user(user):
 
     user.delete()
 
+    for task_sid in Message.objects.not_resolved().inbound().for_worker(
+            worker_sid).values_list('task_sid', flat=True).order_by('task_sid').distinct():
+        try:
+            twilioservice.cancel_worker_task(username, task_sid)
+        except TwilioRestException as e:
+            logger.warn(e)
+
+    for message in Message.objects.for_worker(worker_sid).iterator():
+        logger.debug('Unsetting worker_sid on Message {}'.format(message.pk))
+
+        message.worker_sid = None
+        message.save()
+
     try:
-        twilioservice.cancel_worker_tasks(username,
-                                          Message.objects.not_resolved().inbound().for_worker(worker_sid).values_list(
-                                              'task_sid',
-                                              flat=True).distinct())
-
-        for message in Message.objects.for_worker(worker_sid).iterator():
-            logger.debug('Unsetting worker_sid on Message {}'.format(message.pk))
-
-            message.worker_sid = None
-            message.save()
-
         twilioauthservice.delete_worker(worker_sid)
+    except TwilioRestException as e:
+        logger.warn(e)
 
+    try:
         twilioauthservice.delete_chat_user(username)
     except TwilioRestException as e:
-        if e.status != 404:
-            raise e
+        logger.warn(e)

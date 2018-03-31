@@ -33,14 +33,13 @@ def create_task(attributes):
     )
 
 
-def cancel_worker_tasks(username, task_sids):
-    for task_sid in task_sids:
-        logger.info('Canceling/completing Task {}'.format(task_sid))
+def cancel_worker_task(username, task_sid):
+    logger.info('Canceling/completing Task {}'.format(task_sid))
 
-        client.taskrouter.workspaces(twilioauthservice.get_workspace().sid).tasks(task_sid).update(
-            assignment_status='completed',
-            reason='User logged out: {}'.format(username)
-        )
+    client.taskrouter.workspaces(twilioauthservice.get_workspace().sid).tasks(task_sid).update(
+        assignment_status='completed',
+        reason='User logged out: {}'.format(username)
+    )
 
 
 def get_or_create_channel(number, unique_name):
