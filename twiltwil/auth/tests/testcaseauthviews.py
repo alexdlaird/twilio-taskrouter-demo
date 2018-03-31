@@ -46,10 +46,10 @@ class TestCaseAuthViews(TwilTwilTestCase):
         self.assertFalse(get_user_model().objects.filter(username='my_test_user').exists())
         self.assertContains(response, 'invalid is not one of the available choices')
 
-    @mock.patch('twiltwil.auth.services.authservice.twilioservice.cancel_worker_tasks')
+    @mock.patch('twiltwil.auth.services.authservice.twilioservice.cancel_worker_task')
     @mock.patch('twiltwil.auth.services.authservice.twilioauthservice.delete_worker')
     @mock.patch('twiltwil.auth.services.authservice.twilioauthservice.delete_chat_user')
-    def test_logout_success(self, mock_delete_chat_user, mock_delete_worker, mock_cancel_worker_tasks):
+    def test_logout_success(self, mock_delete_chat_user, mock_delete_worker, mock_cancel_worker_task):
         # GIVEN
         userhelper.given_a_user_exists_and_is_logged_in(self.client)
 
