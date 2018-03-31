@@ -11,6 +11,7 @@ omit =
 
 [report]
 fail_under = 70
+range: 70..90
 precision = 2
 exclude_lines =
     pragma: no cover
