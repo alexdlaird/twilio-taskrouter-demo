@@ -15,8 +15,13 @@ $(function () {
 
     var $chatWindow = $("#chat-window");
     var $lobbyWindow = $("#lobby-window");
+    var $lobbyVideo = $("#lobby-video");
     var $messages = $("#messages");
     var $replyBox = $("#reply-box");
+
+    function lobbyVideoCommand(command) {
+        $lobbyVideo[0].contentWindow.postMessage('{"event":"command","func":"' + command + '","args":""}', '*');
+    }
 
     function refreshToken() {
         if (WORKER) {
@@ -46,10 +51,13 @@ $(function () {
         console.log(message);
 
         var $time = $('<small class="pull-right time"><i class="fa fa-clock-o"></i></small>').text(message.timestamp.toLocaleString());
-        // TODO: user details could be extended with the full contact profile
-        var $user = $('<h5 class="media-heading"></h5>').text(currentContact.phone_number);
+        var $user;
         if (message.author === USER.username) {
-            $user.addClass('me');
+            $user = $('<h5 class="media-heading me"></h5>').text(USER.username + " (me)");
+        } else if (message.author !== currentContact.sid) {
+            $user = $('<h5 class="media-heading me"></h5>').text(message.author + " (previous agent)");
+        } else {
+            $user = $('<h5 class="media-heading"></h5>').text(currentContact.card);
         }
         var $body = $('<small class="col-lg-10"></small>').text(message.body);
         var $container = $('<div class="media msg">');
@@ -64,6 +72,7 @@ $(function () {
             twiltwilapi.getContact(function (contact) {
                 currentContact = contact;
 
+                lobbyVideoCommand('pauseVideo');
                 $lobbyWindow.hide();
                 $chatWindow.show();
 
@@ -113,7 +122,7 @@ $(function () {
             console.log(worker.available);
             console.log(worker.attributes);
 
-            $("#user-details-2").html("Status: " + worker.activityName);
+            $("#user-details-status").html(worker.activityName);
         });
 
         WORKER.on("activity.update", function (worker) {
@@ -122,7 +131,7 @@ $(function () {
             console.log(worker.activityName);
             console.log(worker.available);
 
-            $("#user-details-2").html("Status: " + worker.activityName);
+            $("#user-details-status").html(worker.activityName);
         });
 
         WORKER.on("reservation.created", function (reservation) {
@@ -152,9 +161,13 @@ $(function () {
     twiltwilapi.getUser(function (data) {
         USER = data;
 
-        $("#user-details-3").html("Username: " + USER.username);
-        $("#user-details-5").html("Languages: " + USER.languages);
-        $("#user-details-6").html("Skills: " + USER.skills);
+        $("#user-details-username").html(USER.username);
+        $.each(USER.languages, function (index, language) {
+            $("#user-details-languages").append('<li><small>' + language + '</small></li>');
+        });
+        $.each(USER.skills, function (index, skill) {
+            $("#user-details-skills").append('<li><small>' + skill + '</small></li>');
+        });
 
         twiltwilapi.getTwilioChatToken(function (data) {
             initChat(data.token);
@@ -184,6 +197,7 @@ $(function () {
                         WORKER.completeTask(reservations.data[i].task.sid, function () {
                             $chatWindow.hide();
                             $lobbyWindow.show();
+                            lobbyVideoCommand('playVideo');
                             currentChannel.leave();
                             currentChannel = null;
                             currentContact = null;

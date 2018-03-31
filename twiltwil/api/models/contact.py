@@ -4,6 +4,7 @@ Contact model.
 
 import logging
 
+import phonenumbers
 from django.db import models
 
 from twiltwil.common.models.base import BaseModel
@@ -25,3 +26,24 @@ class Contact(BaseModel):
     phone_number = models.CharField(max_length=15, unique=True)
 
     email = models.EmailField(unique=True)
+
+    @property
+    def card(self):
+        name = ''
+        if self.first_name:
+            name += self.first_name
+        if self.last_name:
+            name = '{} {}'.format(name, self.last_name).strip()
+
+        details = []
+        if self.phone_number:
+            details.append('P: {}'.format(phonenumbers.format_number(phonenumbers.parse(self.phone_number),
+                                                                     phonenumbers.PhoneNumberFormat.NATIONAL)))
+        if self.email:
+            details.append('E: {}'.format(self.email))
+        details = ', '.join(details)
+
+        if name and details:
+            return '{} ({})'.format(name, details)
+        else:
+            return details

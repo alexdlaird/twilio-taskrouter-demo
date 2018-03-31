@@ -9,54 +9,71 @@
 
 {% block content %}
     <div class="page-content">
-        <div class="well">
-            <div class="row">
-                <div class="col-md-4">
-                    <h4><span id="user-details-1" class="label label-primary">Help number: {{ PHONE_NUMBER }}</span>
-                    </h4>
-                    <h4><span id="user-details-2" class="label label-primary"></span></h4>
-                </div>
-                <div class="col-md-4 text-center">
-                    <h4><span id="user-details-3" class="label label-primary"></span></h4>
-                    <h4><span id="user-details-4" class="label label-primary"></span></h4>
-                </div>
-                <div class="col-md-4 text-right">
-                    <h4><span id="user-details-5" class="label label-primary"></span></h4>
-                    <h4><span id="user-details-6" class="label label-primary"></span></h4>
-                </div>
-            </div>
-        </div>
-
         <h3 class="page-header">Portal</h3>
 
-        <div id="chat-window" class="container" style="display: none">
-            <div class="message-wrap col-lg-12">
-                <div id="messages" class="msg-wrap">
+        <div class="row">
+            <div class="col-sm-3">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Welcome, <span id="user-details-username"></span></h3>
+                    </div>
+                    <div class="panel-body">
+                        <p>Status: <span id="user-details-status" class="label label-primary"></span></p>
+                        <div>
+                            <small>Languages:</small>
+                            <ul id="user-details-languages">
+                            </ul>
+                        </div>
+                        <div>
+                            <small>Skills:</small>
+                            <ul id="user-details-skills">
+                            </ul>
+                        </div>
+                    </div>
                 </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Someone Need Help?</h3>
+                    </div>
+                    <div class="panel-body">
+                        <p>Give them this number to text.</p>
 
-                <div class="send-wrap ">
-                    <textarea id="reply-box" class="form-control send-message" rows="3"
-                              placeholder="Write an answer ..."></textarea>
-                </div>
-                <div class="btn-panel">
-                    <button id="solve-button" class="col-lg-3 btn send-message-btn" role="button"><i
-                            class="fa fa-check"></i> Mark
-                        Solved
-                    </button>
-                    <button id="send-button" class="col-lg-4 text-right btn send-message-btn pull-right" role="button">
-                        <i class="fa fa-plus"></i> Send Message
-                    </button>
+                        <div class="text-center">
+                            <h3><span class="label label-primary">{{ PHONE_NUMBER }}</span></h3>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
+            <div id="chat-window" class="container col-sm-9" style="display: none">
+                <div class="message-wrap col-lg-12">
+                    <div id="messages" class="msg-wrap">
+                    </div>
 
-        <div id="lobby-window" class="container">
-            <h4 align="center">No tasks are assigned to you. Relax until the next question comes in!</h4>
-            <div align="center">
-                <iframe width="560" height="315"
-                        src="https://www.youtube.com/embed/oHg5SJYRHA0?rel=0&amp;controls=0&amp;showinfo=0&autoplay=1&iv_load_policy=3&loop=1"
-                        frameborder="0"
-                        allow="autoplay; encrypted-media" allowfullscreen></iframe>
+                    <div class="send-wrap ">
+                <textarea id="reply-box" class="form-control send-message" rows="3"
+                          placeholder="Write an answer ..."></textarea>
+                    </div>
+                    <div class="btn-panel">
+                        <button id="solve-button" class="col-lg-3 btn send-message-btn" role="button"><i
+                                class="fa fa-check"></i> Mark
+                            Solved
+                        </button>
+                        <button id="send-button" class="col-lg-4 text-right btn send-message-btn pull-right"
+                                role="button">
+                            <i class="fa fa-plus"></i> Send Message
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="lobby-window" class="container col-sm-9">
+                <h4 align="center">No tasks are assigned to you. Relax until the next question comes in!</h4>
+                <div align="center">
+                    <iframe id="lobby-video" width="560" height="315"
+                            src="https://www.youtube.com/embed/oHg5SJYRHA0?rel=0&amp;controls=0&amp;showinfo=0&autoplay=1&iv_load_policy=3&loop=1&enablejsapi=1"
+                            frameborder="0"
+                            allow="autoplay; encrypted-media" allowfullscreen></iframe>
+                </div>
             </div>
         </div>
     </div>
@@ -65,6 +82,7 @@
 {% block page_footer %}
     <script type="text/javascript" src="//media.twiliocdn.com/taskrouter/js/v1.12/taskrouter.min.js"></script>
     <script type="text/javascript" src="//media.twiliocdn.com/sdk/js/chat/v1.0/twilio-chat.js"></script>
+    <script type="text/javascript" src="//www.youtube.com/player_api"></script>
 
     {% javascript "portal" %}
 {% endblock %}
