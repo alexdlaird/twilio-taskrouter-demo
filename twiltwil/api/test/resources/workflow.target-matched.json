@@ -19,7 +19,7 @@
   "TaskSid": "WT4c0ef6723897ecb43afb7ba3bb3018fc",
   "Sid": "EV130f5f27d8112b910531767cfc2a08e8",
   "TaskQueueSid": "WQ6c7757f587df5fc48e3aa4d6eec9d274",
-  "TaskAttributes": "{\"channel\":\"CHc126e49f8ccc4cd79c530c76990f0cb1\",\"language\":\"english\",\"from\":\"+15555555555\"}",
+  "TaskAttributes": "{\"channel\":\"SMc213c7d3150cc4fe9dba9892cfa5dc14\",\"language\":\"english\",\"from\":\"SMc213c7d3150cc4fe9dba9892cfa5dc14\"}",
   "TimestampMs": "1522392823706",
   "EventType": "workflow.target-matched",
   "WorkflowFilterName": "english",

@@ -27,7 +27,7 @@ class WebhookTaskRouterWorkspaceView(APIView):
 
                 task_attributes = json.loads(messageutils.cleanup_json(request.data['TaskAttributes']))
 
-                for message in Message.objects.not_resolved().for_channel('sms').inbound().for_number(
+                for message in Message.objects.not_resolved().for_channel('sms').inbound().for_contact(
                         task_attributes['from']).no_worker().iterator():
                     message.worker_sid = request.data['WorkerSid']
 
@@ -37,7 +37,7 @@ class WebhookTaskRouterWorkspaceView(APIView):
 
                 task_attributes = json.loads(messageutils.cleanup_json(request.data['TaskAttributes']))
 
-                for message in Message.objects.not_resolved().for_channel('sms').inbound().for_number(
+                for message in Message.objects.not_resolved().for_channel('sms').inbound().for_contact(
                         task_attributes['from']).no_worker().iterator():
                     message.task_sid = request.data['TaskSid']
 
@@ -47,7 +47,7 @@ class WebhookTaskRouterWorkspaceView(APIView):
 
                 task_attributes = json.loads(messageutils.cleanup_json(request.data['TaskAttributes']))
 
-                # TODO: detect the originating channel (and query for contact accordingly) of the inbound (ex. SMS)
+                # TODO: detect the originating channel of the inbound (ex. SMS)
                 channel = enums.CHANNEL_SMS
                 contact = Contact.objects.get(sid=task_attributes['from'])
 
@@ -64,7 +64,7 @@ class WebhookTaskRouterWorkspaceView(APIView):
                         'User logged out'):
                     task_attributes = json.loads(messageutils.cleanup_json(request.data['TaskAttributes']))
 
-                    # TODO: detect the originating channel (and query for contact accordingly) of the inbound (ex. SMS)
+                    # TODO: detect the originating channel of the inbound (ex. SMS)
                     channel = enums.CHANNEL_SMS
                     contact = Contact.objects.get(sid=task_attributes['from'])
 

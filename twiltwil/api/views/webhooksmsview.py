@@ -41,7 +41,7 @@ class WebhookSmsView(APIView):
         })
 
         # Check if the other messages exist from this sender that are associated with an open Task
-        sender_messages_with_tasks = Message.objects.not_resolved().inbound().for_number(message.sender).has_task()
+        sender_messages_with_tasks = Message.objects.not_resolved().inbound().for_contact(contact.sid).has_task()
         task = None
         channel = None
         if sender_messages_with_tasks.exists():

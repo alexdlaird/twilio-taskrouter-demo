@@ -25,6 +25,6 @@
   "WorkerSid": "WKafa49369465b396765e971773a0f6e8e",
   "TimestampMs": "1522393201075",
   "EventType": "task.completed",
-  "TaskAttributes": "{\"channel\":\"CHc126e49f8ccc4cd79c530c76990f0cb1\",\"language\":\"english\",\"from\":\"+15555555555\"}",
+  "TaskAttributes": "{\"channel\":\"SMc213c7d3150cc4fe9dba9892cfa5dc14\",\"language\":\"english\",\"from\":\"SMc213c7d3150cc4fe9dba9892cfa5dc14\"}",
   "WorkflowSid": "WW0a2374ff3e580fff3768f5bac05fdf10"
 }

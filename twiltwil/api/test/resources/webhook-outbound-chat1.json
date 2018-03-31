@@ -9,6 +9,6 @@
   "EventType": "onMessageSent",
   "ClientIdentity": "test_user",
   "InstanceSid": "ISd4d339bac3904fffa7296d9dce5cc7eb",
-  "Attributes": "{\"To\":\"+15555555555\"}",
+  "Attributes": "{\"To\":\"SMc213c7d3150cc4fe9dba9892cfa5dc14\"}",
   "From": "test_user"
 }

@@ -1,13 +1,13 @@
 {
+  "TaskAttributes": "{\"channel\":\"SMfeaab1862d291b27b65fa14e28a65973\",\"language\":\"english\",\"from\":\"SMfeaab1862d291b27b65fa14e28a65973\"}",
+  "TaskQueueSid": "WQeb2a30e8178fc366b253c8cbdeb1d8c7",
+  "TaskSid": "WTde8e390e31b74f7acff221e9fcf5d09f",
   "AccountSid": "ACCOUNTSID12345",
+  "WorkflowSid": "WW9c1bdaa668cc43cc0efbcf70030f6a9d",
+  "TaskAge": "0",
+  "ReservationSid": "WRb45b7e70bf7ce4cfbfcaaa5ec7a82775",
+  "WorkspaceSid": "WS4e37b1a49be2d178191f06be97e631be",
   "TaskPriority": "0",
-  "WorkflowSid": "WWa649336cf9549b6176be7611b7934139",
-  "TaskQueueSid": "WQba7b15b5da2835daf8840999ac359aa1",
-  "WorkspaceSid": "WS0373f9ac28020851e66c8f52fc6ff2bd",
-  "WorkerSid": "WKc50fcd98cdc674342b6248b6c178bb5e",
-  "ReservationSid": "WRa37d19e6b32d8f5809a4a6ff5209553b",
-  "WorkerAttributes": "{\"skills\":[\"computers\",\"general\"],\"languages\":[\"english\"],\"time_zone\":\"America\\/Los_Angeles\"}",
-  "TaskSid": "WTa064deb11caffd9f2e54a1eb88536de2",
-  "TaskAttributes": "{\"skill\":\"general\",\"language\":\"english\"}",
-  "TaskAge": "0"
+  "WorkerSid": "WKbfde8dcf3c90b1fb490378f0ee3f0037",
+  "WorkerAttributes": "{\"skills\":[\"general\"],\"languages\":[\"english\"],\"time_zone\":\"America\\/Los_Angeles\"}"
 }

@@ -26,6 +26,6 @@
   "ReservationSid": "WR94a7183792d4ac6cf53fe69db130f625",
   "TimestampMs": "1522392824229",
   "EventType": "reservation.created",
-  "TaskAttributes": "{\"channel\":\"CHc126e49f8ccc4cd79c530c76990f0cb1\",\"language\":\"english\",\"from\":\"+15555555555\"}",
+  "TaskAttributes": "{\"channel\":\"SMc213c7d3150cc4fe9dba9892cfa5dc14\",\"language\":\"english\",\"from\":\"SMc213c7d3150cc4fe9dba9892cfa5dc14\"}",
   "WorkflowSid": "WW0a2374ff3e580fff3768f5bac05fdf10"
 }
