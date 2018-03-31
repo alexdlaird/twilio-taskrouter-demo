@@ -2,14 +2,13 @@ import json
 import logging
 
 from django.utils import timezone
-from rest_framework import status
-from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from twiltwil.api.models import Contact, Message
 from twiltwil.api.services import twilioservice
 from twiltwil.api.utils import messageutils
 from twiltwil.common import enums
+from twiltwil.common.utils import viewutils
 
 __author__ = 'Alex Laird'
 __copyright__ = 'Copyright 2018, Alex Laird'
@@ -83,4 +82,4 @@ class WebhookSmsView(APIView):
 
         twilioservice.send_chat_message(channel, message)
 
-        return Response(status=status.HTTP_204_NO_CONTENT, content_type='application/json')
+        return viewutils.get_empty_webhook_response()

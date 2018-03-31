@@ -85,7 +85,6 @@ $(function () {
             });
 
             currentChannel.on('messageAdded', function (message) {
-                // TODO: sometimes this double posts, it seems (fine on refresh), so perhaps just filter if already seen
                 displayMessage(message);
             });
         }, channel.uniqueName);
@@ -147,6 +146,8 @@ $(function () {
             var chatContact = reservation.task.attributes.from;
 
             CHAT_CLIENT.getSubscribedChannels().then(function () {
+                // TODO: if a new reservation for a previous contact comes in, the join seems to happen on an existing session, which causes duplicated messages
+
                 $messages.html("");
 
                 joinChannel(chatContact);

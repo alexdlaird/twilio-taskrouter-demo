@@ -1,6 +1,9 @@
 import logging
 from urllib.parse import unquote
 
+from django.http import HttpResponse
+from twilio.twiml.messaging_response import MessagingResponse
+
 __author__ = 'Alex Laird'
 __copyright__ = 'Copyright 2018, Alex Laird'
 __version__ = '0.1.0'
@@ -40,3 +43,7 @@ def get_request_status(request, default=None):
         del request.session['status']
 
     return status
+
+
+def get_empty_webhook_response():
+    return HttpResponse(str(MessagingResponse()), content_type='text/xml')
