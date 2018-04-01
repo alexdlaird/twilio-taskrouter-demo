@@ -13,7 +13,8 @@ $(function () {
 
     var currentChannel;
     var currentContact;
-    var taskSeconds;
+    var taskInterval;
+    var taskSecondCounter;
 
     var $chatWindow = $("#chat-window");
     var $lobbyWindow = $("#lobby-window");
@@ -56,10 +57,10 @@ $(function () {
         }
     }
 
-    function taskTimer() {
-        ++taskSeconds;
+    function incrementTaskTimer() {
+        ++taskSecondCounter;
 
-        $userDetailsTaskTime.html("Current task time: " + pad(taskSeconds % 60) + ":" + pad(parseInt(taskSeconds / 60)));
+        $userDetailsTaskTime.html("Current task time: " + pad(parseInt(taskSecondCounter / 60) + ":" + pad(taskSecondCounter % 60)));
     }
 
     function updateWorkerActivity(activityName) {
@@ -175,11 +176,11 @@ $(function () {
             updateStatistics();
 
             // Refresh statistics every 30 seconds
-            setTimeout(updateStatistics, 1000 * 30);
+            setInterval(updateStatistics, 1000 * 30);
         });
 
         // Refresh token every 4 minutes
-        setTimeout(refreshWorkspaceToken, 1000 * 60 * 4);
+        setInterval(refreshWorkspaceToken, 1000 * 60 * 4);
     }
 
     function initWorker(token) {
@@ -217,8 +218,8 @@ $(function () {
 
             var chatContact = reservation.task.attributes.from;
 
-            taskSeconds = 0;
-            setInterval(taskTimer, 1000);
+            taskSecondCounter = 0;
+            taskInterval = setInterval(incrementTaskTimer, 1000);
 
             CHAT_CLIENT.getSubscribedChannels().then(function () {
                 joinChannel(chatContact);
@@ -226,7 +227,7 @@ $(function () {
         });
 
         // Refresh token every 2 minutes
-        setTimeout(refreshWorkerToken, 1000 * 60 * 2);
+        setInterval(refreshWorkerToken, 1000 * 60 * 2);
     }
 
     twiltwilapi.getUser().done(function (data) {
@@ -278,6 +279,8 @@ $(function () {
 
                 updateWorkerActivity("Idle");
 
+                $userDetailsTaskTime.html("");
+                clearInterval(taskInterval);
                 $messages.html("");
             });
         });
