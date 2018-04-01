@@ -83,10 +83,6 @@ $(function () {
                     displayMessage(message);
                 });
             });
-
-            currentChannel.on('messageAdded', function (message) {
-                displayMessage(message);
-            });
         });
     }
 
@@ -99,16 +95,24 @@ $(function () {
         });
     }
 
-    function initChat(token, callback) {
-        Twilio.Chat.Client.create(token).then(function (client) {
-            CHAT_CLIENT = client;
+    function initChatClient(token) {
+        return new Promise(function (resolve) {
+            Twilio.Chat.Client.create(token).then(function (client) {
+                CHAT_CLIENT = client;
 
-            CHAT_CLIENT.getSubscribedChannels().then(function (channels) {
-                $.each(channels.items, function (index, channel) {
-                    initChannel(channel);
+                CHAT_CLIENT.on('messageAdded', function (message) {
+                    displayMessage(message);
+                }).on('channelLeft', function (channel) {
+                    console.log('Left channel ' + currentChannel.uniqueName);
                 });
 
-                callback();
+                CHAT_CLIENT.getSubscribedChannels().then(function (channels) {
+                    $.each(channels.items, function (index, channel) {
+                        initChannel(channel);
+                    });
+
+                    resolve();
+                });
             });
         });
     }
@@ -149,8 +153,6 @@ $(function () {
             var chatContact = reservation.task.attributes.from;
 
             CHAT_CLIENT.getSubscribedChannels().then(function () {
-                // TODO: if a new reservation for a previous contact comes in, the join seems to happen on an existing session, which causes duplicated messages
-
                 joinChannel(chatContact);
             });
         });
@@ -174,7 +176,7 @@ $(function () {
         });
 
         twiltwilapi.getTwilioChatToken(USER.username).done(function (data) {
-            initChat(data.token, function () {
+            initChatClient(data.token).then(function () {
                 twiltwilapi.getTwilioWorkerToken().done(function (data) {
                     initWorker(data.token);
                 });
@@ -193,24 +195,28 @@ $(function () {
         }
     });
 
+    function markTaskComplete(task) {
+        WORKER.completeTask(task.sid, function () {
+            $chatWindow.hide();
+            $lobbyWindow.show();
+            lobbyVideoCommand('playVideo');
+            currentChannel.leave().then(function () {
+                currentChannel = null;
+                currentContact = null;
+
+                updateWorkerActivity("Idle");
+
+                $messages.html("");
+            });
+        });
+    }
+
     $("#solve-button").on("click", function () {
         WORKER.fetchReservations(
             function (error, reservations) {
-                for (i = 0; i < reservations.data.length; i++) {
+                for (var i = 0; i < reservations.data.length; i++) {
                     if (reservations.data[i].task.assignmentStatus === "assigned") {
-                        WORKER.completeTask(reservations.data[i].task.sid, function () {
-                            $chatWindow.hide();
-                            $lobbyWindow.show();
-                            lobbyVideoCommand('playVideo');
-                            currentChannel.leave().then(function () {
-                                currentChannel = null;
-                                currentContact = null;
-
-                                updateWorkerActivity("Idle");
-
-                                $messages.html("");
-                            });
-                        });
+                        markTaskComplete(reservations.data[i].task);
 
                         break;
                     }
