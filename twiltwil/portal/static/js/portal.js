@@ -162,7 +162,7 @@ $(function () {
             var $longestWaitTime = $('<li><small>Average wait time: ' + statistics.cumulative.waitDurationUntilAccepted.max + 's</small></li>');
             var $averageWaitTime = $('<li><small>Average wait time: ' + statistics.cumulative.waitDurationUntilAccepted.avg + 's</small></li>');
 
-            $userDetailsStatistics.html("").append($onlineAgents).append($pendingTasks).append($assignedTasks).append($completedTasks).append($longestWaitTime).($averageWaitTime);
+            $userDetailsStatistics.html("").append($onlineAgents).append($pendingTasks).append($assignedTasks).append($completedTasks).append($longestWaitTime).append($averageWaitTime);
         });
     }
 
