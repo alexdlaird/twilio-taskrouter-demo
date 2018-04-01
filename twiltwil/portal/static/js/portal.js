@@ -157,8 +157,8 @@ $(function () {
             });
         });
 
-        // Refresh token every 55 minutes
-        setTimeout(refreshToken, 1000 * 60 * 55);
+        // Refresh token every 2 minutes
+        setTimeout(refreshToken, 1000 * 60 * 2);
     }
 
     twiltwilapi.getUser().done(function (data) {

@@ -203,6 +203,8 @@ def delete_worker(worker_sid):
 
 
 def get_chat_token(username):
+    logger.info('Generating Chat token for {}'.format(username))
+
     # This call is simply to ensure the service exists, though it is not needed to generate token
     service = get_service()
 
@@ -219,6 +221,8 @@ def get_chat_token(username):
 
 
 def get_worker_token(worker_sid):
+    logger.info('Generating Worker token for {}'.format(worker_sid))
+
     capability = WorkerCapabilityToken(
         account_sid=settings.TWILIO_ACCOUNT_SID,
         auth_token=settings.TWILIO_AUTH_TOKEN,
@@ -228,7 +232,8 @@ def get_worker_token(worker_sid):
     capability.allow_update_activities()
     capability.allow_update_reservations()
 
-    expiration = 3600
+    # Expire token in three minutes
+    expiration = 180
 
     token = capability.to_jwt(ttl=expiration)
 
