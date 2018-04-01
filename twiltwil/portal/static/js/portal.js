@@ -73,8 +73,8 @@ $(function () {
             currentContact = contact;
 
             lobbyVideoCommand('pauseVideo');
-            $lobbyWindow.hide();
-            $chatWindow.show();
+            $lobbyWindow.slideUp();
+            $chatWindow.slideDown();
 
             console.log('Joined channel ' + currentChannel.uniqueName);
 
@@ -123,7 +123,7 @@ $(function () {
             console.log(worker.available);
             console.log(worker.attributes);
 
-            $("#user-details-status").html(worker.activityName);
+            $("#user-details-status").html(worker.activityName).fadeIn();
         });
 
         WORKER.on("activity.update", function (worker) {
@@ -132,7 +132,7 @@ $(function () {
             console.log(worker.activityName);
             console.log(worker.available);
 
-            $("#user-details-status").html(worker.activityName);
+            $("#user-details-status").html(worker.activityName).fadeIn();
         });
 
         WORKER.on("reservation.created", function (reservation) {
@@ -162,10 +162,13 @@ $(function () {
     twiltwilapi.getUser(function (data) {
         USER = data;
 
-        $("#user-details-username").html(USER.username);
+        $("#user-details-welcome").html("Welcome, " + USER.username);
+        $("#user-details-languages").html("");
         $.each(USER.languages, function (index, language) {
             $("#user-details-languages").append('<li><small>' + language + '</small></li>');
         });
+
+        $("#user-details-skills").html("");
         $.each(USER.skills, function (index, skill) {
             $("#user-details-skills").append('<li><small>' + skill + '</small></li>');
         });
@@ -196,8 +199,8 @@ $(function () {
                 for (i = 0; i < reservations.data.length; i++) {
                     if (reservations.data[i].task.assignmentStatus === "assigned") {
                         WORKER.completeTask(reservations.data[i].task.sid, function () {
-                            $chatWindow.hide();
-                            $lobbyWindow.show();
+                            $chatWindow.slideUp();
+                            $lobbyWindow.slideDown();
                             lobbyVideoCommand('playVideo');
                             currentChannel.leave().then(function () {
                                 currentChannel = null;
