@@ -60,7 +60,7 @@ $(function () {
     function incrementTaskTimer() {
         ++taskSecondCounter;
 
-        $userDetailsTaskTime.html("Current chat time: " + pad(parseInt(taskSecondCounter / 60) + ":" + pad(taskSecondCounter % 60)));
+        $userDetailsTaskTime.html("Current time on question: " + pad(parseInt(taskSecondCounter / 60) + ":" + pad(taskSecondCounter % 60)));
     }
 
     function updateWorkerActivity(activityName) {
