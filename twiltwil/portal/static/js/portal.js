@@ -60,7 +60,7 @@ $(function () {
     function incrementTaskTimer() {
         ++taskSecondCounter;
 
-        $userDetailsTaskTime.html("Current task time: " + pad(parseInt(taskSecondCounter / 60) + ":" + pad(taskSecondCounter % 60)));
+        $userDetailsTaskTime.html("Current chat time: " + pad(parseInt(taskSecondCounter / 60) + ":" + pad(taskSecondCounter % 60)));
     }
 
     function updateWorkerActivity(activityName) {
@@ -148,19 +148,21 @@ $(function () {
     }
 
     function updateStatistics() {
-        WORKSPACE.realtimeStats.fetch({}, function (error, statistics) {
+        WORKSPACE.statistics.fetch({"Minutes": "10080"}, function (error, statistics) {
             if (error) {
                 console.log(error.code);
                 console.log(error.message);
                 return;
             }
 
-            var $longestWaitTime = $('<li><small>Longest wait time: ' + (statistics.longestTaskWaitingAge ? statistics.longestTaskWaitingAge !== 0 : 'N/A') + '</small></li>');
-            var $onlineAgents = $('<li><small>Online agents: ' + statistics.totalWorkers + '</small></li>');
-            var $pendingTasks = $('<li><small>Pending tasks: ' + statistics.tasksByStatus.pending + '</small></li>');
-            var $assignedTasks = $('<li><small>Assigned tasks: ' + statistics.tasksByStatus.assigned + '</small></li>');
+            var $onlineAgents = $('<li><small>Online agents: ' + statistics.realtime.totalWorkers + '</small></li>');
+            var $pendingTasks = $('<li><small>Pending questions: ' + statistics.realtime.tasksByStatus.pending + '</small></li>');
+            var $assignedTasks = $('<li><small>Assigned questions: ' + statistics.realtime.tasksByStatus.assigned + '</small></li>');
+            var $completedTasks = $('<li><small>Answered this week: ' + statistics.cumulative.tasksCompleted + '</small></li>');
+            var $longestWaitTime = $('<li><small>Average wait time: ' + statistics.cumulative.waitDurationUntilAccepted.max + 's</small></li>');
+            var $averageWaitTime = $('<li><small>Average wait time: ' + statistics.cumulative.waitDurationUntilAccepted.avg + 's</small></li>');
 
-            $userDetailsStatistics.html("").append($longestWaitTime).append($onlineAgents).append($pendingTasks).append($assignedTasks);
+            $userDetailsStatistics.html("").append($onlineAgents).append($pendingTasks).append($assignedTasks).append($completedTasks).append($longestWaitTime).($averageWaitTime);
         });
     }
 
@@ -299,4 +301,6 @@ $(function () {
             }
         );
     });
+
+    // TODO: there should be a handler for the logout button that prompts if the agent hasn't clicked "Mark Solved"
 });
