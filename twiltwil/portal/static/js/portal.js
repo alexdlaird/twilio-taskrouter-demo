@@ -156,10 +156,10 @@ $(function () {
             }
 
             var $onlineAgents = $('<li><small>Online agents: ' + statistics.realtime.totalWorkers + '</small></li>');
-            var $pendingTasks = $('<li><small>Pending questions: ' + statistics.realtime.tasksByStatus.pending + '</small></li>');
+            var $pendingTasks = $('<li><small>Queued questions: ' + statistics.realtime.tasksByStatus.pending + '</small></li>');
             var $assignedTasks = $('<li><small>Assigned questions: ' + statistics.realtime.tasksByStatus.assigned + '</small></li>');
             var $completedTasks = $('<li><small>Answered this week: ' + statistics.cumulative.tasksCompleted + '</small></li>');
-            var $longestWaitTime = $('<li><small>Average wait time: ' + statistics.cumulative.waitDurationUntilAccepted.max + 's</small></li>');
+            var $longestWaitTime = $('<li><small>Longest wait time: ' + statistics.cumulative.waitDurationUntilAccepted.max + 's</small></li>');
             var $averageWaitTime = $('<li><small>Average wait time: ' + statistics.cumulative.waitDurationUntilAccepted.avg + 's</small></li>');
 
             $userDetailsStatistics.html("").append($onlineAgents).append($pendingTasks).append($assignedTasks).append($completedTasks).append($longestWaitTime).append($averageWaitTime);
