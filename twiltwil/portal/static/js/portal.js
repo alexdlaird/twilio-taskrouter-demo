@@ -73,8 +73,8 @@ $(function () {
             currentContact = contact;
 
             lobbyVideoCommand('pauseVideo');
-            $lobbyWindow.slideUp();
-            $chatWindow.slideDown();
+            $lobbyWindow.hide();
+            $chatWindow.show();
 
             console.log('Joined channel ' + currentChannel.uniqueName);
 
@@ -123,7 +123,7 @@ $(function () {
             console.log(worker.available);
             console.log(worker.attributes);
 
-            $("#user-details-status").html(worker.activityName).fadeIn();
+            $("#user-details-status").html(worker.activityName);
         });
 
         WORKER.on("activity.update", function (worker) {
@@ -132,7 +132,7 @@ $(function () {
             console.log(worker.activityName);
             console.log(worker.available);
 
-            $("#user-details-status").html(worker.activityName).fadeIn();
+            $("#user-details-status").html(worker.activityName);
         });
 
         WORKER.on("reservation.created", function (reservation) {
@@ -199,8 +199,8 @@ $(function () {
                 for (i = 0; i < reservations.data.length; i++) {
                     if (reservations.data[i].task.assignmentStatus === "assigned") {
                         WORKER.completeTask(reservations.data[i].task.sid, function () {
-                            $chatWindow.slideUp();
-                            $lobbyWindow.slideDown();
+                            $chatWindow.hide();
+                            $lobbyWindow.show();
                             lobbyVideoCommand('playVideo');
                             currentChannel.leave().then(function () {
                                 currentChannel = null;
