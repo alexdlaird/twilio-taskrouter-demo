@@ -10,7 +10,7 @@ from django.core.cache import cache
 from django.urls import reverse
 from twilio.jwt.access_token import AccessToken
 from twilio.jwt.access_token.grants import SyncGrant, ChatGrant
-from twilio.jwt.taskrouter.capabilities import WorkerCapabilityToken
+from twilio.jwt.taskrouter.capabilities import WorkerCapabilityToken, WorkspaceCapabilityToken
 from twilio.rest import Client
 
 from twiltwil.common import enums
@@ -220,6 +220,28 @@ def get_chat_token(username):
     return token.to_jwt()
 
 
+def get_workspace_token(worker_sid):
+    capability = WorkspaceCapabilityToken(
+        account_sid=settings.TWILIO_ACCOUNT_SID,
+        auth_token=settings.TWILIO_AUTH_TOKEN,
+        workspace_sid=get_workspace().sid,
+    )
+
+    capability.allow_fetch_subresources()
+    capability.allow_update_subresources()
+    capability.allow_delete_subresources()
+
+    # Expire token in five minutes
+    expiration = 300
+
+    token = capability.to_jwt(ttl=expiration)
+
+    # Cache the token, set to expire when the token expires
+    cache.set('tokens:workspaces:{}'.format(worker_sid), token, expiration)
+
+    return token
+
+
 def get_worker_token(worker_sid):
     logger.info('Generating Worker token for {}'.format(worker_sid))
 
@@ -238,7 +260,7 @@ def get_worker_token(worker_sid):
     token = capability.to_jwt(ttl=expiration)
 
     # Cache the token, set to expire when the token expires
-    cache.set('tokens:{}'.format(worker_sid), token, expiration)
+    cache.set('tokens:workers:{}'.format(worker_sid), token, expiration)
 
     return token
 

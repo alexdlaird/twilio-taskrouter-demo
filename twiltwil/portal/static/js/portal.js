@@ -8,29 +8,58 @@
 $(function () {
     var USER;
     var CHAT_CLIENT;
+    var WORKSPACE;
     var WORKER;
 
     var currentChannel;
     var currentContact;
+    var taskSeconds;
 
     var $chatWindow = $("#chat-window");
     var $lobbyWindow = $("#lobby-window");
     var $lobbyVideo = $("#lobby-video");
     var $messages = $("#messages");
     var $replyBox = $("#reply-box");
+    var $userDetailsStatistics = $("#user-details-statistics");
+    var $userDetailsTaskTime = $("#user-details-task-time");
 
     function lobbyVideoCommand(command) {
         $lobbyVideo[0].contentWindow.postMessage('{"event":"command","func":"' + command + '","args":""}', '*');
     }
 
-    function refreshToken() {
+    function refreshWorkspaceToken() {
+        if (WORKSPACE) {
+            console.log("Getting refresh token for Workspace.");
+
+            twiltwilapi.getTwilioWorkspaceToken().done(function (data) {
+                WORKSPACE.updateToken(data.token);
+            });
+        }
+    }
+
+    function refreshWorkerToken() {
         if (WORKER) {
-            console.log("Getting refresh token for worker.");
+            console.log("Getting refresh token for Worker.");
 
             twiltwilapi.getTwilioWorkerToken().done(function (data) {
                 WORKER.updateToken(data.token);
             });
         }
+    }
+
+    function pad(val) {
+        var valString = val + "";
+        if (valString.length < 2) {
+            return "0" + valString;
+        } else {
+            return valString;
+        }
+    }
+
+    function taskTimer() {
+        ++taskSeconds;
+
+        $userDetailsTaskTime.html("Current task time: " + pad(taskSeconds % 60) + ":" + pad(parseInt(taskSeconds / 60)));
     }
 
     function updateWorkerActivity(activityName) {
@@ -117,6 +146,42 @@ $(function () {
         });
     }
 
+    function updateStatistics() {
+        WORKSPACE.realtimeStats.fetch({}, function (error, statistics) {
+            if (error) {
+                console.log(error.code);
+                console.log(error.message);
+                return;
+            }
+
+            var $longestWaitTime = $('<li><small>Longest wait time: ' + (statistics.longestTaskWaitingAge ? statistics.longestTaskWaitingAge !== 0 : 'N/A') + '</small></li>');
+            var $onlineAgents = $('<li><small>Online agents: ' + statistics.totalWorkers + '</small></li>');
+            var $pendingTasks = $('<li><small>Pending tasks: ' + statistics.tasksByStatus.pending + '</small></li>');
+            var $assignedTasks = $('<li><small>Assigned tasks: ' + statistics.tasksByStatus.assigned + '</small></li>');
+
+            $userDetailsStatistics.html("").append($longestWaitTime).append($onlineAgents).append($pendingTasks).append($assignedTasks);
+        });
+    }
+
+    function initWorkspace(token) {
+        WORKSPACE = new Twilio.TaskRouter.Workspace(token);
+
+        WORKSPACE.on("ready", function (workspace) {
+            console.log(workspace.sid);
+            console.log(workspace.friendlyName);
+            console.log(workspace.prioritizeQueueOrder);
+            console.log(workspace.defaultActivityName);
+
+            updateStatistics();
+
+            // Refresh statistics every 30 seconds
+            setTimeout(updateStatistics, 1000 * 30);
+        });
+
+        // Refresh token every 4 minutes
+        setTimeout(refreshWorkspaceToken, 1000 * 60 * 4);
+    }
+
     function initWorker(token) {
         WORKER = new Twilio.TaskRouter.Worker(token);
 
@@ -152,31 +217,38 @@ $(function () {
 
             var chatContact = reservation.task.attributes.from;
 
+            taskSeconds = 0;
+            setInterval(taskTimer, 1000);
+
             CHAT_CLIENT.getSubscribedChannels().then(function () {
                 joinChannel(chatContact);
             });
         });
 
         // Refresh token every 2 minutes
-        setTimeout(refreshToken, 1000 * 60 * 2);
+        setTimeout(refreshWorkerToken, 1000 * 60 * 2);
     }
 
     twiltwilapi.getUser().done(function (data) {
         USER = data;
 
         $("#user-details-welcome").html("Welcome, " + USER.username);
-        $("#user-details-languages").html("");
+        var $userDetailsLanuages = $("#user-details-languages").html("");
         $.each(USER.languages, function (index, language) {
-            $("#user-details-languages").append('<li><small>' + language + '</small></li>');
+            $userDetailsLanuages.append('<li><small>' + language + '</small></li>');
         });
 
-        $("#user-details-skills").html("");
+        var $userDetailsSkills = $("#user-details-skills").html("");
         $.each(USER.skills, function (index, skill) {
-            $("#user-details-skills").append('<li><small>' + skill + '</small></li>');
+            $userDetailsSkills.append('<li><small>' + skill + '</small></li>');
         });
 
         twiltwilapi.getTwilioChatToken(USER.username).done(function (data) {
             initChatClient(data.token).then(function () {
+                twiltwilapi.getTwilioWorkspaceToken().done(function (data) {
+                    initWorkspace(data.token);
+                });
+
                 twiltwilapi.getTwilioWorkerToken().done(function (data) {
                     initWorker(data.token);
                 });

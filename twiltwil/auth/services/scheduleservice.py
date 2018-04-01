@@ -39,7 +39,7 @@ def delete_inactive_users():
     logger.info('Deleting inactive users task ...')
 
     for user in get_user_model().objects.filter(is_superuser=False).iterator():
-        token = cache.get('tokens:{}'.format(user.worker_sid))
+        token = cache.get('tokens:workers:{}'.format(user.worker_sid))
         if not token:
             logger.info('Deleting user with expired token: {}'.format(user.username))
 

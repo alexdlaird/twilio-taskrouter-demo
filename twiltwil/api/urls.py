@@ -12,6 +12,7 @@ from twiltwil.api.views.webhooktaskrouterworkflowview import WebhookTaskRouterWo
 from twiltwil.api.views.webhooktaskrouterworkspaceview import WebhookTaskRouterWorkspaceView
 from twiltwil.api.views.webhookvoiceview import WebhookVoiceView
 from twiltwil.api.views.workertokenview import WorkerTokenView
+from twiltwil.api.views.workspacetokenview import WorkspaceTokenView
 
 __author__ = 'Alex Laird'
 __copyright__ = 'Copyright 2018, Alex Laird'
@@ -24,6 +25,7 @@ urlpatterns = [
 
     # Twilio REST URLs
     url(r'^api/chat/token$', ChatTokenView.as_view(), name='api_chat_token'),
+    url(r'^api/workspace/token$', WorkspaceTokenView.as_view(), name='api_workspace_token'),
     url(r'^api/workers/token$', WorkerTokenView.as_view(), name='api_workers_token'),
     url(r'^api/webhooks/voice$', WebhookVoiceView.as_view(), name='api_webhooks_voice'),
     url(r'^api/webhooks/sms$', WebhookSmsView.as_view(), name='api_webhooks_sms'),

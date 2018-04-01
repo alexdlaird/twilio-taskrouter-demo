@@ -51,6 +51,10 @@ function TwilTwilApi() {
         return self.ajaxRequest("GET", "/api/contacts/" + sid);
     };
 
+    this.getTwilioWorkspaceToken = function () {
+        return self.ajaxRequest("POST", "/api/workspace/token");
+    };
+
     this.getTwilioWorkerToken = function () {
         return self.ajaxRequest("POST", "/api/workers/token");
     };
