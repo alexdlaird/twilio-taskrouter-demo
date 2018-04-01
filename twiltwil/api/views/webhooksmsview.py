@@ -3,6 +3,7 @@ import logging
 
 from django.utils import timezone
 from rest_framework.views import APIView
+from twilio.base.exceptions import TwilioRestException
 
 from twiltwil.api.models import Contact, Message
 from twiltwil.api.services import twilioservice
@@ -47,17 +48,25 @@ class WebhookSmsView(APIView):
         if sender_messages_with_tasks.exists():
             db_task = sender_messages_with_tasks[0]
 
-            task = twilioservice.get_task(db_task.task_sid)
+            try:
+                task = twilioservice.get_task(db_task.task_sid)
 
-            if task.assignment_status not in ['pending', 'reserved', 'assigned']:
-                task = None
-            else:
-                logger.info('Found an open Task: {}'.format(task.sid))
+                if task.assignment_status not in ['pending', 'reserved', 'assigned']:
+                    task = None
+                else:
+                    logger.info('Found an open Task: {}'.format(task.sid))
 
-                message.task_sid = db_task.task_sid
-                message.worker_sid = db_task.worker_sid
+                    message.task_sid = db_task.task_sid
+                    message.worker_sid = db_task.worker_sid
 
-                message.save()
+                    message.save()
+            except TwilioRestException as e:
+                if e.status != 404:
+                    raise e
+
+                for message in sender_messages_with_tasks.iterator():
+                    message.resolve = True
+                    message.save()
 
         # If no open Task was found, create a new one
         if not task:
