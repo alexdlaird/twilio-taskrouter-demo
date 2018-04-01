@@ -1,6 +1,7 @@
 import json
 import logging
 
+from django.conf import settings
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -18,6 +19,18 @@ logger = logging.getLogger(__name__)
 
 
 class WebhookTaskRouterWorkspaceView(APIView):
+    def _cancel_task(self, attributes):
+        # TODO: we're just cancelling the Task here (TaskRouter doesn't support automatic reassignment), but a more robust solution would be to simply create a new Task for requeuing
+        task_attributes = json.loads(messageutils.cleanup_json(attributes))
+
+        # TODO: detect the originating channel of the inbound (ex. SMS)
+        channel = enums.CHANNEL_SMS
+        contact = Contact.objects.get(sid=task_attributes['from'])
+
+        # TODO: here you would execute different "sends" for different originating channels
+        if channel == enums.CHANNEL_SMS:
+            twilioservice.send_sms(contact.phone_number, settings.CANCELLED_MESSAGE)
+
     def post(self, request, *args, **kwargs):
         logger.info('Workspace POST received: {}'.format(json.dumps(request.data)))
 
@@ -45,34 +58,13 @@ class WebhookTaskRouterWorkspaceView(APIView):
             elif request.data['EventType'] == 'task.canceled':
                 logger.info('Processing task.canceled')
 
-                task_attributes = json.loads(messageutils.cleanup_json(request.data['TaskAttributes']))
-
-                # TODO: detect the originating channel of the inbound (ex. SMS)
-                channel = enums.CHANNEL_SMS
-                contact = Contact.objects.get(sid=task_attributes['from'])
-
-                # TODO: here you would execute different "sends" for different originating channels
-                cancelled_message = 'Sorry, your question could not be answered, probably because an agent was not ' \
-                                    'available to take it in a reasonable amount of time. Try again later!'
-                if channel == enums.CHANNEL_SMS:
-                    twilioservice.send_sms(contact.phone_number, cancelled_message)
+                self._cancel_task(request.data['TaskAttributes'])
             elif request.data['EventType'] == 'task.completed':
                 logger.info('Processing task.completed')
 
-                # TODO: this is a bit of a hack simply because TaskRouter does not support Task reassignment
                 if 'TaskCompletedReason' in request.data and request.data['TaskCompletedReason'].startswith(
                         'User logged out'):
-                    task_attributes = json.loads(messageutils.cleanup_json(request.data['TaskAttributes']))
-
-                    # TODO: detect the originating channel of the inbound (ex. SMS)
-                    channel = enums.CHANNEL_SMS
-                    contact = Contact.objects.get(sid=task_attributes['from'])
-
-                    # TODO: here you would execute different "sends" for different originating channels
-                    cancelled_message = 'Sorry, your question could not be answered because the agent assigned to it ' \
-                                        'logged out and another agent was not available. Try again later!'
-                    if channel == enums.CHANNEL_SMS:
-                        twilioservice.send_sms(contact.phone_number, cancelled_message)
+                    self._cancel_task(request.data['TaskAttributes'])
 
                 for message in Message.objects.for_task(request.data['TaskSid']).iterator():
                     message.worker_sid = None
