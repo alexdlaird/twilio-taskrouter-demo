@@ -31,25 +31,7 @@ function TwilTwilApi() {
             contentType: "application/json; charset=UTF-8"
         });
 
-    function ajaxSuccess(callback, data) {
-        console.log(data);
-
-        callback(data)
-    }
-
-    function ajaxError(callback, xhr, textStatus, errorThrown) {
-        if (xhr.hasOwnProperty('responseJSON')) {
-            console.log(xhr.responseJSON);
-        }
-
-        callback([{
-            'xhr': xhr,
-            'textStatus': textStatus,
-            'errorThrown': errorThrown
-        }]);
-    }
-
-    this.ajaxRequest = function (callback, type, url, data) {
+    this.ajaxRequest = function (type, url, data) {
         data = typeof data === "undefined" ? null : data;
 
         return $.ajax(
@@ -57,30 +39,24 @@ function TwilTwilApi() {
                 type: type,
                 url: self.SITE_URL + url,
                 dataType: "json",
-                data: JSON.stringify(data),
-                success: function (data) {
-                    ajaxSuccess(callback, data);
-                },
-                error: function (xhr, textStatus, errorThrown) {
-                    ajaxError(callback, xhr, textStatus, errorThrown);
-                }
+                data: JSON.stringify(data)
             });
     };
 
-    this.getUser = function (callback) {
-        return self.ajaxRequest(callback, "GET", "/api/user");
+    this.getUser = function () {
+        return self.ajaxRequest("GET", "/api/user");
     };
 
-    this.getContact = function (callback, sid) {
-        return self.ajaxRequest(callback, "GET", "/api/contacts/" + sid);
+    this.getContact = function (sid) {
+        return self.ajaxRequest("GET", "/api/contacts/" + sid);
     };
 
-    this.getTwilioWorkerToken = function (callback) {
-        return self.ajaxRequest(callback, "POST", "/api/workers/token");
+    this.getTwilioWorkerToken = function () {
+        return self.ajaxRequest("POST", "/api/workers/token");
     };
 
-    this.getTwilioChatToken = function (callback, username) {
-        return self.ajaxRequest(callback, "POST", "/api/chat/token", {"username": username});
+    this.getTwilioChatToken = function (username) {
+        return self.ajaxRequest("POST", "/api/chat/token", {"username": username});
     };
 }
 

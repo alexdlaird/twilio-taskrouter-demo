@@ -27,7 +27,7 @@ $(function () {
         if (WORKER) {
             console.log("Getting refresh token for worker.");
 
-            twiltwilapi.getTwilioWorkerToken(function (data) {
+            twiltwilapi.getTwilioWorkerToken().done(function (data) {
                 WORKER.updateToken(data.token);
             });
         }
@@ -69,7 +69,7 @@ $(function () {
     function initChannel(channel) {
         currentChannel = channel;
 
-        twiltwilapi.getContact(function (contact) {
+        twiltwilapi.getContact(currentChannel.uniqueName).done(function (contact) {
             currentContact = contact;
 
             lobbyVideoCommand('pauseVideo');
@@ -87,7 +87,7 @@ $(function () {
             currentChannel.on('messageAdded', function (message) {
                 displayMessage(message);
             });
-        }, channel.uniqueName);
+        });
     }
 
     function joinChannel(uniqueName) {
@@ -159,7 +159,7 @@ $(function () {
         setTimeout(refreshToken, 1000 * 60 * 55);
     }
 
-    twiltwilapi.getUser(function (data) {
+    twiltwilapi.getUser().done(function (data) {
         USER = data;
 
         $("#user-details-welcome").html("Welcome, " + USER.username);
@@ -173,13 +173,13 @@ $(function () {
             $("#user-details-skills").append('<li><small>' + skill + '</small></li>');
         });
 
-        twiltwilapi.getTwilioChatToken(function (data) {
+        twiltwilapi.getTwilioChatToken(USER.username).done(function (data) {
             initChat(data.token, function () {
-                twiltwilapi.getTwilioWorkerToken(function (data) {
+                twiltwilapi.getTwilioWorkerToken().done(function (data) {
                     initWorker(data.token);
                 });
             });
-        }, USER.username);
+        });
     });
 
     $("#send-button").on("click", function () {
