@@ -132,8 +132,6 @@ $(function () {
 
                 CHAT_CLIENT.on('messageAdded', function (message) {
                     displayMessage(message);
-                }).on('channelLeft', function (channel) {
-                    console.log('Left channel ' + currentChannel.uniqueName);
                 });
 
                 CHAT_CLIENT.getSubscribedChannels().then(function (channels) {
@@ -276,6 +274,8 @@ $(function () {
             $lobbyWindow.show();
             lobbyVideoCommand('playVideo');
             currentChannel.leave().then(function () {
+                console.log('Left channel ' + currentChannel.uniqueName);
+
                 currentChannel = null;
                 currentContact = null;
 
