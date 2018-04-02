@@ -12,7 +12,7 @@ __version__ = '0.1.0'
 
 
 class TestCaseAuthViews(TwilTwilTestCase):
-    @mock.patch('twiltwil.auth.services.authservice.twilioauthservice.create_worker')
+    @mock.patch('twiltwil.auth.forms.userregistrationform.twilioauthservice.create_worker')
     def test_registration_success(self, mock_create_worker):
         # GIVEN
         userhelper.verify_user_not_logged_in(self)
@@ -32,7 +32,8 @@ class TestCaseAuthViews(TwilTwilTestCase):
         self.assertEqual(user.skills.all()[0].id, enums.ANIMALS)
         self.assertRedirects(response, reverse('portal'))
 
-    def test_registration_bad_data(self):
+    @mock.patch('twiltwil.auth.forms.userregistrationform.twilioauthservice.create_worker')
+    def test_registration_bad_data(self, mock_create_worker):
         # GIVEN
         userhelper.verify_user_not_logged_in(self)
 
