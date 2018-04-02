@@ -15,6 +15,7 @@ $(function () {
     var currentContact;
     var taskInterval;
     var taskSecondCounter;
+    var statisticsTimeRange;
 
     var $chatWindow = $("#chat-window");
     var $lobbyWindow = $("#lobby-window");
@@ -22,6 +23,7 @@ $(function () {
     var $messages = $("#messages");
     var $replyBox = $("#reply-box");
     var $userDetailsStatistics = $("#user-details-statistics");
+    var $userDetailsStatisticsTimeRange = $("#statistics-time-range");
     var $userDetailsTaskTime = $("#user-details-task-time");
 
     function lobbyVideoCommand(command) {
@@ -60,7 +62,8 @@ $(function () {
     function incrementTaskTimer() {
         ++taskSecondCounter;
 
-        $userDetailsTaskTime.html("Current time on question: " + pad(parseInt(taskSecondCounter / 60) + ":" + pad(taskSecondCounter % 60)));
+        $userDetailsTaskTime.html("Current time on question: " + pad(parseInt(taskSecondCounter / 60) + ":"
+                                  + pad(taskSecondCounter % 60)));
     }
 
     function updateWorkerActivity(activityName) {
@@ -80,7 +83,8 @@ $(function () {
     function displayMessage(message) {
         console.log(message);
 
-        var $time = $('<small class="pull-right time"><i class="fa fa-clock-o"></i></small>').text(message.timestamp.toLocaleString());
+        var $time = $('<small class="pull-right time"><i class="fa fa-clock-o"></i></small>')
+            .text(message.timestamp.toLocaleString());
         var $user;
         if (message.author === USER.username) {
             $user = $('<h5 class="media-heading me"></h5>').text(USER.username + " (me)");
@@ -146,7 +150,7 @@ $(function () {
     }
 
     function updateStatistics() {
-        WORKSPACE.statistics.fetch({"Minutes": "10080"}, function (error, statistics) {
+        WORKSPACE.statistics.fetch({"Minutes": statisticsTimeRange}, function (error, statistics) {
             if (error) {
                 console.log(error.code);
                 console.log(error.message);
@@ -154,13 +158,23 @@ $(function () {
             }
 
             var $onlineAgents = $('<li><small>Online agents: ' + statistics.realtime.totalWorkers + '</small></li>');
-            var $pendingTasks = $('<li><small>Queued questions: ' + statistics.realtime.tasksByStatus.pending + '</small></li>');
-            var $assignedTasks = $('<li><small>Assigned questions: ' + statistics.realtime.tasksByStatus.assigned + '</small></li>');
-            var $completedTasks = $('<li><small>Answered this week: ' + statistics.cumulative.tasksCompleted + '</small></li>');
-            var $longestWaitTime = $('<li><small>Longest wait time: ' + statistics.cumulative.waitDurationUntilAccepted.max + 's</small></li>');
-            var $averageWaitTime = $('<li><small>Average wait time: ' + statistics.cumulative.waitDurationUntilAccepted.avg + 's</small></li>');
+            var $pendingTasks = $('<li><small>Queued questions: ' + statistics.realtime.tasksByStatus.pending
+                                  + '</small></li>');
+            var $assignedTasks = $('<li><small>Assigned questions: ' + statistics.realtime.tasksByStatus.assigned
+                                   + '</small></li>');
+            var $completedTasks = $('<li><small>Answered this week: ' + statistics.cumulative.tasksCompleted
+                                    + '</small></li>');
+            var $longestWaitTime = $('<li><small>Longest wait time: '
+                                     + (pad(parseInt(statistics.cumulative.waitDurationUntilAccepted.max / 60) + ":"
+                                     + pad(statistics.cumulative.waitDurationUntilAccepted.max % 60)))
+                                     + '</small></li>');
+            var $averageWaitTime = $('<li><small>Average wait time: '
+                                     + (pad(parseInt(statistics.cumulative.waitDurationUntilAccepted.avg / 60) + ":"
+                                     + pad(statistics.cumulative.waitDurationUntilAccepted.avg % 60)))
+                                     + '</small></li>');
 
-            $userDetailsStatistics.html("").append($onlineAgents).append($pendingTasks).append($assignedTasks).append($completedTasks).append($longestWaitTime).append($averageWaitTime);
+            $userDetailsStatistics.html("").append($onlineAgents).append($pendingTasks).append($assignedTasks)
+                .append($completedTasks).append($longestWaitTime).append($averageWaitTime);
         });
     }
 
@@ -173,10 +187,10 @@ $(function () {
             console.log(workspace.prioritizeQueueOrder);
             console.log(workspace.defaultActivityName);
 
-            updateStatistics();
-
             // Refresh statistics every 30 seconds
             setInterval(updateStatistics, 1000 * 30);
+
+            $userDetailsStatisticsTimeRange.change();
         });
 
         // Refresh token every 4 minutes
@@ -300,6 +314,12 @@ $(function () {
                 }
             }
         );
+    });
+
+    $userDetailsStatisticsTimeRange.on("change", function () {
+        statisticsTimeRange = $userDetailsStatisticsTimeRange.val();
+
+        updateStatistics();
     });
 
     // TODO: there should be a handler for the logout button that prompts if the agent hasn't clicked "Mark Solved"

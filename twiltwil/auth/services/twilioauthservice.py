@@ -269,6 +269,10 @@ def get_workers():
     return client.taskrouter.workspaces(get_workspace().sid).workers.list()
 
 
+def get_worker_by_username(username):
+    return client.taskrouter.workspaces(get_workspace().sid).workers.list(friendly_name=username)
+
+
 def delete_chat_user(username):
     logger.info('Deleting Chat user '.format(username))
 

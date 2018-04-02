@@ -70,7 +70,7 @@ def delete_user(user):
         try:
             twilioservice.cancel_worker_task(username, task_sid)
         except TwilioRestException as e:
-            logger.warn(e)
+            logger.warning(e)
 
     for message in Message.objects.for_worker(worker_sid).iterator():
         logger.debug('Unsetting worker_sid on Message {}'.format(message.pk))
@@ -81,9 +81,9 @@ def delete_user(user):
     try:
         twilioauthservice.delete_worker(worker_sid)
     except TwilioRestException as e:
-        logger.warn(e)
+        logger.warning(e)
 
     try:
         twilioauthservice.delete_chat_user(username)
     except TwilioRestException as e:
-        logger.warn(e)
+        logger.warning(e)
