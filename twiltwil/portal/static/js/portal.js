@@ -62,7 +62,7 @@ $(function () {
     function incrementTaskTimer() {
         ++taskSecondCounter;
 
-        $userDetailsTaskTime.html("Current time on question: " + pad(parseInt(taskSecondCounter / 60) + ":"
+        $userDetailsTaskTime.html("Time on current question: " + pad(parseInt(taskSecondCounter / 60) + ":"
                                   + pad(taskSecondCounter % 60)));
     }
 

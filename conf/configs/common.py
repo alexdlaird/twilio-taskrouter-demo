@@ -176,13 +176,13 @@ PIPELINE = {
             'source_filenames': (
                 'css/base.css',
             ),
-            'output_filename': 'js/{}_base_{}.min.js'.format(PROJECT_ID, PROJECT_VERSION)
+            'output_filename': 'css/{}_base_{}.min.css'.format(PROJECT_ID, PROJECT_VERSION)
         },
         'portal': {
             'source_filenames': (
                 'css/portal.css',
             ),
-            'output_filename': 'js/{}_portal_{}.min.js'.format(PROJECT_ID, PROJECT_VERSION)
+            'output_filename': 'css/{}_portal_{}.min.css'.format(PROJECT_ID, PROJECT_VERSION)
         },
     },
     'JAVASCRIPT': {
