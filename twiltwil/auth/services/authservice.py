@@ -68,6 +68,7 @@ def delete_user(user):
     for task_sid in Message.objects.not_resolved().inbound().for_worker(
             worker_sid).values_list('task_sid', flat=True).order_by('task_sid').distinct():
         try:
+            # TODO: once TaskRouter supports Task transfer, we would want to utilize that instead here
             twilioservice.cancel_worker_task(username, task_sid)
         except TwilioRestException as e:
             logger.warning(e)

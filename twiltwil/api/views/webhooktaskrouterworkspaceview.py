@@ -60,10 +60,13 @@ class WebhookTaskRouterWorkspaceView(APIView):
             elif request.data['EventType'] == 'task.completed':
                 logger.info('Processing task.completed')
 
+                # TODO: once TaskRouter supports Task transfer, this conditional Task recreate on logout can be removed
                 if 'TaskCompletedReason' in request.data and request.data['TaskCompletedReason'].startswith(
                         'User logged out'):
                     task_attributes = json.loads(messageutils.cleanup_json(request.data['TaskAttributes']))
 
+                    # It should be noted this could cause metrics to look off, as this manual requeuing ends up
+                    # creating a new Task
                     twilioservice.create_task(task_attributes)
 
                 for message in Message.objects.for_task(request.data['TaskSid']).iterator():
