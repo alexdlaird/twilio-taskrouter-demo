@@ -1,7 +1,6 @@
 import json
 import logging
 
-from django.conf import settings
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -46,15 +45,18 @@ class WebhookTaskRouterWorkspaceView(APIView):
             elif request.data['EventType'] == 'task.canceled':
                 logger.info('Processing task.canceled')
 
-                task_attributes = json.loads(messageutils.cleanup_json(attributes))
+                task_attributes = json.loads(messageutils.cleanup_json(request.data['TaskAttributes']))
 
                 # TODO: detect the originating channel of the inbound (ex. SMS)
                 channel = enums.CHANNEL_SMS
                 contact = Contact.objects.get(sid=task_attributes['from'])
 
                 # TODO: here you would execute different "sends" for different originating channels
+                cancelled_message = 'Sorry, your question could not be answered because the agent assigned to it is ' \
+                                    'no longer available. Try submitting it again!'
                 if channel == enums.CHANNEL_SMS:
-                    twilioservice.send_sms(contact.phone_number, settings.CANCELLED_MESSAGE)
+                    twilioservice.send_sms(contact.phone_number,
+                                           cancelled_message)
             elif request.data['EventType'] == 'task.completed':
                 logger.info('Processing task.completed')
 

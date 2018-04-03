@@ -203,8 +203,3 @@ TWILIO_AUTH_TOKEN = os.environ.get('TWILTWIL_TWILIO_AUTH_TOKEN')
 TWILIO_SMS_FROM = os.environ.get('TWILTWIL_TWILIO_SMS_FROM')
 TWILIO_API_KEY = os.environ.get('TWILTWIL_TWILIO_API_KEY')
 TWILIO_API_SECRET = os.environ.get('TWILTWIL_TWILIO_API_SECRET')
-
-# Messages
-
-CANCELLED_MESSAGE = 'Sorry, your question could not be answered because the agent assigned to it is no longer ' \
-                    'available. Try submitting it again!'
