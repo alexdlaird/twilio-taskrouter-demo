@@ -62,7 +62,9 @@ class WebhookTaskRouterWorkspaceView(APIView):
 
                 if 'TaskCompletedReason' in request.data and request.data['TaskCompletedReason'].startswith(
                         'User logged out'):
-                    twilioservice.create_task(request.data['TaskAttributes'])
+                    task_attributes = json.loads(messageutils.cleanup_json(request.data['TaskAttributes']))
+
+                    twilioservice.create_task(task_attributes)
 
                 for message in Message.objects.for_task(request.data['TaskSid']).iterator():
                     message.worker_sid = None
