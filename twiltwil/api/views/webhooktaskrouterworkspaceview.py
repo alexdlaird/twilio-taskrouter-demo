@@ -63,8 +63,11 @@ class WebhookTaskRouterWorkspaceView(APIView):
 
                 if 'TaskCompletedReason' in request.data and request.data['TaskCompletedReason'].startswith(
                         'User logged out'):
-                    # TODO: we're just cancelling the Task here (TaskRouter doesn't support automatic reassignment), but a more robust solution would be to simply create a new Task for requeuing
-                    self._cancel_task(request.data['TaskAttributes'])
+                    task_attributes = request.data['TaskAttributes']
+
+                    self._cancel_task(task_attributes)
+
+                    twilioservice.create_task(task_attributes)
 
                 for message in Message.objects.for_task(request.data['TaskSid']).iterator():
                     message.worker_sid = None
