@@ -28,7 +28,7 @@ class WebhookChatEventView(APIView):
 
                 attributes = json.loads(messageutils.cleanup_json(request.data['Attributes']))
 
-                # TODO: detect the originating channel (and query for contact accordingly) of the inbound (ex. SMS)
+                # TODO: detect the originating channel of the inbound (ex. SMS)
                 channel = enums.CHANNEL_SMS
                 contact = Contact.objects.get(sid=attributes['To'])
 

@@ -20,7 +20,6 @@ logger = logging.getLogger(__name__)
 
 class WebhookTaskRouterWorkspaceView(APIView):
     def _cancel_task(self, attributes):
-        # TODO: we're just cancelling the Task here (TaskRouter doesn't support automatic reassignment), but a more robust solution would be to simply create a new Task for requeuing
         task_attributes = json.loads(messageutils.cleanup_json(attributes))
 
         # TODO: detect the originating channel of the inbound (ex. SMS)
@@ -64,6 +63,7 @@ class WebhookTaskRouterWorkspaceView(APIView):
 
                 if 'TaskCompletedReason' in request.data and request.data['TaskCompletedReason'].startswith(
                         'User logged out'):
+                    # TODO: we're just cancelling the Task here (TaskRouter doesn't support automatic reassignment), but a more robust solution would be to simply create a new Task for requeuing
                     self._cancel_task(request.data['TaskAttributes'])
 
                 for message in Message.objects.for_task(request.data['TaskSid']).iterator():

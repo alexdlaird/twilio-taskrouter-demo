@@ -22,6 +22,7 @@ $(function () {
     var $lobbyVideo = $("#lobby-video");
     var $messages = $("#messages");
     var $replyBox = $("#reply-box");
+    var $userDetailsStatus = $("#user-details-status");
     var $userDetailsStatistics = $("#user-details-statistics");
     var $userDetailsStatisticsTimeRange = $("#statistics-time-range");
     var $userDetailsTaskTime = $("#user-details-task-time");
@@ -63,7 +64,7 @@ $(function () {
         ++taskSecondCounter;
 
         $userDetailsTaskTime.html("Time on current question: " + pad(parseInt(taskSecondCounter / 60) + ":"
-                                  + pad(taskSecondCounter % 60)));
+                + pad(taskSecondCounter % 60)));
     }
 
     function updateWorkerActivity(activityName) {
@@ -159,19 +160,19 @@ $(function () {
 
             var $onlineAgents = $('<li><small>Online agents: ' + statistics.realtime.totalWorkers + '</small></li>');
             var $pendingTasks = $('<li><small>Queued questions: ' + statistics.realtime.tasksByStatus.pending
-                                  + '</small></li>');
+                + '</small></li>');
             var $assignedTasks = $('<li><small>Assigned questions: ' + statistics.realtime.tasksByStatus.assigned
-                                   + '</small></li>');
+                + '</small></li>');
             var $completedTasks = $('<li><small>Answered this week: ' + statistics.cumulative.tasksCompleted
-                                    + '</small></li>');
+                + '</small></li>');
             var $longestWaitTime = $('<li><small>Longest wait time: '
-                                     + (pad(parseInt(statistics.cumulative.waitDurationUntilAccepted.max / 60) + ":"
-                                     + pad(statistics.cumulative.waitDurationUntilAccepted.max % 60)))
-                                     + '</small></li>');
+                + (pad(parseInt(statistics.cumulative.waitDurationUntilAccepted.max / 60) + ":"
+                    + pad(statistics.cumulative.waitDurationUntilAccepted.max % 60)))
+                + '</small></li>');
             var $averageWaitTime = $('<li><small>Average wait time: '
-                                     + (pad(parseInt(statistics.cumulative.waitDurationUntilAccepted.avg / 60) + ":"
-                                     + pad(statistics.cumulative.waitDurationUntilAccepted.avg % 60)))
-                                     + '</small></li>');
+                + (pad(parseInt(statistics.cumulative.waitDurationUntilAccepted.avg / 60) + ":"
+                    + pad(statistics.cumulative.waitDurationUntilAccepted.avg % 60)))
+                + '</small></li>');
 
             $userDetailsStatistics.html("").append($onlineAgents).append($pendingTasks).append($assignedTasks)
                 .append($completedTasks).append($longestWaitTime).append($averageWaitTime);
@@ -207,7 +208,7 @@ $(function () {
             console.log(worker.available);
             console.log(worker.attributes);
 
-            $("#user-details-status").html(worker.activityName);
+            $userDetailsStatus.html(worker.activityName);
         });
 
         WORKER.on("activity.update", function (worker) {
@@ -216,7 +217,7 @@ $(function () {
             console.log(worker.activityName);
             console.log(worker.available);
 
-            $("#user-details-status").html(worker.activityName);
+            $userDetailsStatus.html(worker.activityName);
         });
 
         WORKER.on("reservation.created", function (reservation) {
@@ -271,17 +272,6 @@ $(function () {
         });
     });
 
-    $("#send-button").on("click", function () {
-        var message = $replyBox.val();
-
-        if ($.trim(message) !== "") {
-            currentChannel.sendMessage($replyBox.val(), {
-                "To": currentChannel.uniqueName
-            });
-            $replyBox.val("").focus();
-        }
-    });
-
     function markTaskComplete(task) {
         WORKER.completeTask(task.sid, function () {
             $chatWindow.hide();
@@ -302,6 +292,19 @@ $(function () {
         });
     }
 
+    // Triggers
+
+    $("#send-button").on("click", function () {
+        var message = $replyBox.val();
+
+        if ($.trim(message) !== "") {
+            currentChannel.sendMessage($replyBox.val(), {
+                "To": currentChannel.uniqueName
+            });
+            $replyBox.val("").focus();
+        }
+    });
+
     $("#solve-button").on("click", function () {
         WORKER.fetchReservations(
             function (error, reservations) {
@@ -316,11 +319,37 @@ $(function () {
         );
     });
 
+    $("#logout-button").on("click", function (e) {
+        e.preventDefault();
+
+        if ($chatWindow.filter(":visible").length) {
+            bootbox.confirm({
+                title: "Unsolved Question",
+                message: "<p>Hey, a question is currently assigned to you but hasn't been solved. If you have " +
+                "already answered this question, click \"Mark Solved\" before logging out.</p><p>Logging out anyway " +
+                "will caused the question to be reasigned to the next available agent.</p>",
+                buttons: {
+                    cancel: {
+                        label: '<i class="fa fa-times"></i> Cancel'
+                    },
+                    confirm: {
+                        label: '<i class="fa fa-check"></i> Logout'
+                    }
+                },
+                callback: function (result) {
+                    if (result) {
+                        window.location = $("#logout-button").attr("href");
+                    }
+                }
+            });
+        } else {
+            window.location = $("#logout-button").attr("href");
+        }
+    });
+
     $userDetailsStatisticsTimeRange.on("change", function () {
         statisticsTimeRange = $userDetailsStatisticsTimeRange.val();
 
         updateStatistics();
     });
-
-    // TODO: there should be a handler for the logout button that prompts if the agent hasn't clicked "Mark Solved"
 });
