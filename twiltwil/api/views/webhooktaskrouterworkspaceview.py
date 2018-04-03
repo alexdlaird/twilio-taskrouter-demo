@@ -19,17 +19,6 @@ logger = logging.getLogger(__name__)
 
 
 class WebhookTaskRouterWorkspaceView(APIView):
-    def _cancel_task(self, attributes):
-        task_attributes = json.loads(messageutils.cleanup_json(attributes))
-
-        # TODO: detect the originating channel of the inbound (ex. SMS)
-        channel = enums.CHANNEL_SMS
-        contact = Contact.objects.get(sid=task_attributes['from'])
-
-        # TODO: here you would execute different "sends" for different originating channels
-        if channel == enums.CHANNEL_SMS:
-            twilioservice.send_sms(contact.phone_number, settings.CANCELLED_MESSAGE)
-
     def post(self, request, *args, **kwargs):
         logger.info('Workspace POST received: {}'.format(json.dumps(request.data)))
 
@@ -57,17 +46,21 @@ class WebhookTaskRouterWorkspaceView(APIView):
             elif request.data['EventType'] == 'task.canceled':
                 logger.info('Processing task.canceled')
 
-                self._cancel_task(request.data['TaskAttributes'])
+                task_attributes = json.loads(messageutils.cleanup_json(attributes))
+
+                # TODO: detect the originating channel of the inbound (ex. SMS)
+                channel = enums.CHANNEL_SMS
+                contact = Contact.objects.get(sid=task_attributes['from'])
+
+                # TODO: here you would execute different "sends" for different originating channels
+                if channel == enums.CHANNEL_SMS:
+                    twilioservice.send_sms(contact.phone_number, settings.CANCELLED_MESSAGE)
             elif request.data['EventType'] == 'task.completed':
                 logger.info('Processing task.completed')
 
                 if 'TaskCompletedReason' in request.data and request.data['TaskCompletedReason'].startswith(
                         'User logged out'):
-                    task_attributes = request.data['TaskAttributes']
-
-                    self._cancel_task(task_attributes)
-
-                    twilioservice.create_task(task_attributes)
+                    twilioservice.create_task(request.data['TaskAttributes'])
 
                 for message in Message.objects.for_task(request.data['TaskSid']).iterator():
                     message.worker_sid = None
