@@ -15,7 +15,7 @@ $(function () {
     var currentContact;
     var taskInterval;
     var taskSecondCounter;
-    var statisticsTimeRange;
+    var statisticsTimeRange = "10080";
 
     var $chatWindow = $("#chat-window");
     var $lobbyWindow = $("#lobby-window");
@@ -25,7 +25,8 @@ $(function () {
     var $userDetailsStatus = $("#user-details-status");
     var $userDetailsStatistics = $("#user-details-statistics");
     var $userDetailsStatisticsTimeRange = $("#statistics-time-range");
-    var $userDetailsTaskTime = $("#user-details-task-time");
+    var $userDetailsAverageTaskTime = $("#user-details-average-task-time");
+    var $userDetailsCurrentTaskTime = $("#user-details-current-task-time");
 
     function lobbyVideoCommand(command) {
         $lobbyVideo[0].contentWindow.postMessage('{"event":"command","func":"' + command + '","args":""}', '*');
@@ -63,7 +64,7 @@ $(function () {
     function incrementTaskTimer() {
         ++taskSecondCounter;
 
-        $userDetailsTaskTime.html("Time on current question: " + pad(parseInt(taskSecondCounter / 60) + ":"
+        $userDetailsCurrentTaskTime.html("Time on current question: " + pad(parseInt(taskSecondCounter / 60) + ":"
                 + pad(taskSecondCounter % 60)));
     }
 
@@ -150,7 +151,7 @@ $(function () {
         });
     }
 
-    function updateStatistics() {
+    function updateWorkspaceStatistics() {
         WORKSPACE.statistics.fetch({"Minutes": statisticsTimeRange}, function (error, statistics) {
             if (error) {
                 console.log(error.code);
@@ -158,24 +159,53 @@ $(function () {
                 return;
             }
 
-            var $onlineAgents = $('<li><small>Online agents: ' + statistics.realtime.totalWorkers + '</small></li>');
-            var $pendingTasks = $('<li><small>Queued questions: ' + statistics.realtime.tasksByStatus.pending
-                + '</small></li>');
-            var $assignedTasks = $('<li><small>Assigned questions: ' + statistics.realtime.tasksByStatus.assigned
-                + '</small></li>');
-            var $completedTasks = $('<li><small>Answered this week: ' + statistics.cumulative.tasksCompleted
-                + '</small></li>');
-            var $longestWaitTime = $('<li><small>Longest wait time: '
+            var $onlineAgents = $('<li>Online agents: ' + statistics.realtime.totalWorkers + '</li>');
+            var $pendingTasks = $('<li>Queued questions: ' + statistics.realtime.tasksByStatus.pending
+                + '</li>');
+            var $assignedTasks = $('<li>Assigned questions: ' + statistics.realtime.tasksByStatus.assigned
+                + '</li>');
+            var $completedTasks = $('<li>Answered this week: ' + statistics.cumulative.tasksCompleted
+                + '</li>');
+            var $longestWaitTime = $('<li>Longest wait time: '
                 + (pad(parseInt(statistics.cumulative.waitDurationUntilAccepted.max / 60) + ":"
                     + pad(statistics.cumulative.waitDurationUntilAccepted.max % 60)))
-                + '</small></li>');
-            var $averageWaitTime = $('<li><small>Average wait time: '
+                + '</li>');
+            var $averageWaitTime = $('<li>Average wait time: '
                 + (pad(parseInt(statistics.cumulative.waitDurationUntilAccepted.avg / 60) + ":"
                     + pad(statistics.cumulative.waitDurationUntilAccepted.avg % 60)))
-                + '</small></li>');
+                + '</li>');
 
             $userDetailsStatistics.html("").append($onlineAgents).append($pendingTasks).append($assignedTasks)
                 .append($completedTasks).append($longestWaitTime).append($averageWaitTime);
+
+            console.log(statistics);
+        });
+    }
+
+    function updateWorkerStatistics() {
+        WORKER.statistics.fetch({"Minutes": statisticsTimeRange}, function (error, statistics) {
+            if (error) {
+                console.log(error.code);
+                console.log(error.message);
+                return;
+            }
+
+            var busyActivity;
+            $.each(statistics.cumulative.activityDurations, function (index, activityDuration) {
+                if (activityDuration.friendlyName === "Busy") {
+                    busyActivity = activityDuration;
+
+                    return false;
+                }
+            });
+
+            if (busyActivity) {
+                $userDetailsCurrentTaskTime.html("Average time on questions: " + pad(parseInt(
+                            busyActivity.avg / 60) + ":" + pad(
+                            busyActivity.avg % 60)));
+            }
+
+            console.log(statistics);
         });
     }
 
@@ -189,7 +219,7 @@ $(function () {
             console.log(workspace.defaultActivityName);
 
             // Refresh statistics every 30 seconds
-            setInterval(updateStatistics, 1000 * 30);
+            setInterval(updateWorkspaceStatistics, 1000 * 30);
 
             $userDetailsStatisticsTimeRange.change();
         });
@@ -207,6 +237,9 @@ $(function () {
             console.log(worker.activityName);
             console.log(worker.available);
             console.log(worker.attributes);
+
+            // Refresh statistics every 30 seconds
+            setInterval(updateWorkerStatistics, 1000 * 30);
 
             $userDetailsStatus.html(worker.activityName);
         });
@@ -251,12 +284,12 @@ $(function () {
         $("#user-details-welcome").html("Welcome, " + USER.username);
         var $userDetailsLanuages = $("#user-details-languages").html("");
         $.each(USER.languages, function (index, language) {
-            $userDetailsLanuages.append('<li><small>' + language + '</small></li>');
+            $userDetailsLanuages.append('<li>' + language + '</li>');
         });
 
         var $userDetailsSkills = $("#user-details-skills").html("");
         $.each(USER.skills, function (index, skill) {
-            $userDetailsSkills.append('<li><small>' + skill + '</small></li>');
+            $userDetailsSkills.append('<li>' + skill + '</li>');
         });
 
         twiltwilapi.getTwilioChatToken(USER.username).done(function (data) {
@@ -285,7 +318,7 @@ $(function () {
 
                 updateWorkerActivity("Idle");
 
-                $userDetailsTaskTime.html("");
+                $userDetailsCurrentTaskTime.html("");
                 clearInterval(taskInterval);
                 $messages.html("");
             });
@@ -350,6 +383,7 @@ $(function () {
     $userDetailsStatisticsTimeRange.on("change", function () {
         statisticsTimeRange = $userDetailsStatisticsTimeRange.val();
 
-        updateStatistics();
+        updateWorkspaceStatistics();
+        updateWorkerStatistics();
     });
 });

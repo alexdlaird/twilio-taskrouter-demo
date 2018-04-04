@@ -251,6 +251,7 @@ def get_worker_token(worker_sid):
         workspace_sid=get_workspace().sid,
         worker_sid=worker_sid
     )
+    capability.allow_fetch_subresources()
     capability.allow_update_activities()
     capability.allow_update_reservations()
 
