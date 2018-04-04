@@ -25,6 +25,7 @@ $(function () {
     var $userDetailsStatus = $("#user-details-status");
     var $userDetailsStatistics = $("#user-details-statistics");
     var $userDetailsStatisticsTimeRange = $("#statistics-time-range");
+    var $userDetailsAverageTaskTime = $("#user-details-average-task-time");
     var $userDetailsCurrentTaskTime = $("#user-details-current-task-time");
 
     function lobbyVideoCommand(command) {
@@ -63,7 +64,7 @@ $(function () {
     function incrementTaskTimer() {
         ++taskSecondCounter;
 
-        $userDetailsCurrentTaskTime.html("Time on current question: " + pad(parseInt(taskSecondCounter / 60) + ":"
+        $userDetailsCurrentTaskTime.html("Time since question asked: " + pad(parseInt(taskSecondCounter / 60) + ":"
                 + pad(taskSecondCounter % 60)));
     }
 
@@ -130,6 +131,15 @@ $(function () {
         });
     }
 
+    function initTaskTimer(task) {
+        if (taskInterval) {
+            clearInterval(taskInterval);
+        }
+
+        taskSecondCounter = parseInt(new Date().getTime() / 1000 - task.dateCreated.getTime() / 1000);
+        taskInterval = setInterval(incrementTaskTimer, 1000);
+    }
+
     function initChatClient(token) {
         return new Promise(function (resolve) {
             Twilio.Chat.Client.create(token).then(function (client) {
@@ -146,8 +156,7 @@ $(function () {
 
                     getCurrentTask().then(function (task) {
                         if (task) {
-                            taskSecondCounter = new Date().getTime() / 1000 - task.timestamp / 1000;
-                            taskInterval = setInterval(incrementTaskTimer, 1000);
+                            initTaskTimer(task);
                         }
 
                         resolve();
@@ -195,6 +204,22 @@ $(function () {
                 console.log(error.message);
                 return;
             }
+
+            var busyActivity;
+            $.each(statistics.cumulative.activityDurations, function (index, activityDuration) {
+                if (activityDuration.friendlyName === "Busy") {
+                    busyActivity = activityDuration;
+
+                    return false;
+                }
+            });
+
+            if (busyActivity && busyActivity.avg !== 0) {
+                $userDetailsAverageTaskTime.html("Average solving time: " + pad(parseInt(
+                            busyActivity.avg / 60) + ":" + pad(
+                            busyActivity.avg % 60)));
+            }
+
 
             console.log(statistics);
         });
@@ -249,8 +274,7 @@ $(function () {
 
             var chatContact = reservation.task.attributes.from;
 
-            taskSecondCounter = new Date().getTime() / 1000 - reservation.task.timestamp / 1000;
-            taskInterval = setInterval(incrementTaskTimer, 1000);
+            initTaskTimer(reservation.task);
 
             CHAT_CLIENT.getSubscribedChannels().then(function () {
                 joinChannel(chatContact);
@@ -275,20 +299,20 @@ $(function () {
             $userDetailsSkills.append('<li>' + skill + '</li>');
         });
 
-        twiltwilapi.getTwilioChatToken(USER.username).done(function (data) {
-            initChatClient(data.token).then(function () {
-                twiltwilapi.getTwilioWorkspaceToken().done(function (data) {
-                    initWorkspace(data.token);
+        twiltwilapi.getTwilioChatToken(USER.username).done(function (chatData) {
+            twiltwilapi.getTwilioWorkspaceToken().done(function (workspaceData) {
+                twiltwilapi.getTwilioWorkerToken().done(function (workerData) {
+                    initWorkspace(workspaceData.token);
 
-                    twiltwilapi.getTwilioWorkerToken().done(function (data) {
-                        initWorker(data.token);
+                    initWorker(workerData.token);
 
-                        // Refresh statistics every 30 seconds
-                        setInterval(updateWorkspaceStatistics, 1000 * 30);
-                        setInterval(updateWorkerStatistics, 1000 * 30);
+                    // Refresh statistics every 30 seconds
+                    setInterval(updateWorkspaceStatistics, 1000 * 30);
+                    setInterval(updateWorkerStatistics, 1000 * 30);
 
-                        $userDetailsStatisticsTimeRange.change();
-                    });
+                    $userDetailsStatisticsTimeRange.change();
+
+                    initChatClient(chatData.token);
                 });
             });
         });
