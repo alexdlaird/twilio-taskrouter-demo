@@ -32,8 +32,8 @@ class UserRegisterForm(forms.ModelForm, BaseForm):
 
         attributes = {
             "time_zone": cleaned_data['time_zone'],
-            "languages": self.data['languages'],
-            "skills": self.data['skills']
+            "languages": self.data.getlist('languages'),
+            "skills": self.data.getlist('skills')
         }
 
         try:
