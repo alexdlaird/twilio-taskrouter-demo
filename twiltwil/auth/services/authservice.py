@@ -5,7 +5,7 @@ Authentication service functions.
 import logging
 
 from django.contrib.auth import logout, get_user_model, login
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from twilio.base.exceptions import TwilioRestException
 
 from twiltwil.api.models import Message

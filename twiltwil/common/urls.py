@@ -1,5 +1,5 @@
 from django.conf import settings as config
-from django.conf.urls import include, url
+from django.conf.urls import url
 from django.contrib.sitemaps.views import sitemap
 from django.views.generic import RedirectView, TemplateView
 
@@ -17,7 +17,7 @@ sitemaps = {
 
 urlpatterns = [
     # Top-level URLs
-    url(r'^admin/', include(admin_site.urls)),
+    url(r'^admin/', admin_site.urls),
 
     # Crawler shortcuts and placeholders
     url(r'^sitemap\.xml$', sitemap, {'sitemaps': sitemaps}),

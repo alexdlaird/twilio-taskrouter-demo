@@ -4,8 +4,8 @@ Authentication view entrance functions.
 
 import logging
 
-from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
+from django.urls import reverse
 
 from twiltwil.auth.services import authservice
 
