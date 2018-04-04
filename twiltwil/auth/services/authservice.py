@@ -49,6 +49,8 @@ def process_logout(request):
 
     user = get_user_model().objects.get(username=username)
     if not user.is_superuser:
+        # TODO: a better solution here would be proper user/password authentication and a "status" field on the User
+        # If this is removed, deleting inactive users should also be removed from the schedulservice
         delete_user(user)
 
     logger.info('Logged out and deleted user {}'.format(username))
