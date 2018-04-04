@@ -144,7 +144,14 @@ $(function () {
                         initChannel(channel);
                     });
 
-                    resolve();
+                    getCurrentTask().then(function (task) {
+                        if (task) {
+                            taskSecondCounter = new Date().getTime() / 1000 - task.timestamp / 1000;
+                            taskInterval = setInterval(incrementTaskTimer, 1000);
+                        }
+
+                        resolve();
+                    });
                 });
             });
         });
@@ -242,7 +249,7 @@ $(function () {
 
             var chatContact = reservation.task.attributes.from;
 
-            taskSecondCounter = 0;
+            taskSecondCounter = new Date().getTime() / 1000 - reservation.task.timestamp / 1000;
             taskInterval = setInterval(incrementTaskTimer, 1000);
 
             CHAT_CLIENT.getSubscribedChannels().then(function () {
@@ -307,6 +314,23 @@ $(function () {
         });
     }
 
+    function getCurrentTask() {
+        return new Promise(function (resolve) {
+            var task = null;
+            WORKER.fetchReservations(function (error, reservations) {
+                for (var i = 0; i < reservations.data.length; i++) {
+                    if (reservations.data[i].task.assignmentStatus === "assigned") {
+                        task = reservations.data[i].task;
+
+                        break;
+                    }
+                }
+
+                resolve(task);
+            });
+        });
+    }
+
     // Triggers
 
     $("#send-button").on("click", function () {
@@ -321,17 +345,7 @@ $(function () {
     });
 
     $("#solve-button").on("click", function () {
-        WORKER.fetchReservations(
-            function (error, reservations) {
-                for (var i = 0; i < reservations.data.length; i++) {
-                    if (reservations.data[i].task.assignmentStatus === "assigned") {
-                        markTaskComplete(reservations.data[i].task);
-
-                        break;
-                    }
-                }
-            }
-        );
+        getCurrentTask().then(markTaskComplete);
     });
 
     $("#logout-button").on("click", function (e) {
