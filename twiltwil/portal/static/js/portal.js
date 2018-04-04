@@ -25,7 +25,6 @@ $(function () {
     var $userDetailsStatus = $("#user-details-status");
     var $userDetailsStatistics = $("#user-details-statistics");
     var $userDetailsStatisticsTimeRange = $("#statistics-time-range");
-    var $userDetailsAverageTaskTime = $("#user-details-average-task-time");
     var $userDetailsCurrentTaskTime = $("#user-details-current-task-time");
 
     function lobbyVideoCommand(command) {
@@ -190,21 +189,6 @@ $(function () {
                 return;
             }
 
-            var busyActivity;
-            $.each(statistics.cumulative.activityDurations, function (index, activityDuration) {
-                if (activityDuration.friendlyName === "Busy") {
-                    busyActivity = activityDuration;
-
-                    return false;
-                }
-            });
-
-            if (busyActivity) {
-                $userDetailsCurrentTaskTime.html("Average time on questions: " + pad(parseInt(
-                            busyActivity.avg / 60) + ":" + pad(
-                            busyActivity.avg % 60)));
-            }
-
             console.log(statistics);
         });
     }
@@ -217,11 +201,6 @@ $(function () {
             console.log(workspace.friendlyName);
             console.log(workspace.prioritizeQueueOrder);
             console.log(workspace.defaultActivityName);
-
-            // Refresh statistics every 30 seconds
-            setInterval(updateWorkspaceStatistics, 1000 * 30);
-
-            $userDetailsStatisticsTimeRange.change();
         });
 
         // Refresh token every 4 minutes
@@ -237,9 +216,6 @@ $(function () {
             console.log(worker.activityName);
             console.log(worker.available);
             console.log(worker.attributes);
-
-            // Refresh statistics every 30 seconds
-            setInterval(updateWorkerStatistics, 1000 * 30);
 
             $userDetailsStatus.html(worker.activityName);
         });
@@ -296,10 +272,16 @@ $(function () {
             initChatClient(data.token).then(function () {
                 twiltwilapi.getTwilioWorkspaceToken().done(function (data) {
                     initWorkspace(data.token);
-                });
 
-                twiltwilapi.getTwilioWorkerToken().done(function (data) {
-                    initWorker(data.token);
+                    twiltwilapi.getTwilioWorkerToken().done(function (data) {
+                        initWorker(data.token);
+
+                        // Refresh statistics every 30 seconds
+                        setInterval(updateWorkspaceStatistics, 1000 * 30);
+                        setInterval(updateWorkerStatistics, 1000 * 30);
+
+                        $userDetailsStatisticsTimeRange.change();
+                    });
                 });
             });
         });
