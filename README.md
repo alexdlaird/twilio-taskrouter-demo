@@ -1,5 +1,7 @@
 [![Build Status](https://travis-ci.org/alexdlaird/twilio-taskrouter-demo.svg?branch=master)](https://travis-ci.org/alexdlaird/twilio-taskrouter-demo)
 [![codecov](https://codecov.io/gh/alexdlaird/twilio-taskrouter-demo/branch/master/graph/badge.svg)](https://codecov.io/gh/alexdlaird/twilio-taskrouter-demo)
+[![Updates](https://pyup.io/repos/github/alexdlaird/twilio-taskrouter-demo/shield.svg)](https://pyup.io/repos/github/alexdlaird/twilio-taskrouter-demo/)
+[![Python 3](https://pyup.io/repos/github/alexdlaird/twilio-taskrouter-demo/python-3-shield.svg)](https://pyup.io/repos/github/alexdlaird/twilio-taskrouter-demo/)
 
 
 TwilTwil
