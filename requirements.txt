@@ -1,5 +1,5 @@
 coverage==4.4.2
-codecov==2.0.10
+codecov==2.0.15
 django==1.11.12
 django-pipeline==1.6.13
 django-widget-tweaks==1.4.1
