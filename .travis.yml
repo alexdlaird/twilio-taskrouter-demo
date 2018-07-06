@@ -1,5 +1,6 @@
 language: python
 python:
+- '3.5'
 - '3.6'
 install:
 - python -m pip install virtualenv
@@ -21,3 +22,4 @@ deploy:
   region: us-east-1
   on:
     tags: true
+    python: 3.6
