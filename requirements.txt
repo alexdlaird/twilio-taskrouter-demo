@@ -1,4 +1,4 @@
-coverage==4.4.2
+coverage==4.5.1
 codecov==2.0.15
 django==1.11.12
 django-pipeline==1.6.13
