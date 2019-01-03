@@ -5,7 +5,6 @@ Settings specific to running tests, reading values from `.env`.
 import logging
 import os
 
-from conf.settings import PROJECT_ID
 from .common import DEFAULT_TEMPLATES, DEFAULT_MIDDLEWARE, DEFAULT_INSTALLED_APPS, PIPELINE
 
 __author__ = 'Alex Laird'

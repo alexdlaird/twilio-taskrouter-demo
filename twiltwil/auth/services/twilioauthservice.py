@@ -275,7 +275,7 @@ def get_worker_by_username(username):
 
 
 def delete_chat_user(username):
-    logger.info('Deleting Chat user '.format(username))
+    logger.info('Deleting Chat user {}'.format(username))
 
     service_sid = get_service().sid
 

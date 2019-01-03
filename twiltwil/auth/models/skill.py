@@ -7,7 +7,6 @@ import logging
 from django.db import models
 from django.db.models import Model
 
-from twiltwil.common import enums
 from twiltwil.common.models.base import BaseModel
 
 __author__ = 'Alex Laird'
