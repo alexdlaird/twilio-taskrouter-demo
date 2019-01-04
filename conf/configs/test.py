@@ -9,7 +9,7 @@ from .common import DEFAULT_TEMPLATES, DEFAULT_MIDDLEWARE, DEFAULT_INSTALLED_APP
 
 __author__ = 'Alex Laird'
 __copyright__ = 'Copyright 2018, Alex Laird'
-__version__ = '0.1.0'
+__version__ = '0.1.1'
 
 # Define the base working directory of the application
 BASE_DIR = os.path.normpath(os.path.join(os.path.abspath(os.path.dirname(__file__)), '..', '..'))
