@@ -3,13 +3,13 @@
 [![Updates](https://pyup.io/repos/github/alexdlaird/twilio-taskrouter-demo/shield.svg)](https://pyup.io/repos/github/alexdlaird/twilio-taskrouter-demo/)
 [![Python 3](https://pyup.io/repos/github/alexdlaird/twilio-taskrouter-demo/python-3-shield.svg)](https://pyup.io/repos/github/alexdlaird/twilio-taskrouter-demo/)
 
-
 TwilTwil
 ================
 
 ## Prerequisites
-* Python (>= 3.6)
-* Pip (>= 9.0)
+
+  - Python (>= 3.6)
+  - Pip (>= 9.0)
 
 ## Getting Started
 The project is developed using Python and [Django](https://www.djangoproject.com).
@@ -19,25 +19,25 @@ This repository contains the source code for the TwilTwil project, ChaCha using 
 ### Project Setup
 To setup the Python/Django build environment, execute:
 
-```
+```sh
 make install
 ```
 
 To ensure the database is in sync with the latest schema, database migrations are generated and run with Django. To run migrations, execute:
 
-```
+```sh
 make migrate
 ```
 
 Once migrations have been run, you can create a super user, which is a standard user that also has access to the /admin site.
 
-```
+```sh
 python manage.py createsuperuser
 ```
 
 Now you're all set! To start the development server, execute:
 
-```
+```sh
 python manage.py runserver
 ```
 
