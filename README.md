@@ -3,8 +3,7 @@
 [![Updates](https://pyup.io/repos/github/alexdlaird/twilio-taskrouter-demo/shield.svg)](https://pyup.io/repos/github/alexdlaird/twilio-taskrouter-demo/)
 [![Python 3](https://pyup.io/repos/github/alexdlaird/twilio-taskrouter-demo/python-3-shield.svg)](https://pyup.io/repos/github/alexdlaird/twilio-taskrouter-demo/)
 
-TwilTwil
-================
+# TwilTwil
 
 ## Prerequisites
 
@@ -41,4 +40,4 @@ Now you're all set! To start the development server, execute:
 python manage.py runserver
 ```
 
-A development server will be started at http://localhost:8000.
+A development server will be started at <http://localhost:8000>.
