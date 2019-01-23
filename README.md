@@ -19,7 +19,7 @@ This repository contains the source code for the TwilTwil project, ChaCha using 
 To setup the Python/Django build environment, execute:
 
 ```sh
-make install
+make install-dev
 ```
 
 To ensure the database is in sync with the latest schema, database migrations are generated and run with Django. To run migrations, execute:

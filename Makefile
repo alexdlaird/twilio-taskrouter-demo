@@ -20,6 +20,12 @@ install: env virtualenv
 		python -m pip install -r requirements.txt; \
 	)
 
+install-dev: install
+	( \
+		source $(TWILTWIL_VENV)/bin/activate; \
+		python -m pip install -r requirements-dev.txt; \
+	)
+
 build: virtualenv
 	( \
 		source $(TWILTWIL_VENV)/bin/activate; \
