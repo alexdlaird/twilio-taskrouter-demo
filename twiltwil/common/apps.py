@@ -23,13 +23,15 @@ class CommonConfig(AppConfig):
 
     @staticmethod
     def init_ngrok():
-        # Bind the dev server's port to ngrok
         addrport = urlparse('http://{}'.format(sys.argv[-1]))
         port = addrport.port if addrport.netloc and addrport.port else 8000
         public_url = ngrok.connect(port)
         print('ngrok tunneling from {} -> http://127.0.0.1:{}/'.format(public_url, port))
 
-        # Update webhooks
+        CommonConfig.init_webhook(public_url)
+
+    @staticmethod
+    def init_webhooks(callback_url):
         client = Client(settings.TWILIO_ACCOUNT_SID, settings.TWILIO_AUTH_TOKEN)
         phone_number_sid = client.incoming_phone_numbers.list(phone_number=settings.TWILIO_SMS_FROM)[0].sid
-        client.incoming_phone_numbers(phone_number_sid).update(sms_url=public_url)
+        client.incoming_phone_numbers(phone_number_sid).update(sms_url=callback_url)
