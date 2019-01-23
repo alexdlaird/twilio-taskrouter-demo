@@ -27,7 +27,7 @@ class CommonConfig(AppConfig):
         addrport = urlparse('http://{}'.format(sys.argv[-1]))
         port = addrport.port if addrport.netloc and addrport.port else 8000
         public_url = ngrok.connect(port)
-        print('ngrok tunneling from {} -> http://127.0.0.1:{}/'.format(public_url, port))
+        print('ngrok tunnel "{}" -> "http://127.0.0.1:{}/"'.format(public_url, port))
 
         settings.PROJECT_HOST = public_url.rstrip("/")
 
