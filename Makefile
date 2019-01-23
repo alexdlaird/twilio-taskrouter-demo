@@ -1,4 +1,4 @@
-.PHONY: all env virtualenv install build build-migrations migrate test
+.PHONY: all env virtualenv install install-dev build build-migrations migrate test
 
 SHELL := /usr/bin/env bash
 TWILTWIL_VENV ?= .venv
