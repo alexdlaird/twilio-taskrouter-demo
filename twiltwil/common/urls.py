@@ -7,9 +7,9 @@ from twiltwil.common.admin import admin_site
 from twiltwil.common.sitemaps import StaticViewSitemap
 from twiltwil.common.views import home
 
-__author__ = 'Alex Laird'
-__copyright__ = 'Copyright 2018, Alex Laird'
-__version__ = '0.1.0'
+__author__ = "Alex Laird"
+__copyright__ = "Copyright 2018, Alex Laird"
+__version__ = "0.1.0"
 
 sitemaps = {
     'static': StaticViewSitemap,

@@ -12,9 +12,9 @@ from twiltwil.common import enums
 from twiltwil.common.models.base import BaseModel
 from ..managers.usermanager import UserManager
 
-__author__ = 'Alex Laird'
-__copyright__ = 'Copyright 2018, Alex Laird'
-__version__ = '0.1.0'
+__author__ = "Alex Laird"
+__copyright__ = "Copyright 2018, Alex Laird"
+__version__ = "0.1.0"
 
 logger = logging.getLogger(__name__)
 

@@ -9,7 +9,7 @@ from conf.settings import PROJECT_ID
 
 __author__ = 'Alex Laird'
 __copyright__ = 'Copyright 2018, Alex Laird'
-__version__ = '0.1.0'
+__version__ = '0.1.2'
 
 # Define the base working directory of the application
 BASE_DIR = os.path.normpath(os.path.join(os.path.abspath(os.path.dirname(__file__)), '..', '..'))
@@ -32,7 +32,7 @@ PROJECT_VERSION = __version__
 # Default lists for host-specific configurations
 #############################
 
-DEFAULT_INSTALLED_APPS = (
+INSTALLED_APPS = (
     # Django modules
     'django.contrib.admin',
     'django.contrib.auth',
@@ -53,7 +53,7 @@ DEFAULT_INSTALLED_APPS = (
     'twiltwil.api',
 )
 
-DEFAULT_MIDDLEWARE = (
+MIDDLEWARE = (
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -63,7 +63,7 @@ DEFAULT_MIDDLEWARE = (
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
-DEFAULT_TEMPLATES = [{
+TEMPLATES = [{
     'BACKEND': 'django.template.backends.django.DjangoTemplates',
     'APP_DIRS': True,
     'OPTIONS': {

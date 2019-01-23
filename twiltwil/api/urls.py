@@ -14,9 +14,9 @@ from twiltwil.api.views.webhookvoiceview import WebhookVoiceView
 from twiltwil.api.views.workertokenview import WorkerTokenView
 from twiltwil.api.views.workspacetokenview import WorkspaceTokenView
 
-__author__ = 'Alex Laird'
-__copyright__ = 'Copyright 2018, Alex Laird'
-__version__ = '0.1.0'
+__author__ = "Alex Laird"
+__copyright__ = "Copyright 2018, Alex Laird"
+__version__ = "0.1.0"
 
 urlpatterns = [
     # TwilTwil REST URLs

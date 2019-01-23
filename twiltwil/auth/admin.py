@@ -7,9 +7,9 @@ from django.core import exceptions
 
 from twiltwil.common.admin import BaseModelAdmin, admin_site
 
-__author__ = 'Alex Laird'
-__copyright__ = 'Copyright 2018, Alex Laird'
-__version__ = '0.1.0'
+__author__ = "Alex Laird"
+__copyright__ = "Copyright 2018, Alex Laird"
+__version__ = "0.1.0"
 
 
 class AdminUserCreationForm(UserCreationForm):

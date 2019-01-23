@@ -4,9 +4,9 @@ Context processors for project-specific attributes to be passed to all templates
 import phonenumbers
 from django.conf import settings
 
-__author__ = 'Alex Laird'
-__copyright__ = 'Copyright 2018, Alex Laird'
-__version__ = '0.1.0'
+__author__ = "Alex Laird"
+__copyright__ = "Copyright 2018, Alex Laird"
+__version__ = "0.1.0"
 
 
 def template(request):

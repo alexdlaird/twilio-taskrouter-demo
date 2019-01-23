@@ -5,22 +5,21 @@ Settings specific to prod-like deployable code, reading values from system envir
 import os
 
 from conf.settings import PROJECT_ID
-from .common import DEFAULT_TEMPLATES, DEFAULT_MIDDLEWARE, DEFAULT_INSTALLED_APPS, DEBUG, PROJECT_NAME, \
-    ADMIN_EMAIL_ADDRESS
+from . import common
 
 __author__ = 'Alex Laird'
 __copyright__ = 'Copyright 2018, Alex Laird'
-__version__ = '0.1.0'
+__version__ = '0.1.2'
 
 # Application definition
 
-INSTALLED_APPS = DEFAULT_INSTALLED_APPS
+INSTALLED_APPS = common.INSTALLED_APPS
 
-MIDDLEWARE = DEFAULT_MIDDLEWARE
+MIDDLEWARE = common.MIDDLEWARE
 
-TEMPLATES = DEFAULT_TEMPLATES
+TEMPLATES = common.TEMPLATES
 
-if DEBUG:
+if common.DEBUG:
     TEMPLATES[0]['OPTIONS']['context_processors'] += (
         'django.template.context_processors.debug',
     )
@@ -35,9 +34,9 @@ SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
 
 # Logging
 
-if not DEBUG:
+if not common.DEBUG:
     ADMINS = (
-        (PROJECT_NAME, ADMIN_EMAIL_ADDRESS),
+        (common.PROJECT_NAME, common.ADMIN_EMAIL_ADDRESS),
     )
     MANAGERS = ADMINS
 

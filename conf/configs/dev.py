@@ -6,26 +6,26 @@ import os
 import warnings
 
 from conf.settings import PROJECT_ID
-from .common import DEFAULT_TEMPLATES, DEFAULT_MIDDLEWARE, DEFAULT_INSTALLED_APPS, PIPELINE
+from . import common
 
 __author__ = 'Alex Laird'
 __copyright__ = 'Copyright 2018, Alex Laird'
-__version__ = '0.1.0'
+__version__ = '0.1.2'
 
 # Define the base working directory of the application
 BASE_DIR = os.path.normpath(os.path.join(os.path.abspath(os.path.dirname(__file__)), '..', '..'))
 
 # Application definition
 
-INSTALLED_APPS = DEFAULT_INSTALLED_APPS + (
+INSTALLED_APPS = common.INSTALLED_APPS + (
     'debug_toolbar',
 )
 
-MIDDLEWARE = DEFAULT_MIDDLEWARE + (
+MIDDLEWARE = common.MIDDLEWARE + (
     'debug_toolbar.middleware.DebugToolbarMiddleware',
 )
 
-TEMPLATES = DEFAULT_TEMPLATES
+TEMPLATES = common.TEMPLATES
 
 TEMPLATES[0]['OPTIONS']['context_processors'] += (
     'django.template.context_processors.debug',
@@ -40,6 +40,10 @@ TEMPLATES[0]['OPTIONS']['context_processors'] += (
 INTERNAL_IPS = (
     '127.0.0.1',
 )
+
+ALLOWED_HOSTS = common.ALLOWED_HOSTS + [
+    '.ngrok.io'
+]
 
 # Logging
 
@@ -96,7 +100,7 @@ if os.environ.get('USE_IN_MEMORY_DB', 'True') == 'True':
         }
     }
 else:
-    from conf.configs import deploy
+    from conf.configs import deploy, common
 
     SESSION_ENGINE = deploy.SESSION_ENGINE
     CACHES = deploy.CACHES
@@ -117,5 +121,9 @@ else:
 
 # Pipelines
 
-PIPELINE['CSS_COMPRESSOR'] = None
-PIPELINE['JS_COMPRESSOR'] = None
+common.PIPELINE['CSS_COMPRESSOR'] = None
+common.PIPELINE['JS_COMPRESSOR'] = None
+
+# Server
+
+USE_NGROK = os.environ.get('USE_NGROK', 'False') == 'True'

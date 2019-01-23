@@ -12,9 +12,9 @@ from twiltwil.auth.forms.userregistrationform import UserRegisterForm
 from twiltwil.auth.services import authservice
 from twiltwil.common.utils.viewutils import set_request_status, get_request_status
 
-__author__ = 'Alex Laird'
-__copyright__ = 'Copyright 2018, Alex Laird'
-__version__ = '0.1.0'
+__author__ = "Alex Laird"
+__copyright__ = "Copyright 2018, Alex Laird"
+__version__ = "0.1.0"
 
 logger = logging.getLogger(__name__)
 
