@@ -1,15 +1,11 @@
 import os
 import sys
+from urllib.parse import urlparse
 
 from django.apps import AppConfig
 from django.conf import settings
-from future.standard_library import install_aliases
 from pyngrok import ngrok
 from twilio.rest import Client
-
-install_aliases()
-
-from urllib.parse import urlparse
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2018, Alex Laird"
