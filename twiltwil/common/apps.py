@@ -4,7 +4,6 @@ from urllib.parse import urlparse
 
 from django.apps import AppConfig
 from django.conf import settings
-from pyngrok import ngrok
 from twilio.rest import Client
 
 __author__ = "Alex Laird"
@@ -23,12 +22,16 @@ class CommonConfig(AppConfig):
 
     @staticmethod
     def init_ngrok():
+        from pyngrok import ngrok
+
         addrport = urlparse('http://{}'.format(sys.argv[-1]))
         port = addrport.port if addrport.netloc and addrport.port else 8000
         public_url = ngrok.connect(port)
         print('ngrok tunneling from {} -> http://127.0.0.1:{}/'.format(public_url, port))
 
-        CommonConfig.init_webhook(public_url)
+        settings.PROJECT_HOST = public_url.rstrip("/")
+
+        CommonConfig.init_webhooks(public_url)
 
     @staticmethod
     def init_webhooks(callback_url):
