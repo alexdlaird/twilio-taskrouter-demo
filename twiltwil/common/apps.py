@@ -20,7 +20,7 @@ class CommonConfig(AppConfig):
             # pyngrok will only be installed, and should only ever be initialized, in a dev environment
             from pyngrok import ngrok
 
-            # Get the dev server port (defaults to 8000 for Django, can be overriden with the
+            # Get the dev server port (defaults to 8000 for Django, can be overridden with the
             # last arg when calling `runserver`)
             addrport = urlparse('http://{}'.format(sys.argv[-1]))
             port = addrport.port if addrport.netloc and addrport.port else 8000
