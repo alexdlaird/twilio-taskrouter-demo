@@ -37,7 +37,7 @@ class CommonConfig(AppConfig):
     def init_webhooks(public_url):
         client = Client(settings.TWILIO_ACCOUNT_SID, settings.TWILIO_AUTH_TOKEN)
 
-        phone_number = client.incoming_phone_numbers.list(phone_number=settings.TWILIO_SMS_FROM)[0]
+        phone_number = client.incoming_phone_numbers.list(phone_number=settings.TWILIO_PHONE_NUMBER)[0]
         sms_callback_url = "{}/api/webhooks/sms".format(public_url)
         voice_callback_url = "{}/api/webhooks/voice".format(public_url)
         client.incoming_phone_numbers(phone_number.sid).update(voice_url=voice_callback_url,

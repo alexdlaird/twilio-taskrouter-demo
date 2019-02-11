@@ -71,5 +71,5 @@ def send_sms(phone, message):
 
     client.api.account.messages.create(
         to=phone,
-        from_=settings.TWILIO_SMS_FROM,
+        from_=settings.TWILIO_PHONE_NUMBER,
         body=message)

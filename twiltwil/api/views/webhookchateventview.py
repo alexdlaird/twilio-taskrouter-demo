@@ -41,7 +41,7 @@ class WebhookChatEventView(APIView):
                 Message.objects.update_or_create(sid=request.data['MessageSid'], defaults={
                     "timestamp": parser.parse(request.data['DateCreated']),
                     "channel": channel,
-                    "sender": settings.TWILIO_SMS_FROM,
+                    "sender": settings.TWILIO_PHONE_NUMBER,
                     "recipient": contact.sid,
                     "direction": enums.MESSAGE_OUTBOUND,
                     "status": enums.MESSAGE_STATUS_SENT,
