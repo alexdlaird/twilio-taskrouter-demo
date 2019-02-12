@@ -5,9 +5,9 @@ __copyright__ = "Copyright 2018, Alex Laird"
 __version__ = "0.1.0"
 
 
-def given_a_contact_exists(sid='CONTACT12345', first_name='John', last_name='Doe', phone_number='+15555555555',
+def given_a_contact_exists(uuid='5082e5c3-28a8-4541-8e85-beedeba4ca43', first_name='John', last_name='Doe', phone_number='+15555555555',
                            email='jon@example.com'):
-    contact = Contact.objects.create(sid=sid,
+    contact = Contact.objects.create(uuid=uuid,
                                      first_name=first_name,
                                      last_name=last_name,
                                      phone_number=phone_number,

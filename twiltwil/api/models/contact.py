@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 
 
 class Contact(BaseModel):
-    sid = models.CharField(max_length=255, unique=True)
+    uuid = models.UUIDField(unique=True)
 
     first_name = models.CharField(max_length=50, blank=True, null=True)
 

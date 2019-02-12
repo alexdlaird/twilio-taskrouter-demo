@@ -30,7 +30,7 @@ class WebhookChatEventView(APIView):
 
                 # TODO: detect the originating channel of the inbound (ex. SMS)
                 channel = enums.CHANNEL_SMS
-                contact = Contact.objects.get(sid=attributes['To'])
+                contact = Contact.objects.get(uuid=attributes['To'])
 
                 # TODO: here you would execute different "sends" for different originating channels
                 if channel == enums.CHANNEL_SMS:
@@ -42,7 +42,7 @@ class WebhookChatEventView(APIView):
                     "timestamp": parser.parse(request.data['DateCreated']),
                     "channel": channel,
                     "sender": settings.TWILIO_PHONE_NUMBER,
-                    "recipient": contact.sid,
+                    "recipient": contact.uuid,
                     "direction": enums.MESSAGE_OUTBOUND,
                     "status": enums.MESSAGE_STATUS_SENT,
                     "text": request.data['Body'],

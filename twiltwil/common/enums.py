@@ -253,6 +253,8 @@ MESSAGE_STATUS_CHOICES = (
 )
 
 CHANNEL_SMS = 'sms'
+CHANNEL_VOICE = 'voice'
 CHANNEL_CHOICES = (
     (CHANNEL_SMS, 'SMS'),
+    (CHANNEL_VOICE, 'Voice'),
 )

@@ -30,9 +30,9 @@ class MessageQuerySet(models.query.QuerySet):
     def no_worker(self):
         return self.filter(worker_sid__isnull=True)
 
-    def for_contact(self, sid):
+    def for_contact(self, uuid):
         return self.filter(
-            Q(direction=enums.MESSAGE_OUTBOUND, recipient=sid) | Q(direction=enums.MESSAGE_INBOUND, sender=sid))
+            Q(direction=enums.MESSAGE_OUTBOUND, recipient=uuid) | Q(direction=enums.MESSAGE_INBOUND, sender=uuid))
 
     def for_channel(self, channel):
         return self.filter(channel=channel)
@@ -60,8 +60,8 @@ class MessageManager(BaseUserManager):
     def no_worker(self):
         return self.get_queryset().no_worker()
 
-    def for_contact(self, sid):
-        return self.get_queryset().for_contact(sid)
+    def for_contact(self, uuid):
+        return self.get_queryset().for_contact(uuid)
 
     def for_channel(self, channel):
         return self.get_queryset().for_channel(channel)

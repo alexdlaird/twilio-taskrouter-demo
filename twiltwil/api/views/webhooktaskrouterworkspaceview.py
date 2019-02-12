@@ -47,9 +47,13 @@ class WebhookTaskRouterWorkspaceView(APIView):
 
                 task_attributes = json.loads(messageutils.cleanup_json(request.data['TaskAttributes']))
 
-                # TODO: detect the originating channel of the inbound (ex. SMS)
-                channel = enums.CHANNEL_SMS
-                contact = Contact.objects.get(sid=task_attributes['from'])
+                # TODO: detect other types of originating channels
+                task_channel = request.data.get('TaskChannelUniqueName', 'sms')
+                if task_channel == 'voice':
+                    channel = enums.CHANNEL_VOICE
+                else:
+                    channel = enums.CHANNEL_SMS
+                contact = Contact.objects.get(uuid=task_attributes['channel'])
 
                 # TODO: here you would execute different "sends" for different originating channels
                 cancelled_message = 'Sorry, your question could not be answered because the agent assigned to it is ' \

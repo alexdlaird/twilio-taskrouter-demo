@@ -1,5 +1,6 @@
 import json
 import logging
+import uuid
 
 from django.utils import timezone
 from rest_framework.views import APIView
@@ -24,14 +25,14 @@ class WebhookSmsView(APIView):
 
         # Store (or update, if this redundant) the contact and message in the database
         contact, created = Contact.objects.get_or_create(phone_number=request.data['From'], defaults={
-            "sid": request.data['MessageSid'],
+            "uuid": uuid.uuid4(),
             "phone_number": request.data['From'],
         })
 
         message, created = Message.objects.update_or_create(sid=request.data['MessageSid'], defaults={
             "timestamp": timezone.now(),
             "channel": enums.CHANNEL_SMS,
-            "sender": contact.sid,
+            "sender": contact.uuid,
             "recipient": request.data['To'],
             "direction": enums.MESSAGE_INBOUND,
             "status": request.data['SmsStatus'],
@@ -40,10 +41,10 @@ class WebhookSmsView(APIView):
             "raw": json.dumps(request.data),
         })
 
-        channel = twilioservice.get_or_create_channel(contact.phone_number, contact.sid)
+        channel = twilioservice.get_or_create_chat_channel(contact.phone_number, str(contact.uuid))
 
         # Check if the other messages exist from this sender that are associated with an open Task
-        sender_messages_with_tasks = Message.objects.not_resolved().inbound().for_contact(contact.sid).has_task()
+        sender_messages_with_tasks = Message.objects.not_resolved().inbound().for_contact(contact.uuid).has_task()
         task = None
         if sender_messages_with_tasks.exists():
             db_task = sender_messages_with_tasks[0]
@@ -71,7 +72,7 @@ class WebhookSmsView(APIView):
         # If no open Task was found, create a new one
         if not task:
             attributes = {
-                "from": message.sender
+                "from": str(message.sender)
             }
 
             message_addons = json.loads(message.addons)

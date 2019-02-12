@@ -52,6 +52,26 @@ def _create_workspace(workspace_name):
     return client.taskrouter.workspaces.create(
         friendly_name=workspace_name,
         event_callback_url=settings.PROJECT_HOST + reverse('api_webhooks_taskrouter_workspace'),
+        template="EMPTY"
+    )
+
+
+def _create_activities():
+    """
+    Create the default Activities.
+    """
+    client.taskrouter.workspaces(get_workspace().sid).activities.create(
+        friendly_name="Offline"
+    )
+    client.taskrouter.workspaces(get_workspace().sid).activities.create(
+        friendly_name="Idle",
+        available=True
+    )
+    client.taskrouter.workspaces(get_workspace().sid).activities.create(
+        friendly_name="Busy"
+    )
+    client.taskrouter.workspaces(get_workspace().sid).activities.create(
+        friendly_name="Reserved"
     )
 
 
@@ -157,6 +177,12 @@ def get_workspace():
 
     if not _workspace:
         _workspace = _create_workspace(workspace_name)
+
+        _create_activities()
+
+        offline_activity_sid = _get_activity("Offline").sid
+        client.taskrouter.workspaces(_workspace.sid).update(default_activity_sid=offline_activity_sid,
+                                                            timeout_activity_sid=offline_activity_sid)
 
         queues = _create_queues()
 

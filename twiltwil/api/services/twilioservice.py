@@ -1,5 +1,5 @@
 """
-Service functions for interacting with Twilio's TaskRouter.
+Service functions for interacting with Twilio's APIs.
 """
 import json
 import logging
@@ -42,7 +42,7 @@ def cancel_worker_task(username, task_sid):
     )
 
 
-def get_or_create_channel(number, unique_name):
+def get_or_create_chat_channel(number, unique_name):
     try:
         return client.chat.services(twilioauthservice.get_service().sid).channels(unique_name).fetch()
     except TwilioRestException as e:

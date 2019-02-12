@@ -90,7 +90,7 @@ $(function () {
         var $user;
         if (message.author === USER.username) {
             $user = $('<h5 class="media-heading me"></h5>').text(USER.username + " (me)");
-        } else if (message.author !== currentContact.sid) {
+        } else if (message.author !== currentContact.uuid) {
             $user = $('<h5 class="media-heading me"></h5>').text(message.author + " (previous agent)");
         } else {
             $user = $('<h5 class="media-heading"></h5>').text(currentContact.card);
@@ -272,13 +272,16 @@ $(function () {
 
             reservation.accept();
 
-            var chatContact = reservation.task.attributes.from;
+            var chatContact = reservation.task.attributes.channel;
 
             initTaskTimer(reservation.task);
 
             CHAT_CLIENT.getSubscribedChannels().then(function () {
                 joinChannel(chatContact);
             });
+
+            // TODO: if a voice call, UI should reflect that ("Mark Sovled" should be "Hang Up", etc.)
+            // Twilio.Device.connect for browser audio: https://www.twilio.com/docs/voice/client/javascript/device#connect
         });
 
         // Refresh token every 2 minutes

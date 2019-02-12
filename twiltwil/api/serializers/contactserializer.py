@@ -14,4 +14,4 @@ logger = logging.getLogger(__name__)
 class ContactSerializer(serializers.ModelSerializer):
     class Meta:
         model = Contact
-        fields = ('id', 'sid', 'first_name', 'last_name', 'phone_number', 'email', 'card',)
+        fields = ('id', 'uuid', 'first_name', 'last_name', 'phone_number', 'email', 'card',)
