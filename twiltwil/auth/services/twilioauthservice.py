@@ -10,6 +10,7 @@ from django.core.cache import cache
 from django.urls import reverse
 from twilio.jwt.access_token import AccessToken
 from twilio.jwt.access_token.grants import SyncGrant, ChatGrant
+from twilio.jwt.client import ClientCapabilityToken
 from twilio.jwt.taskrouter.capabilities import WorkerCapabilityToken, WorkspaceCapabilityToken
 from twilio.rest import Client
 
@@ -17,7 +18,7 @@ from twiltwil.common import enums
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2018, Alex Laird"
-__version__ = "0.1.1"
+__version__ = "0.2.0"
 
 logger = logging.getLogger(__name__)
 
@@ -180,9 +181,9 @@ def get_workspace():
 
         _create_activities()
 
-        offline_activity_sid = _get_activity("Offline").sid
-        client.taskrouter.workspaces(_workspace.sid).update(default_activity_sid=offline_activity_sid,
-                                                            timeout_activity_sid=offline_activity_sid)
+        idle_activity_sid = _get_activity("Idle").sid
+        client.taskrouter.workspaces(_workspace.sid).update(default_activity_sid=idle_activity_sid,
+                                                            timeout_activity_sid=idle_activity_sid)
 
         queues = _create_queues()
 
@@ -213,6 +214,8 @@ def get_activities():
 def create_worker(friendly_name, attributes):
     logger.info('Creating Worker {} with attributes {}'.format(friendly_name, attributes))
 
+    attributes['contact_uri'] = 'client:{}'.format(friendly_name)
+
     return client.taskrouter.workspaces(get_workspace().sid).workers.create(
         friendly_name=friendly_name,
         activity_sid=_get_activity("Idle").sid,
@@ -231,7 +234,7 @@ def delete_worker(worker_sid):
 def get_chat_token(username):
     logger.info('Generating Chat token for {}'.format(username))
 
-    # This call is simply to ensure the service exists, though it is not needed to generate token
+    # This call is simply to ensure the service exists
     service = get_service()
 
     token = AccessToken(settings.TWILIO_ACCOUNT_SID, settings.TWILIO_API_KEY, settings.TWILIO_API_SECRET,
@@ -243,27 +246,55 @@ def get_chat_token(username):
     chat_grant = ChatGrant(service_sid=service.sid)
     token.add_grant(chat_grant)
 
-    return token.to_jwt()
+    # Expire token in three minutes
+    expiration = 180
+
+    token = token.to_jwt(ttl=expiration)
+
+    # Cache the token, set to expire after the token expires
+    cache.set('tokens:chat:{}'.format(username), token, expiration)
+
+    return token
 
 
-def get_workspace_token(worker_sid):
+def get_voice_token(username):
+    logger.info('Generating Voice token for {}'.format(username))
+
+    token = ClientCapabilityToken(settings.TWILIO_ACCOUNT_SID, settings.TWILIO_AUTH_TOKEN)
+    token.allow_client_incoming(username)
+
+    # Expire token in three minutes
+    expiration = 180
+
+    token = token.to_jwt(ttl=expiration)
+
+    # Cache the token, set to expire after the token expires
+    cache.set('tokens:voice:{}'.format(username), token, expiration)
+
+    return token
+
+
+def get_workspace_token():
+    workspace_sid = get_workspace().sid
+
+    logger.info('Generating Workspace token for {}'.format(workspace_sid))
+
     capability = WorkspaceCapabilityToken(
         account_sid=settings.TWILIO_ACCOUNT_SID,
         auth_token=settings.TWILIO_AUTH_TOKEN,
-        workspace_sid=get_workspace().sid,
+        workspace_sid=workspace_sid,
     )
-
     capability.allow_fetch_subresources()
     capability.allow_update_subresources()
     capability.allow_delete_subresources()
 
-    # Expire token in five minutes
-    expiration = 300
+    # Expire token in three minutes
+    expiration = 180
 
     token = capability.to_jwt(ttl=expiration)
 
-    # Cache the token, set to expire when the token expires
-    cache.set('tokens:workspaces:{}'.format(worker_sid), token, expiration)
+    # Cache the token, set to expire after the token expires
+    cache.set('tokens:workspaces:{}'.format(workspace_sid), token, expiration)
 
     return token
 
@@ -286,7 +317,7 @@ def get_worker_token(worker_sid):
 
     token = capability.to_jwt(ttl=expiration)
 
-    # Cache the token, set to expire when the token expires
+    # Cache the token, set to expire after the token expires
     cache.set('tokens:workers:{}'.format(worker_sid), token, expiration)
 
     return token

@@ -2,7 +2,7 @@
  * Copyright (c) 2018 Alex Laird.
  *
  * @author Alex Laird
- * @version 0.1.0
+ * @version 0.2.0
  */
 
 function TwilTwilApi() {
@@ -39,8 +39,12 @@ function TwilTwilApi() {
                 type: type,
                 url: self.SITE_URL + url,
                 dataType: "json",
-                data: JSON.stringify(data)
+                data: data ? JSON.stringify(data) : null
             });
+    };
+
+    this.getInfo = function () {
+        return self.ajaxRequest("GET", "/api/info");
     };
 
     this.getUser = function () {
@@ -61,6 +65,10 @@ function TwilTwilApi() {
 
     this.getTwilioChatToken = function (username) {
         return self.ajaxRequest("POST", "/api/chat/token", {"username": username});
+    };
+
+    this.getTwilioVoiceToken = function (username) {
+        return self.ajaxRequest("POST", "/api/voice/token", {"username": username});
     };
 }
 

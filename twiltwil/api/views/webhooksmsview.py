@@ -14,7 +14,7 @@ from twiltwil.common.utils import viewutils
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2018, Alex Laird"
-__version__ = "0.1.0"
+__version__ = "0.2.0"
 
 logger = logging.getLogger(__name__)
 
@@ -92,4 +92,4 @@ class WebhookSmsView(APIView):
 
         twilioservice.send_chat_message(channel, message)
 
-        return viewutils.get_empty_webhook_response()
+        return viewutils.get_empty_messaging_webhook_response()

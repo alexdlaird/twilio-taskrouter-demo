@@ -3,6 +3,7 @@ from urllib.parse import unquote
 
 from django.http import HttpResponse
 from twilio.twiml.messaging_response import MessagingResponse
+from twilio.twiml.voice_response import VoiceResponse
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2018, Alex Laird"
@@ -45,5 +46,9 @@ def get_request_status(request, default=None):
     return status
 
 
-def get_empty_webhook_response():
+def get_empty_messaging_webhook_response():
     return HttpResponse(str(MessagingResponse()), content_type='text/xml')
+
+
+def get_empty_voice_webhook_response():
+    return HttpResponse(str(VoiceResponse()), content_type='text/xml')

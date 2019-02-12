@@ -43,7 +43,6 @@
                                 <option value="1440">Day</option>
                                 <option value="10080" selected>Week</option>
                                 <option value="43800">Month</option>
-                                <option value="525600">Year</option>
                             </select>
                             <ul id="user-details-statistics">
                                 <li>
@@ -64,7 +63,7 @@
                         <h3 class="panel-title">Someone Need Help?</h3>
                     </div>
                     <div class="panel-body">
-                        <p>Give them this number to text.</p>
+                        <p>Give them this number to text or call.</p>
 
                         <div class="text-center">
                             <h3><span class="label label-primary">{{ PHONE_NUMBER }}</span></h3>
@@ -73,6 +72,9 @@
                 </div>
             </div>
             <div id="chat-window" class="container col-sm-9" style="display: none">
+                <div id="voice-call-notice" class="alert alert-info" role="alert" style="display: none">You are on a
+                    voice call. Message history with this contact is shown below for context.</div>
+
                 <div class="message-wrap col-lg-12">
                     <div id="messages" class="msg-wrap">
                     </div>
@@ -83,8 +85,7 @@
                     </div>
                     <div class="btn-panel">
                         <button id="solve-button" class="col-lg-3 btn send-message-btn" role="button"><i
-                                class="fa fa-check"></i> Mark
-                            Solved
+                                class="fa fa-check"></i> <span id="mark-solved-text">Mark Solved</span>
                         </button>
                         <button id="send-button" class="col-lg-4 text-right btn send-message-btn pull-right"
                                 role="button">
@@ -112,6 +113,7 @@
     <script type="text/javascript" src="//media.twiliocdn.com/taskrouter/js/1.15/taskrouter.min.js"></script>
     <script type="text/javascript" src="//media.twiliocdn.com/sdk/js/common/v0.1/twilio-common.min.js"></script>
     <script type="text/javascript" src="//media.twiliocdn.com/sdk/js/chat/v2.1/twilio-chat.min.js"></script>
+    <script type="text/javascript" src="//media.twiliocdn.com/sdk/js/client/v1.6/twilio.min.js"></script>
     <script type="text/javascript" src="//www.youtube.com/player_api"></script>
 
     {% javascript "portal" %}

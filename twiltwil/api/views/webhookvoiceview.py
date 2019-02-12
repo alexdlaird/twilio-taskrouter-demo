@@ -8,7 +8,7 @@ from twilio.twiml.voice_response import VoiceResponse, Gather
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2018, Alex Laird"
-__version__ = "0.1.0"
+__version__ = "0.2.0"
 
 logger = logging.getLogger(__name__)
 
@@ -22,5 +22,6 @@ class WebhookVoiceView(APIView):
         gather.say("For English, please hold or press one.", language='en')
         gather.say("Para Español oprime dos.", language='es')
         response.append(gather)
+        response.redirect(reverse("api_webhooks_voice_enqueue"))
 
         return HttpResponse(str(response))

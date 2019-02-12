@@ -2,17 +2,20 @@
  * Copyright (c) 2018 Alex Laird.
  *
  * @author Alex Laird
- * @version 0.1.0
+ * @version 0.2.0
  */
 
 $(function () {
+    var INFO;
     var USER;
     var CHAT_CLIENT;
-    var WORKSPACE;
-    var WORKER;
+    var VOICE_CLIENT;
+    var WORKSPACE_CLIENT;
+    var WORKER_CLIENT;
 
     var currentChannel;
     var currentContact;
+    var currentConnection;
     var taskInterval;
     var taskSecondCounter;
     var statisticsTimeRange = "10080";
@@ -29,25 +32,42 @@ $(function () {
     var $userDetailsCurrentTaskTime = $("#user-details-current-task-time");
 
     function lobbyVideoCommand(command) {
-        $lobbyVideo[0].contentWindow.postMessage('{"event":"command","func":"' + command + '","args":""}', '*');
-    }
-
-    function refreshWorkspaceToken() {
-        if (WORKSPACE) {
-            console.log("Getting refresh token for Workspace.");
-
-            twiltwilapi.getTwilioWorkspaceToken().done(function (data) {
-                WORKSPACE.updateToken(data.token);
-            });
+        if ($lobbyVideo.length > 0) {
+            $lobbyVideo[0].contentWindow.postMessage('{"event":"command","func":"' + command + '","args":""}', '*');
         }
     }
 
-    function refreshWorkerToken() {
-        if (WORKER) {
+    function refreshTokens() {
+        // TODO: after a while a stats token starts getting 400s from event-bridge, should be investigated
+        if (WORKSPACE_CLIENT) {
+            console.log("Getting refresh token for Workspace.");
+
+            twiltwilapi.getTwilioWorkspaceToken().done(function (data) {
+                WORKSPACE_CLIENT.updateToken(data.token);
+            });
+        }
+
+        if (WORKER_CLIENT) {
             console.log("Getting refresh token for Worker.");
 
             twiltwilapi.getTwilioWorkerToken().done(function (data) {
-                WORKER.updateToken(data.token);
+                WORKER_CLIENT.updateToken(data.token);
+            });
+        }
+
+        if (CHAT_CLIENT) {
+            console.log("Getting refresh token for Chat.");
+
+            twiltwilapi.getTwilioChatToken(USER.username).done(function (data) {
+                CHAT_CLIENT.updateToken(data.token);
+            });
+        }
+
+        if (VOICE_CLIENT) {
+            console.log("Getting refresh token for Voice.");
+
+            twiltwilapi.getTwilioVoiceToken(USER.username).done(function (data) {
+                VOICE_CLIENT.updateToken(data.token);
             });
         }
     }
@@ -65,15 +85,15 @@ $(function () {
         ++taskSecondCounter;
 
         $userDetailsCurrentTaskTime.html("Time since question asked: " + pad(parseInt(taskSecondCounter / 60) + ":"
-                + pad(taskSecondCounter % 60)));
+                                         + pad(taskSecondCounter % 60)));
     }
 
     function updateWorkerActivity(activityName) {
-        WORKER.activities.fetch(
+        WORKER_CLIENT.activities.fetch(
             function (error, activities) {
                 for (var i = 0; i < activities.data.length; i++) {
                     if (activities.data[i].friendlyName === activityName) {
-                        WORKER.update("ActivitySid", activities.data[i].sid);
+                        WORKER_CLIENT.update("ActivitySid", activities.data[i].sid);
 
                         break;
                     }
@@ -166,8 +186,20 @@ $(function () {
         });
     }
 
+    function initVoiceDevice(token) {
+        VOICE_CLIENT = new Twilio.Device();
+        VOICE_CLIENT.setup(token);
+
+        VOICE_CLIENT.on("incoming", function (connection) {
+            console.log('Incoming connection from ' + connection.parameters.From);
+
+            connection.accept();
+            currentConnection = connection;
+        });
+    }
+
     function updateWorkspaceStatistics() {
-        WORKSPACE.statistics.fetch({"Minutes": statisticsTimeRange}, function (error, statistics) {
+        WORKSPACE_CLIENT.statistics.fetch({"Minutes": statisticsTimeRange}, function (error, statistics) {
             if (error) {
                 console.log(error.code);
                 console.log(error.message);
@@ -176,19 +208,19 @@ $(function () {
 
             var $onlineAgents = $('<li>Online agents: ' + statistics.realtime.totalWorkers + '</li>');
             var $pendingTasks = $('<li>Queued questions: ' + statistics.realtime.tasksByStatus.pending
-                + '</li>');
+                                  + '</li>');
             var $assignedTasks = $('<li>Assigned questions: ' + statistics.realtime.tasksByStatus.assigned
-                + '</li>');
+                                   + '</li>');
             var $completedTasks = $('<li>Answered this week: ' + statistics.cumulative.tasksCompleted
-                + '</li>');
+                                    + '</li>');
             var $longestWaitTime = $('<li>Longest wait time: '
-                + (pad(parseInt(statistics.cumulative.waitDurationUntilAccepted.max / 60) + ":"
-                    + pad(statistics.cumulative.waitDurationUntilAccepted.max % 60)))
-                + '</li>');
+                                     + (pad(parseInt(statistics.cumulative.waitDurationUntilAccepted.max / 60) + ":"
+                                     + pad(statistics.cumulative.waitDurationUntilAccepted.max % 60)))
+                                     + '</li>');
             var $averageWaitTime = $('<li>Average wait time: '
-                + (pad(parseInt(statistics.cumulative.waitDurationUntilAccepted.avg / 60) + ":"
-                    + pad(statistics.cumulative.waitDurationUntilAccepted.avg % 60)))
-                + '</li>');
+                                     + (pad(parseInt(statistics.cumulative.waitDurationUntilAccepted.avg / 60) + ":"
+                                     + pad(statistics.cumulative.waitDurationUntilAccepted.avg % 60)))
+                                     + '</li>');
 
             $userDetailsStatistics.html("").append($onlineAgents).append($pendingTasks).append($assignedTasks)
                 .append($completedTasks).append($longestWaitTime).append($averageWaitTime);
@@ -198,7 +230,7 @@ $(function () {
     }
 
     function updateWorkerStatistics() {
-        WORKER.statistics.fetch({"Minutes": statisticsTimeRange}, function (error, statistics) {
+        WORKER_CLIENT.statistics.fetch({"Minutes": statisticsTimeRange}, function (error, statistics) {
             if (error) {
                 console.log(error.code);
                 console.log(error.message);
@@ -216,33 +248,32 @@ $(function () {
 
             if (busyActivity && busyActivity.avg !== 0) {
                 $userDetailsAverageTaskTime.html("Average solving time: " + pad(parseInt(
-                            busyActivity.avg / 60) + ":" + pad(
-                            busyActivity.avg % 60)));
+                    busyActivity.avg / 60) + ":" + pad(
+                    busyActivity.avg % 60)));
             }
-
 
             console.log(statistics);
         });
     }
 
     function initWorkspace(token) {
-        WORKSPACE = new Twilio.TaskRouter.Workspace(token);
+        WORKSPACE_CLIENT = new Twilio.TaskRouter.Workspace(token);
 
-        WORKSPACE.on("ready", function (workspace) {
+        WORKSPACE_CLIENT.on("ready", function (workspace) {
             console.log(workspace.sid);
             console.log(workspace.friendlyName);
             console.log(workspace.prioritizeQueueOrder);
             console.log(workspace.defaultActivityName);
         });
 
-        // Refresh token every 4 minutes
-        setInterval(refreshWorkspaceToken, 1000 * 60 * 4);
+        // Refresh token every 2 minutes
+        setInterval(refreshTokens, 1000 * 60 * 2);
     }
 
     function initWorker(token) {
-        WORKER = new Twilio.TaskRouter.Worker(token);
+        WORKER_CLIENT = new Twilio.TaskRouter.Worker(token);
 
-        WORKER.on("ready", function (worker) {
+        WORKER_CLIENT.on("ready", function (worker) {
             console.log(worker.sid);
             console.log(worker.friendlyName);
             console.log(worker.activityName);
@@ -252,7 +283,7 @@ $(function () {
             $userDetailsStatus.html(worker.activityName);
         });
 
-        WORKER.on("activity.update", function (worker) {
+        WORKER_CLIENT.on("activity.update", function (worker) {
             console.log(worker.sid);
             console.log(worker.friendlyName);
             console.log(worker.activityName);
@@ -261,16 +292,40 @@ $(function () {
             $userDetailsStatus.html(worker.activityName);
         });
 
-        WORKER.on("reservation.created", function (reservation) {
+        WORKER_CLIENT.on("reservation.created", function (reservation) {
             console.log(reservation.sid);
             console.log(reservation.task.sid);
             console.log(reservation.task.priority);
             console.log(reservation.task.age);
             console.log(reservation.task.attributes);
 
-            updateWorkerActivity("Busy");
+            if (reservation.task.taskChannelUniqueName === "voice") {
+                $("#mark-solved-text").text("Mark Solved (Hang Up)");
+                $("#voice-call-notice").show();
 
-            reservation.accept();
+                var options = {
+                    "ConferenceStatusCallback": INFO.conference_status_callback_url,
+                    "ConferenceStatusCallbackEvent": "start,end,join,leave",
+                    "ConferenceRecord": "true",
+                    "EndConferenceOnExit": "true",
+                    "EndConferenceOnCustomerExit": "true",
+                    "BeepOnCustomerEntrance": "false"
+                };
+                reservation.conference(null, null, null, null, function (error, reservation) {
+                    if (error) {
+                        console.log(error.code);
+                        console.log(error.message);
+                        return;
+                    }
+
+                    console.log("Conference initiated");
+                }, options);
+            } else {
+                $("#mark-solved-text").text("Mark Solved");
+                $("#voice-call-notice").hide();
+
+                reservation.accept();
+            }
 
             var chatContact = reservation.task.attributes.channel;
 
@@ -279,14 +334,28 @@ $(function () {
             CHAT_CLIENT.getSubscribedChannels().then(function () {
                 joinChannel(chatContact);
             });
-
-            // TODO: if a voice call, UI should reflect that ("Mark Sovled" should be "Hang Up", etc.)
-            // Twilio.Device.connect for browser audio: https://www.twilio.com/docs/voice/client/javascript/device#connect
         });
 
-        // Refresh token every 2 minutes
-        setInterval(refreshWorkerToken, 1000 * 60 * 2);
+        WORKER_CLIENT.on("reservation.accepted", function (reservation) {
+            updateWorkerActivity("Busy");
+        });
+
+        WORKER_CLIENT.on("reservation.wrapup", function (reservation) {
+            console.log(reservation.sid);
+            console.log(reservation.task.sid);
+            console.log(reservation.task.priority);
+            console.log(reservation.task.age);
+            console.log(reservation.task.attributes);
+
+            markTaskComplete(reservation.task);
+        });
+
+        WORKER_CLIENT.on("task.canceled", wrapupQuestion);
     }
+
+    twiltwilapi.getInfo().done(function (data) {
+        INFO = data;
+    });
 
     twiltwilapi.getUser().done(function (data) {
         USER = data;
@@ -316,35 +385,48 @@ $(function () {
                     $userDetailsStatisticsTimeRange.change();
 
                     initChatClient(chatData.token);
+
+                    twiltwilapi.getTwilioVoiceToken(USER.username).done(function (voiceData) {
+                        initVoiceDevice(voiceData.token);
+                    });
                 });
             });
         });
     });
 
-    function markTaskComplete(task) {
-        WORKER.completeTask(task.sid, function () {
-            $chatWindow.hide();
-            $lobbyWindow.show();
-            lobbyVideoCommand('playVideo');
-            currentChannel.leave().then(function () {
-                console.log('Left channel ' + currentChannel.uniqueName);
+    function wrapupQuestion() {
+        $chatWindow.hide();
+        $lobbyWindow.show();
+        lobbyVideoCommand('playVideo');
+        currentChannel.leave().then(function () {
+            console.log('Left channel ' + currentChannel.uniqueName);
 
-                currentChannel = null;
-                currentContact = null;
+            currentChannel = null;
+            currentContact = null;
 
-                updateWorkerActivity("Idle");
+            updateWorkerActivity("Idle");
 
-                $userDetailsCurrentTaskTime.html("");
-                clearInterval(taskInterval);
-                $messages.html("");
-            });
+            $userDetailsCurrentTaskTime.html("");
+            clearInterval(taskInterval);
+            $messages.html("");
+
+            if (currentConnection) {
+                // FIXME: when the Worker disconnects here, the customer leg stays live; the conference should be terminated
+                currentConnection.disconnect();
+
+                currentConnection = null;
+            }
         });
+    }
+
+    function markTaskComplete(task) {
+        WORKER_CLIENT.completeTask(task.sid, wrapupQuestion);
     }
 
     function getCurrentTask() {
         return new Promise(function (resolve) {
             var task = null;
-            WORKER.fetchReservations(function (error, reservations) {
+            WORKER_CLIENT.fetchReservations(function (error, reservations) {
                 for (var i = 0; i < reservations.data.length; i++) {
                     if (reservations.data[i].task.assignmentStatus === "assigned") {
                         task = reservations.data[i].task;
@@ -380,24 +462,26 @@ $(function () {
 
         if ($chatWindow.filter(":visible").length) {
             bootbox.confirm({
-                title: "Unsolved Question",
-                message: "<p>Hey, a question is currently assigned to you but hasn't been solved. If you have " +
-                "already answered this question, click \"Mark Solved\" before logging out.</p><p>Logging out anyway " +
-                "will caused the question to be reasigned to the next available agent.</p>",
-                buttons: {
-                    cancel: {
-                        label: '<i class="fa fa-times"></i> Cancel'
-                    },
-                    confirm: {
-                        label: '<i class="fa fa-check"></i> Logout'
-                    }
-                },
-                callback: function (result) {
-                    if (result) {
-                        window.location = $("#logout-button").attr("href");
-                    }
-                }
-            });
+                                title: "Unsolved Question",
+                                message: "<p>Hey, a question is currently assigned to you but hasn't been solved. If you have "
+                                         +
+                                         "already answered this question, click \"Mark Solved\" before logging out.</p><p>Logging out anyway "
+                                         +
+                                         "will caused the question to be reasigned to the next available agent.</p>",
+                                buttons: {
+                                    cancel: {
+                                        label: '<i class="fa fa-times"></i> Cancel'
+                                    },
+                                    confirm: {
+                                        label: '<i class="fa fa-check"></i> Logout'
+                                    }
+                                },
+                                callback: function (result) {
+                                    if (result) {
+                                        window.location = $("#logout-button").attr("href");
+                                    }
+                                }
+                            });
         } else {
             window.location = $("#logout-button").attr("href");
         }
