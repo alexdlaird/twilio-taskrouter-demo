@@ -20,11 +20,11 @@ class WebhookVoiceEnqueueView(APIView):
     def post(self, request, *args, **kwargs):
         logger.info('Voice Enqueue POST received: {}'.format(json.dumps(request.data)))
 
-        digit_pressed = request.data.get("Digits", 1)
+        digit_pressed = int(request.data.get("Digits", "1"))
         if digit_pressed == 1:
-            language = "en"
+            language = "english"
         else:
-            language = "es"
+            language = "spanish"
 
         # Store (or update, if this redundant) the contact and message in the database
         contact, created = Contact.objects.get_or_create(phone_number=request.data['From'], defaults={

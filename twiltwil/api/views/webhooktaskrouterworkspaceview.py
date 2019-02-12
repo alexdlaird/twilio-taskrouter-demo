@@ -48,7 +48,7 @@ class WebhookTaskRouterWorkspaceView(APIView):
                 task_attributes = json.loads(messageutils.cleanup_json(request.data['TaskAttributes']))
 
                 # TODO: detect other types of originating channels
-                task_channel = request.data.get('TaskChannelUniqueName', 'sms')
+                task_channel = request.data.get('TaskChannelUniqueName', 'default')
                 if task_channel == 'voice':
                     channel = enums.CHANNEL_VOICE
                 else:
