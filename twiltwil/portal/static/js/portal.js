@@ -268,9 +268,7 @@ $(function () {
             console.log("Getting refresh token for Worker.");
 
             twiltwilapi.getTwilioWorkerToken().done(function (data) {
-                // Note: there is a bug in the TaskRouter JS SDK Worker such that updateToken() does not properly update
-                // the worker's token, so reconstructing the client instead
-                initWorker(data.token);
+                WORKER_CLIENT.updateToken(data.token);
             });
         });
 
