@@ -14,4 +14,6 @@ class InfoSerializer(serializers.Serializer):
 
     version = serializers.CharField()
 
+    disable_lobby_video = serializers.BooleanField()
+
     conference_status_callback_url = serializers.URLField()

@@ -355,6 +355,11 @@ $(function () {
 
     twiltwilapi.getInfo().done(function (data) {
         INFO = data;
+
+        if (INFO.disable_lobby_video) {
+            $lobbyVideo.remove();
+            $lobbyVideo = $("#lobby-video");
+        }
     });
 
     twiltwilapi.getUser().done(function (data) {

@@ -20,6 +20,7 @@ class InfoView(GenericAPIView, RetrieveModelMixin):
         serializer = InfoSerializer({
             'name': settings.PROJECT_NAME,
             'version': settings.PROJECT_VERSION,
+            'disable_lobby_video': settings.DISABLE_LOBBY_VIDEO,
             'conference_status_callback_url': settings.PROJECT_HOST + reverse('api_webhooks_voice_conference'),
         })
 
