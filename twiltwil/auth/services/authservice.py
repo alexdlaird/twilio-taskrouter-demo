@@ -49,8 +49,6 @@ def process_logout(request):
 
     user = get_user_model().objects.get(username=username)
     if not user.is_superuser:
-        # TODO: a better solution here would be proper user/password authentication and a "status" field on the User
-        # If this is removed, deleting inactive users should also be removed from the schedulservice
         delete_user(user)
 
     logger.info('Logged out and deleted user {}'.format(username))
@@ -70,7 +68,7 @@ def delete_user(user):
     for task_sid in Message.objects.not_resolved().inbound().for_worker(
             worker_sid).values_list('task_sid', flat=True).order_by('task_sid').distinct():
         try:
-            # TODO: once TaskRouter supports Task transfer, we would want to utilize that instead here
+            # TODO: once TaskRouter supports Task transfer, we could utilize that here instead
             twilioservice.cancel_worker_task(username, task_sid)
         except TwilioRestException as e:
             logger.warning(e)

@@ -64,7 +64,7 @@ class WebhookTaskRouterWorkspaceView(APIView):
             elif request.data['EventType'] == 'task.completed':
                 logger.info('Processing task.completed')
 
-                # TODO: once TaskRouter supports Task transfer, we would want to utilize that instead here
+                # TODO: once TaskRouter supports Task transfer, we could utilize that here instead
                 if 'TaskCompletedReason' in request.data and request.data['TaskCompletedReason'].startswith(
                         'User logged out'):
                     task_attributes = json.loads(messageutils.cleanup_json(request.data['TaskAttributes']))

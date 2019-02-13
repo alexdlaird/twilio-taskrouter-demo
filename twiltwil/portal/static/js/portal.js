@@ -38,7 +38,7 @@ $(function () {
     }
 
     function refreshTokens() {
-        // TODO: after a while a stats token starts getting 400s from event-bridge, should be investigated
+        // FIXME: after a while a stats token starts getting 400s from event-bridge, should be investigated
         if (WORKSPACE_CLIENT) {
             console.log("Getting refresh token for Workspace.");
 
@@ -416,7 +416,6 @@ $(function () {
             $messages.html("");
 
             if (currentConnection) {
-                // FIXME: when the Worker disconnects here, the customer leg stays live; the conference should be terminated
                 currentConnection.disconnect();
 
                 currentConnection = null;

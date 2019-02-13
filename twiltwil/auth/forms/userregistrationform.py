@@ -39,11 +39,6 @@ class UserRegisterForm(forms.ModelForm, BaseForm):
         try:
             cleaned_data['worker_sid'] = twilioauthservice.create_worker(cleaned_data['username'], attributes).sid
         except TwilioRestException as e:
-            if 'already exists' not in e.msg:
-                logger.warning(e)
-
-                raise forms.ValidationError("Oops, an unknown error occurred.")
-
             # If the Worker exists in Twilio but not in our database, it's orphaned, so just recreate it
             worker = twilioauthservice.get_worker_by_username(cleaned_data['username'])[0]
             twilioauthservice.delete_worker(worker.sid)

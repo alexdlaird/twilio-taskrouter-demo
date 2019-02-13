@@ -219,13 +219,6 @@ SKILL_CHOICES = (
 
 MESSAGE_INBOUND = 'inbound'
 MESSAGE_OUTBOUND = 'outbound'
-DIRECTION_CHOICES = (
-    (MESSAGE_INBOUND, 'Inbound'),
-    (MESSAGE_OUTBOUND, 'Outbound'),
-)
-
-MESSAGE_INBOUND = 'inbound'
-MESSAGE_OUTBOUND = 'outbound'
 MESSAGE_DIRECTION_CHOICES = (
     (MESSAGE_INBOUND, 'Inbound'),
     (MESSAGE_OUTBOUND, 'Outbound'),

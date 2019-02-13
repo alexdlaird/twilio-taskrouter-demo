@@ -63,7 +63,7 @@ def delete_orphaned_workers():
 def reconcile_contact_data():
     logger.info('Deleting reconciling contact data ...')
 
-    # TODO: here we should periodically check to see if two contacts, based on a shared unique value, can be merged
+    # TODO: here we could periodically check to see if two contacts, based on a shared unique value, can be merged
 
     logger.info('Done reconciling contact data task ...')
 
