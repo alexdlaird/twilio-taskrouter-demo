@@ -176,7 +176,6 @@ $(function () {
         VOICE_CLIENT.on("incoming", function (connection) {
             console.log('Incoming connection from ' + connection.parameters.From);
 
-            connection.accept();
             currentConnection = connection;
         });
     }
@@ -242,7 +241,7 @@ $(function () {
     function initWorkspace(token) {
         WORKSPACE_CLIENT = new Twilio.TaskRouter.Workspace(token);
 
-        WORKSPACE_CLIENT.on("token.expired", function() {
+        WORKSPACE_CLIENT.on("token.expired", function () {
             console.log("Getting refresh token for Workspace.");
 
             twiltwilapi.getTwilioWorkspaceToken().done(function (data) {
@@ -264,7 +263,7 @@ $(function () {
     function initWorker(token) {
         WORKER_CLIENT = new Twilio.TaskRouter.Worker(token);
 
-        WORKER_CLIENT.on("token.expired", function() {
+        WORKER_CLIENT.on("token.expired", function () {
             console.log("Getting refresh token for Worker.");
 
             twiltwilapi.getTwilioWorkerToken().done(function (data) {
@@ -300,7 +299,9 @@ $(function () {
 
             if (reservation.task.taskChannelUniqueName === "voice") {
                 $("#mark-solved-text").text("Mark Solved (Hang Up)");
+                $("#solve-button").addClass("disabled");
                 $("#voice-call-notice").show();
+                $("#voice-call-answer").show();
 
                 var options = {
                     "ConferenceStatusCallback": INFO.conference_status_callback_url,
@@ -321,7 +322,9 @@ $(function () {
                 }, options);
             } else {
                 $("#mark-solved-text").text("Mark Solved");
+                $("#solve-button").removeClass("disabled");
                 $("#voice-call-notice").hide();
+                $("#voice-call-answer").hide();
 
                 reservation.accept();
             }
@@ -444,6 +447,16 @@ $(function () {
     }
 
     // Triggers
+
+    $("#voice-call-answer").on("click", function () {
+        if (currentConnection) {
+            currentConnection.accept();
+
+            $(this).hide();
+
+            $("#solve-button").removeClass("disabled");
+        }
+    });
 
     $("#send-button").on("click", function () {
         var message = $replyBox.val();

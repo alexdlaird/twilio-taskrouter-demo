@@ -69,7 +69,7 @@ def delete_user(user):
             worker_sid).values_list('task_sid', flat=True).order_by('task_sid').distinct():
         try:
             # TODO: once TaskRouter supports Task transfer, we could utilize that here instead
-            twilioservice.cancel_worker_task(username, task_sid)
+            twilioservice.complete_task(task_sid, reason='User logged out: {}'.format(username))
         except TwilioRestException as e:
             logger.warning(e)
 

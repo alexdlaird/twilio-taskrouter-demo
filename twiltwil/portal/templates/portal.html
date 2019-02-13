@@ -72,14 +72,18 @@
                 </div>
             </div>
             <div id="chat-window" class="container col-sm-9" style="display: none">
-                <div id="voice-call-notice" class="alert alert-info" role="alert" style="display: none">You are on a
-                    voice call. Message history with this contact is shown below for context.</div>
+                <div id="voice-call-notice" class="alert alert-info" role="alert" style="display: none">
+                    <button id="voice-call-answer" class="btn btn-success" type="button" style="display: none">
+                        Answer Call
+                    </button>
+                    You are on a voice call. Message history with this contact is shown below for context.
+                </div>
 
                 <div class="message-wrap col-lg-12">
                     <div id="messages" class="msg-wrap">
                     </div>
 
-                    <div class="send-wrap ">
+                    <div class="send-wrap">
                 <textarea id="reply-box" class="form-control send-message" rows="3"
                           placeholder="Write an answer ..."></textarea>
                     </div>
@@ -96,7 +100,8 @@
             </div>
 
             <div id="lobby-window" class="container col-sm-9">
-                <h4 align="center">No questions are assigned to you. Relax until the next one comes in!</h4>
+                <h4 id="awaiting-status" align="center">No questions are assigned to you. Relax until the next one comes
+                    in!</h4>
                 <div align="center">
                     <iframe id="lobby-video" width="560" height="315"
                             src="https://www.youtube.com/embed/dQw4w9WgXcQ?version=3&rel=0&controls=0&showinfo=0&autoplay=1&iv_load_policy=3&loop=1&playlist=dQw4w9WgXcQ&enablejsapi=1"
