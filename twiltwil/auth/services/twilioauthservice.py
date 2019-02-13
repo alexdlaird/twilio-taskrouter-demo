@@ -249,12 +249,12 @@ def get_chat_token(username):
     # Expire token in three minutes
     expiration = 180
 
-    token = token.to_jwt(ttl=expiration)
+    jwt_token = token.to_jwt(ttl=expiration).decode("utf-8")
 
     # Cache the token, set to expire after the token expires
-    cache.set('tokens:chat:{}'.format(username), token, expiration)
+    cache.set('tokens:chat:{}'.format(username), jwt_token, expiration)
 
-    return token
+    return jwt_token
 
 
 def get_voice_token(username):
@@ -266,12 +266,12 @@ def get_voice_token(username):
     # Expire token in three minutes
     expiration = 180
 
-    token = token.to_jwt(ttl=expiration)
+    jwt_token = token.to_jwt(ttl=expiration).decode("utf-8")
 
     # Cache the token, set to expire after the token expires
-    cache.set('tokens:voice:{}'.format(username), token, expiration)
+    cache.set('tokens:voice:{}'.format(username), jwt_token, expiration)
 
-    return token
+    return jwt_token
 
 
 def get_workspace_token():
@@ -279,48 +279,48 @@ def get_workspace_token():
 
     logger.info('Generating Workspace token for {}'.format(workspace_sid))
 
-    capability = WorkspaceCapabilityToken(
+    token = WorkspaceCapabilityToken(
         account_sid=settings.TWILIO_ACCOUNT_SID,
         auth_token=settings.TWILIO_AUTH_TOKEN,
         workspace_sid=workspace_sid,
     )
-    capability.allow_fetch_subresources()
-    capability.allow_update_subresources()
-    capability.allow_delete_subresources()
+    token.allow_fetch_subresources()
+    token.allow_update_subresources()
+    token.allow_delete_subresources()
 
     # Expire token in three minutes
     expiration = 180
 
-    token = capability.to_jwt(ttl=expiration)
+    jwt_token = token.to_jwt(ttl=expiration).decode("utf-8")
 
     # Cache the token, set to expire after the token expires
-    cache.set('tokens:workspaces:{}'.format(workspace_sid), token, expiration)
+    cache.set('tokens:workspaces:{}'.format(workspace_sid), jwt_token, expiration)
 
-    return token
+    return jwt_token
 
 
 def get_worker_token(worker_sid):
     logger.info('Generating Worker token for {}'.format(worker_sid))
 
-    capability = WorkerCapabilityToken(
+    token = WorkerCapabilityToken(
         account_sid=settings.TWILIO_ACCOUNT_SID,
         auth_token=settings.TWILIO_AUTH_TOKEN,
         workspace_sid=get_workspace().sid,
         worker_sid=worker_sid
     )
-    capability.allow_fetch_subresources()
-    capability.allow_update_activities()
-    capability.allow_update_reservations()
+    token.allow_fetch_subresources()
+    token.allow_update_activities()
+    token.allow_update_reservations()
 
     # Expire token in three minutes
     expiration = 180
 
-    token = capability.to_jwt(ttl=expiration)
+    jwt_token = token.to_jwt(ttl=expiration).decode("utf-8")
 
     # Cache the token, set to expire after the token expires
-    cache.set('tokens:workers:{}'.format(worker_sid), token, expiration)
+    cache.set('tokens:workers:{}'.format(worker_sid), jwt_token, expiration)
 
-    return token
+    return jwt_token
 
 
 def get_workers():

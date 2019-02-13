@@ -38,23 +38,6 @@ $(function () {
     }
 
     function refreshTokens() {
-        // FIXME: after a while a stats token starts getting 400s from event-bridge, should be investigated
-        if (WORKSPACE_CLIENT) {
-            console.log("Getting refresh token for Workspace.");
-
-            twiltwilapi.getTwilioWorkspaceToken().done(function (data) {
-                WORKSPACE_CLIENT.updateToken(data.token);
-            });
-        }
-
-        if (WORKER_CLIENT) {
-            console.log("Getting refresh token for Worker.");
-
-            twiltwilapi.getTwilioWorkerToken().done(function (data) {
-                WORKER_CLIENT.updateToken(data.token);
-            });
-        }
-
         if (CHAT_CLIENT) {
             console.log("Getting refresh token for Chat.");
 
@@ -259,6 +242,14 @@ $(function () {
     function initWorkspace(token) {
         WORKSPACE_CLIENT = new Twilio.TaskRouter.Workspace(token);
 
+        WORKSPACE_CLIENT.on("token.expired", function() {
+            console.log("Getting refresh token for Workspace.");
+
+            twiltwilapi.getTwilioWorkspaceToken().done(function (data) {
+                WORKSPACE_CLIENT.updateToken(data.token);
+            });
+        });
+
         WORKSPACE_CLIENT.on("ready", function (workspace) {
             console.log(workspace.sid);
             console.log(workspace.friendlyName);
@@ -272,6 +263,16 @@ $(function () {
 
     function initWorker(token) {
         WORKER_CLIENT = new Twilio.TaskRouter.Worker(token);
+
+        WORKER_CLIENT.on("token.expired", function() {
+            console.log("Getting refresh token for Worker.");
+
+            twiltwilapi.getTwilioWorkerToken().done(function (data) {
+                // Note: there is a bug in the TaskRouter JS SDK Worker such that updateToken() does not properly update
+                // the worker's token, so reconstructing the client instead
+                initWorker(data.token);
+            });
+        });
 
         WORKER_CLIENT.on("ready", function (worker) {
             console.log(worker.sid);
