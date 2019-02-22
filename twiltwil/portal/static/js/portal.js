@@ -19,6 +19,7 @@ $(function () {
     var taskInterval;
     var taskSecondCounter;
     var statisticsTimeRange = "10080";
+    var maxRetries = "5";
 
     var $chatWindow = $("#chat-window");
     var $lobbyWindow = $("#lobby-window");
@@ -239,7 +240,7 @@ $(function () {
     }
 
     function initWorkspace(token) {
-        WORKSPACE_CLIENT = new Twilio.TaskRouter.Workspace(token);
+        WORKSPACE_CLIENT = new Twilio.TaskRouter.Workspace(token, null, null, null, null, maxRetries);
 
         WORKSPACE_CLIENT.on("token.expired", function () {
             console.log("Getting refresh token for Workspace.");
@@ -261,7 +262,7 @@ $(function () {
     }
 
     function initWorker(token) {
-        WORKER_CLIENT = new Twilio.TaskRouter.Worker(token);
+        WORKER_CLIENT = new Twilio.TaskRouter.Worker(token, null, null, null, null, null, null, null, maxRetries);
 
         WORKER_CLIENT.on("token.expired", function () {
             console.log("Getting refresh token for Worker.");
