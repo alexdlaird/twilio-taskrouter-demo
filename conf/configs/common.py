@@ -189,7 +189,7 @@ PIPELINE = {
             'source_filenames': (
                 'js/api.js',
                 'js/portal.js',
-                'js/taskrouter.1.17.min.js',
+                'js/taskrouter.1.19.min.js',
             ),
             'output_filename': 'js/{}_portal_{}.min.js'.format(PROJECT_ID, PROJECT_VERSION)
         },
@@ -204,7 +204,7 @@ TWILIO_PHONE_NUMBER = os.environ.get('TWILTWIL_TWILIO_PHONE_NUMBER')
 TWILIO_API_KEY = os.environ.get('TWILTWIL_TWILIO_API_KEY')
 TWILIO_API_SECRET = os.environ.get('TWILTWIL_TWILIO_API_SECRET')
 
-TWILIO_WDS_BASE_URL = os.environ.get('TWILTWIL_TWILIO_WDS_BASE_URL', None)
+TWILIO_API_BASE_URL = os.environ.get('TWILTWIL_TWILIO_API_BASE_URL', None)
 TWILIO_EVENT_BRIDGE_BASE_URL = os.environ.get('TWILTWIL_TWILIO_EVENT_BRIDGE_BASE_URL', None)
 TWILIO_REGION = os.environ.get('TWILTWIL_TWILIO_REGION', None)
 

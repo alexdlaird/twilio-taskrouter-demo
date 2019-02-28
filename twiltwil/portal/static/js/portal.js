@@ -239,7 +239,7 @@ $(function () {
     }
 
     function initWorkspace(token) {
-        WORKSPACE_CLIENT = new Twilio.TaskRouter.Workspace(token, null, INFO.wds_base_url, INFO.event_bridge_base_url, INFO.region, INFO.max_http_retries);
+        WORKSPACE_CLIENT = new Twilio.TaskRouter.Workspace(token, null, INFO.region, INFO.max_http_retries, INFO.api_base_url, INFO.event_bridge_base_url);
 
         WORKSPACE_CLIENT.on("token.expired", function () {
             console.log("Getting refresh token for Workspace.");
@@ -261,7 +261,7 @@ $(function () {
     }
 
     function initWorker(token) {
-        WORKER_CLIENT = new Twilio.TaskRouter.Worker(token, null, null, null, null, INFO.wds_base_url, INFO.event_bridge_base_url, INFO.region, INFO.max_http_retries);
+        WORKER_CLIENT = new Twilio.TaskRouter.Worker(token, null, null, null, null, INFO.region, INFO.max_http_retries, INFO.api_base_url, INFO.event_bridge_base_url);
 
         WORKER_CLIENT.on("token.expired", function () {
             console.log("Getting refresh token for Worker.");
