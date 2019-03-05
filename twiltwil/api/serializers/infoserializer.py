@@ -17,3 +17,11 @@ class InfoSerializer(serializers.Serializer):
     disable_lobby_video = serializers.BooleanField()
 
     conference_status_callback_url = serializers.URLField()
+
+    max_http_retries = serializers.IntegerField()
+
+    api_base_url = serializers.URLField()
+
+    event_bridge_base_url = serializers.URLField()
+
+    region = serializers.CharField

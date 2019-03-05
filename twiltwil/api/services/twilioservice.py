@@ -16,7 +16,7 @@ __version__ = "0.2.0"
 
 logger = logging.getLogger(__name__)
 
-client = Client(settings.TWILIO_ACCOUNT_SID, settings.TWILIO_AUTH_TOKEN)
+client = Client(settings.TWILIO_ACCOUNT_SID, settings.TWILIO_AUTH_TOKEN, region=settings.TWILIO_REGION)
 
 
 def get_task(task_sid):

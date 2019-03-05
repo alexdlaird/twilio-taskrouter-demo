@@ -145,7 +145,7 @@ $(function () {
 
     function initChatClient(token) {
         return new Promise(function (resolve) {
-            Twilio.Chat.Client.create(token).then(function (client) {
+            Twilio.Chat.Client.create(token, {realm: INFO.region}).then(function (client) {
                 CHAT_CLIENT = client;
 
                 CHAT_CLIENT.on('messageAdded', function (message) {
@@ -170,7 +170,7 @@ $(function () {
     }
 
     function initVoiceDevice(token) {
-        VOICE_CLIENT = new Twilio.Device();
+        VOICE_CLIENT = new Twilio.Device(region=INFO.region);
         VOICE_CLIENT.setup(token);
 
         VOICE_CLIENT.on("incoming", function (connection) {

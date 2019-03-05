@@ -22,7 +22,16 @@ __version__ = "0.2.0"
 
 logger = logging.getLogger(__name__)
 
-client = Client(settings.TWILIO_ACCOUNT_SID, settings.TWILIO_AUTH_TOKEN)
+client = Client(settings.TWILIO_ACCOUNT_SID, settings.TWILIO_AUTH_TOKEN, region=settings.TWILIO_REGION)
+
+if settings.TWILIO_REGION and settings.TWILIO_REGION in ['dev', 'stage']:
+    head, tail = WorkspaceCapabilityToken.DOMAIN.split('.', 1)
+    if not tail.startswith(settings.TWILIO_REGION):
+        WorkspaceCapabilityToken.DOMAIN = '.'.join([head, settings.TWILIO_REGION, tail])
+        WorkerCapabilityToken.DOMAIN = '.'.join([head, settings.TWILIO_REGION, tail])
+    WorkspaceCapabilityToken.EVENTS_BASE_URL = settings.TWILIO_EVENT_BRIDGE_BASE_URL + '/v1/wschannels'
+    WorkerCapabilityToken.EVENTS_BASE_URL = settings.TWILIO_EVENT_BRIDGE_BASE_URL + '/v1/wschannels'
+
 
 # TODO: refactor to use a class instead of globals
 _workspace = None
