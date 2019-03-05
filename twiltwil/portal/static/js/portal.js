@@ -145,7 +145,12 @@ $(function () {
 
     function initChatClient(token) {
         return new Promise(function (resolve) {
-            Twilio.Chat.Client.create(token, {realm: INFO.region}).then(function (client) {
+            options = {};
+            if (INFO.region === 'dev' || INFO.region === 'stage') {
+                options.realm = INFO.region;
+            }
+
+            Twilio.Chat.Client.create(token, options).then(function (client) {
                 CHAT_CLIENT = client;
 
                 CHAT_CLIENT.on('messageAdded', function (message) {
