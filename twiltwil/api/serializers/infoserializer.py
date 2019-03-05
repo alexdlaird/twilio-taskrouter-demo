@@ -24,4 +24,4 @@ class InfoSerializer(serializers.Serializer):
 
     event_bridge_base_url = serializers.URLField()
 
-    region = serializers.CharField
+    region = serializers.CharField()

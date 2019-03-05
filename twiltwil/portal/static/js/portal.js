@@ -147,7 +147,7 @@ $(function () {
         return new Promise(function (resolve) {
             options = {};
             if (INFO.region === 'dev' || INFO.region === 'stage') {
-                options.realm = INFO.region;
+                options.realm = INFO.region.concat('-us1');
             }
 
             Twilio.Chat.Client.create(token, options).then(function (client) {
@@ -244,7 +244,7 @@ $(function () {
     }
 
     function initWorkspace(token) {
-        WORKSPACE_CLIENT = new Twilio.TaskRouter.Workspace(token, null, INFO.region, INFO.max_http_retries, INFO.api_base_url, INFO.event_bridge_base_url);
+        WORKSPACE_CLIENT = new Twilio.TaskRouter.Workspace(token, null, null, INFO.max_http_retries, INFO.api_base_url, INFO.event_bridge_base_url);
 
         WORKSPACE_CLIENT.on("token.expired", function () {
             console.log("Getting refresh token for Workspace.");
@@ -266,7 +266,7 @@ $(function () {
     }
 
     function initWorker(token) {
-        WORKER_CLIENT = new Twilio.TaskRouter.Worker(token, null, null, null, null, INFO.region, INFO.max_http_retries, INFO.api_base_url, INFO.event_bridge_base_url);
+        WORKER_CLIENT = new Twilio.TaskRouter.Worker(token, null, null, null, null, null, INFO.max_http_retries, INFO.api_base_url, INFO.event_bridge_base_url);
 
         WORKER_CLIENT.on("token.expired", function () {
             console.log("Getting refresh token for Worker.");
