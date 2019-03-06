@@ -27,21 +27,23 @@ class WebhookTaskRouterWorkspaceView(APIView):
 
                 task_attributes = json.loads(messageutils.cleanup_json(request.data['TaskAttributes']))
 
-                for message in Message.objects.not_resolved().for_channel('sms').inbound().for_contact(
-                        task_attributes['from']).no_worker().iterator():
-                    message.worker_sid = request.data['WorkerSid']
+                if 'from' in task_attributes:
+                    for message in Message.objects.not_resolved().for_channel('sms').inbound().for_contact(
+                            task_attributes['from']).no_worker().iterator():
+                        message.worker_sid = request.data['WorkerSid']
 
-                    message.save()
+                        message.save()
             elif request.data['EventType'] == 'task.created':
                 logger.info('Processing task.created')
 
                 task_attributes = json.loads(messageutils.cleanup_json(request.data['TaskAttributes']))
 
-                for message in Message.objects.not_resolved().for_channel('sms').inbound().for_contact(
-                        task_attributes['from']).no_worker().iterator():
-                    message.task_sid = request.data['TaskSid']
+                if 'from' in task_attributes:
+                    for message in Message.objects.not_resolved().for_channel('sms').inbound().for_contact(
+                            task_attributes['from']).no_worker().iterator():
+                        message.task_sid = request.data['TaskSid']
 
-                    message.save()
+                        message.save()
             elif request.data['EventType'] == 'task.canceled':
                 logger.info('Processing task.canceled')
 
