@@ -1,6 +1,7 @@
 import json
 import logging
 
+from django.contrib.auth import get_user_model
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -8,6 +9,7 @@ from rest_framework.views import APIView
 from twiltwil.api.models import Message, Contact
 from twiltwil.api.services import twilioservice
 from twiltwil.api.utils import messageutils
+from twiltwil.auth.services import authservice
 from twiltwil.common import enums
 
 __author__ = "Alex Laird"
@@ -77,5 +79,11 @@ class WebhookTaskRouterWorkspaceView(APIView):
                     message.worker_sid = None
                     message.resolved = True
                     message.save()
+            elif request.data['EventType'] == 'worker.deleted':
+                try:
+                    user = get_user_model().objects.get(worker_sid=request.data['WorkerSid'])
+                    authservice.delete_user(user)
+                except get_user_model().DoesNotExist:
+                    pass
 
         return Response(status=status.HTTP_204_NO_CONTENT)
