@@ -8,7 +8,7 @@ from twilio.rest import Client
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2018, Alex Laird"
-__version__ = "0.1.2"
+__version__ = "0.2.1"
 
 
 class CommonConfig(AppConfig):
@@ -16,7 +16,7 @@ class CommonConfig(AppConfig):
     verbose_name = 'Common'
 
     def ready(self):
-        if os.environ.get('RUN_MAIN', None) and settings.DEV_SERVER and settings.USE_NGROK:
+        if settings.DEV_SERVER and settings.USE_NGROK:
             # pyngrok will only be installed, and should only ever be initialized, in a dev environment
             from pyngrok import ngrok
 
