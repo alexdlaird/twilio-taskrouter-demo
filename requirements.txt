@@ -8,7 +8,7 @@ django-debug-toolbar==2.2
 mysqlclient==1.3.13
 django-redis==4.12.1
 pytz==2018.5
-python-dateutil==2.7.3
+python-dateutil==2.8.1
 mock==2.0.0
 djangorestframework==3.9.1
 phonenumbers==8.9.9
