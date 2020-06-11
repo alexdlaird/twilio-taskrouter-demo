@@ -12,5 +12,5 @@ python-dateutil==2.8.1
 mock==4.0.2
 djangorestframework==3.11.0
 phonenumbers==8.12.5
-twilio==6.41.0
+twilio==6.42.0
 schedule==0.6.0
