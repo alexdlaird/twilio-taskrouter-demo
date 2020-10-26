@@ -105,7 +105,7 @@ def _create_queues():
             friendly_name=language[1],
             reservation_activity_sid=_get_activity("Reserved").sid,
             assignment_activity_sid=_get_activity("Busy").sid,
-            target_workers='languages HAS "{}"'.format(language[0])
+            target_workers=f'languages HAS "{language[0]}"'
         )
 
     return queues
@@ -138,7 +138,7 @@ def _create_workflow(queues):
                 # Map a Task to the appropriate Queue based on language, then filter to a Worker with the matching
                 # skills, falling back to "default" (above) if no matching is made
                 "filter_friendly_name": language[0],
-                'expression': "language=='{}'".format(language[0]),
+                'expression': f"language=='{language[0]}'",
                 'targets': [
                     {
                         'queue': queues[language[0]].sid
@@ -221,9 +221,9 @@ def get_activities():
 
 
 def create_worker(friendly_name, attributes):
-    logger.info('Creating Worker {} with attributes {}'.format(friendly_name, attributes))
+    logger.info(f'Creating Worker {friendly_name} with attributes {attributes}')
 
-    attributes['contact_uri'] = 'client:{}'.format(friendly_name)
+    attributes['contact_uri'] = f'client:{friendly_name}'
 
     return client.taskrouter.workspaces(get_workspace().sid).workers.create(
         friendly_name=friendly_name,
@@ -233,7 +233,7 @@ def create_worker(friendly_name, attributes):
 
 
 def delete_worker(worker_sid):
-    logger.info('Deleting Worker {}'.format(worker_sid))
+    logger.info(f'Deleting Worker {worker_sid}')
 
     worker = client.taskrouter.workspaces(get_workspace().sid).workers(worker_sid).fetch()
     worker = worker.update(activity_sid=_get_activity("Offline").sid)
@@ -241,7 +241,7 @@ def delete_worker(worker_sid):
 
 
 def get_chat_token(username):
-    logger.info('Generating Chat token for {}'.format(username))
+    logger.info(f'Generating Chat token for {username}')
 
     # This call is simply to ensure the service exists
     service = get_service()
@@ -261,13 +261,13 @@ def get_chat_token(username):
     jwt_token = token.to_jwt(ttl=expiration).decode("utf-8")
 
     # Cache the token, set to expire after the token expires
-    cache.set('tokens:chat:{}'.format(username), jwt_token, expiration)
+    cache.set(f'tokens:chat:{username}', jwt_token, expiration)
 
     return jwt_token
 
 
 def get_voice_token(username):
-    logger.info('Generating Voice token for {}'.format(username))
+    logger.info(f'Generating Voice token for {username}')
 
     token = ClientCapabilityToken(settings.TWILIO_ACCOUNT_SID, settings.TWILIO_AUTH_TOKEN)
     token.allow_client_incoming(username)
@@ -278,7 +278,7 @@ def get_voice_token(username):
     jwt_token = token.to_jwt(ttl=expiration).decode("utf-8")
 
     # Cache the token, set to expire after the token expires
-    cache.set('tokens:voice:{}'.format(username), jwt_token, expiration)
+    cache.set(f'tokens:voice:{username}', jwt_token, expiration)
 
     return jwt_token
 
@@ -286,7 +286,7 @@ def get_voice_token(username):
 def get_workspace_token():
     workspace_sid = get_workspace().sid
 
-    logger.info('Generating Workspace token for {}'.format(workspace_sid))
+    logger.info(f'Generating Workspace token for {workspace_sid}')
 
     token = WorkspaceCapabilityToken(
         account_sid=settings.TWILIO_ACCOUNT_SID,
@@ -303,13 +303,13 @@ def get_workspace_token():
     jwt_token = token.to_jwt(ttl=expiration).decode("utf-8")
 
     # Cache the token, set to expire after the token expires
-    cache.set('tokens:workspaces:{}'.format(workspace_sid), jwt_token, expiration)
+    cache.set(f'tokens:workspaces:{workspace_sid}', jwt_token, expiration)
 
     return jwt_token
 
 
 def get_worker_token(worker_sid):
-    logger.info('Generating Worker token for {}'.format(worker_sid))
+    logger.info(f'Generating Worker token for {worker_sid}')
 
     token = WorkerCapabilityToken(
         account_sid=settings.TWILIO_ACCOUNT_SID,
@@ -327,7 +327,7 @@ def get_worker_token(worker_sid):
     jwt_token = token.to_jwt(ttl=expiration).decode("utf-8")
 
     # Cache the token, set to expire after the token expires
-    cache.set('tokens:workers:{}'.format(worker_sid), jwt_token, expiration)
+    cache.set(f'tokens:workers:{worker_sid}', jwt_token, expiration)
 
     return jwt_token
 
@@ -341,7 +341,7 @@ def get_worker_by_username(username):
 
 
 def delete_chat_user(username):
-    logger.info('Deleting Chat user {}'.format(username))
+    logger.info(f'Deleting Chat user {username}')
 
     service_sid = get_service().sid
 

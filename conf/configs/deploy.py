@@ -53,7 +53,7 @@ LOGGING = {
         'django_log': {
             'level': 'ERROR',
             'class': 'logging.handlers.RotatingFileHandler',
-            'filename': '/var/log/{}/django.log'.format(PROJECT_ID),
+            'filename': f'/var/log/{PROJECT_ID}/django.log',
             'maxBytes': 50000000,
             'backupCount': 3,
             'formatter': 'standard',
@@ -63,34 +63,34 @@ LOGGING = {
             'class': 'django.utils.log.AdminEmailHandler',
             'include_html': True,
         },
-        '{}_common_log'.format(PROJECT_ID): {
+        f'{PROJECT_ID}_common_log': {
             'level': 'INFO',
             'class': 'logging.handlers.RotatingFileHandler',
-            'filename': '/var/log/{}/common.log'.format(PROJECT_ID),
+            'filename': f'/var/log/{PROJECT_ID}/common.log',
             'maxBytes': 50000000,
             'backupCount': 3,
             'formatter': 'standard',
         },
-        '{}_auth_log'.format(PROJECT_ID): {
+        f'{PROJECT_ID}_auth_log': {
             'level': 'INFO',
             'class': 'logging.handlers.RotatingFileHandler',
-            'filename': '/var/log/{}/auth.log'.format(PROJECT_ID),
+            'filename': f'/var/log/{PROJECT_ID}/auth.log',
             'maxBytes': 50000000,
             'backupCount': 3,
             'formatter': 'standard',
         },
-        '{}_portal_log'.format(PROJECT_ID): {
+        f'{PROJECT_ID}_portal_log': {
             'level': 'INFO',
             'class': 'logging.handlers.RotatingFileHandler',
-            'filename': '/var/log/{}/portal.log'.format(PROJECT_ID),
+            'filename': f'/var/log/{PROJECT_ID}/portal.log',
             'maxBytes': 50000000,
             'backupCount': 3,
             'formatter': 'standard',
         },
-        '{}_api_log'.format(PROJECT_ID): {
+        f'{PROJECT_ID}_api_log': {
             'level': 'INFO',
             'class': 'logging.handlers.RotatingFileHandler',
-            'filename': '/var/log/{}/api.log'.format(PROJECT_ID),
+            'filename': f'/var/log/{PROJECT_ID}/api.log',
             'maxBytes': 50000000,
             'backupCount': 3,
             'formatter': 'standard',
@@ -103,19 +103,19 @@ LOGGING = {
             'propagate': False,
         },
         'twiltwil.common': {
-            'handlers': ['{}_common_log'.format(PROJECT_ID), 'mail_admins'],
+            'handlers': [f'{PROJECT_ID}_common_log', 'mail_admins'],
             'level': 'INFO',
         },
         'twiltwil.auth': {
-            'handlers': ['{}_auth_log'.format(PROJECT_ID), 'mail_admins'],
+            'handlers': [f'{PROJECT_ID}_auth_log', 'mail_admins'],
             'level': 'INFO',
         },
         'twiltwil.portal': {
-            'handlers': ['{}_portal_log'.format(PROJECT_ID), 'mail_admins'],
+            'handlers': [f'{PROJECT_ID}_portal_log', 'mail_admins'],
             'level': 'INFO',
         },
         'twiltwil.api': {
-            'handlers': ['{}_api_log'.format(PROJECT_ID), 'mail_admins'],
+            'handlers': [f'{PROJECT_ID}_api_log', 'mail_admins'],
             'level': 'INFO',
         },
     }

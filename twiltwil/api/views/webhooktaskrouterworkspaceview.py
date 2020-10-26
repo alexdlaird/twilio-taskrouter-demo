@@ -21,7 +21,7 @@ logger = logging.getLogger(__name__)
 
 class WebhookTaskRouterWorkspaceView(APIView):
     def post(self, request, *args, **kwargs):
-        logger.info('Workspace POST received: {}'.format(json.dumps(request.data)))
+        logger.info(f'Workspace POST received: {json.dumps(request.data)}')
 
         if 'EventType' in request.data:
             if request.data['EventType'] == 'reservation.accepted':

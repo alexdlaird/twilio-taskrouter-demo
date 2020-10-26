@@ -22,12 +22,12 @@ class CommonConfig(AppConfig):
 
             # Get the dev server port (defaults to 8000 for Django, can be overridden with the
             # last arg when calling `runserver`)
-            addrport = urlparse('http://{}'.format(sys.argv[-1]))
+            addrport = urlparse(f'http://{sys.argv[-1]}')
             port = addrport.port if addrport.netloc and addrport.port else 8000
 
             # Open a ngrok tunnel to the dev server
             public_url = ngrok.connect(port).rstrip("/")
-            print('ngrok tunnel "{}" -> "http://127.0.0.1:{}/"'.format(public_url, port))
+            print(f'ngrok tunnel "{public_url}" -> "http://127.0.0.1:{port}/"')
 
             # Update any base URLs or webhooks to use the public ngrok URL
             settings.PROJECT_HOST = public_url
@@ -38,24 +38,24 @@ class CommonConfig(AppConfig):
         client = Client(settings.TWILIO_ACCOUNT_SID, settings.TWILIO_AUTH_TOKEN, region=settings.TWILIO_REGION)
 
         phone_number = client.incoming_phone_numbers.list(phone_number=settings.TWILIO_PHONE_NUMBER)[0]
-        sms_callback_url = "{}/api/webhooks/sms".format(public_url)
-        voice_callback_url = "{}/api/webhooks/voice".format(public_url)
+        sms_callback_url = f"{public_url}/api/webhooks/sms"
+        voice_callback_url = f"{public_url}/api/webhooks/voice"
         client.incoming_phone_numbers(phone_number.sid).update(voice_url=voice_callback_url,
                                                                sms_url=sms_callback_url)
 
         resource_name = 'twiltwil_' + os.environ.get('ENVIRONMENT')
 
-        post_webhook_url = "{}/api/webhooks/chat/event".format(public_url)
+        post_webhook_url = f"{public_url}/api/webhooks/chat/event"
         for service in client.chat.services.list():
             if service.friendly_name == resource_name:
                 client.chat.services(service.sid).update(post_webhook_url=post_webhook_url)
 
-        event_callback_url = "{}/api/webhooks/taskrouter/workspace".format(public_url)
+        event_callback_url = f"{public_url}/api/webhooks/taskrouter/workspace"
         workspaces = client.taskrouter.workspaces.list(friendly_name=resource_name)
         if len(workspaces) > 0:
             client.taskrouter.workspaces(workspaces[0].sid).update(event_callback_url=event_callback_url)
 
-            assignment_callback_url = "{}/api/webhooks/taskrouter/workflow".format(public_url)
+            assignment_callback_url = f"{public_url}/api/webhooks/taskrouter/workflow"
             for workflow in client.taskrouter.workspaces(workspaces[0].sid).workflows.list():
                 client.taskrouter.workspaces(workspaces[0].sid).workflows(workflow.sid).update(
                     assignment_callback_url=assignment_callback_url)

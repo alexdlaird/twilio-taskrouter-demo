@@ -114,7 +114,7 @@ SERVER_EMAIL = ADMIN_EMAIL_ADDRESS
 EMAIL_USE_TLS = os.environ.get('TWILTWIL_EMAIL_USE_TLS', 'True') == 'True'
 EMAIL_PORT = os.environ.get('TWILTWIL_EMAIL_PORT')
 EMAIL_ADDRESS = os.environ.get('TWILTWIL_CONTACT_EMAIL')
-DEFAULT_FROM_EMAIL = '{} <{}>'.format(PROJECT_NAME, EMAIL_ADDRESS)
+DEFAULT_FROM_EMAIL = f'{PROJECT_NAME} <{EMAIL_ADDRESS}>'
 EMAIL_HOST = os.environ.get('TWILTWIL_EMAIL_HOST')
 
 EMAIL_HOST_USER = os.environ.get('TWILTWIL_EMAIL_HOST_USER')
@@ -175,13 +175,13 @@ PIPELINE = {
             'source_filenames': (
                 'css/base.css',
             ),
-            'output_filename': 'css/{}_base_{}.min.css'.format(PROJECT_ID, PROJECT_VERSION)
+            'output_filename': f'css/{PROJECT_ID}_base_{PROJECT_VERSION}.min.css'
         },
         'portal': {
             'source_filenames': (
                 'css/portal.css',
             ),
-            'output_filename': 'css/{}_portal_{}.min.css'.format(PROJECT_ID, PROJECT_VERSION)
+            'output_filename': f'css/{PROJECT_ID}_portal_{PROJECT_VERSION}.min.css'
         },
     },
     'JAVASCRIPT': {
@@ -191,7 +191,7 @@ PIPELINE = {
                 'js/portal.js',
                 'js/taskrouter.1.20.min.js',
             ),
-            'output_filename': 'js/{}_portal_{}.min.js'.format(PROJECT_ID, PROJECT_VERSION)
+            'output_filename': f'js/{PROJECT_ID}_portal_{PROJECT_VERSION}.min.js'
         },
     }
 }
