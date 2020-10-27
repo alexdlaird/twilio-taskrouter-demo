@@ -24,7 +24,7 @@ def get_task(task_sid):
 
 
 def create_task(attributes):
-    logger.info('Creating a Task with attributes {}'.format(attributes))
+    logger.info(f'Creating a Task with attributes {attributes}')
 
     return client.taskrouter.workspaces(twilioauthservice.get_workspace().sid).tasks.create(
         workflow_sid=twilioauthservice.get_workflow().sid,
@@ -34,7 +34,7 @@ def create_task(attributes):
 
 
 def complete_task(task_sid, reason=''):
-    logger.info('Canceling/completing Task {}'.format(task_sid))
+    logger.info(f'Canceling/completing Task {task_sid}')
 
     client.taskrouter.workspaces(twilioauthservice.get_workspace().sid).tasks(task_sid).update(
         assignment_status='completed',
@@ -49,7 +49,7 @@ def get_or_create_chat_channel(number, unique_name):
         if e.status != 404:
             raise e
 
-        logger.info('Creating a Channel for {}'.format(unique_name))
+        logger.info(f'Creating a Channel for {unique_name}')
 
         return client.chat.services(twilioauthservice.get_service().sid).channels.create(
             friendly_name=number,
@@ -58,7 +58,7 @@ def get_or_create_chat_channel(number, unique_name):
 
 
 def send_chat_message(channel, message):
-    logger.info('Sending on Channel {} a Chat with message {}'.format(channel.unique_name, message))
+    logger.info(f'Sending on Channel {channel.unique_name} a Chat with message {message}')
 
     return client.chat.services(twilioauthservice.get_service().sid).channels(channel.sid).messages.create(
         body=message.text,
@@ -67,7 +67,7 @@ def send_chat_message(channel, message):
 
 
 def send_sms(phone, message):
-    logger.info('Sending SMS message {} to {}'.format(message, phone))
+    logger.info(f'Sending SMS message {message} to {phone}')
 
     client.api.account.messages.create(
         to=phone,

@@ -20,7 +20,7 @@ logger = logging.getLogger(__name__)
 
 class WebhookChatEventView(APIView):
     def post(self, request, *args, **kwargs):
-        logger.info('Chat POST received: {}'.format(json.dumps(request.data)))
+        logger.info(f'Chat POST received: {json.dumps(request.data)}')
 
         if 'EventType' in request.data:
             if request.data['EventType'] == 'onMessageSent':
@@ -35,7 +35,7 @@ class WebhookChatEventView(APIView):
                 # TODO: here you would execute different "sends" for different originating channels
                 if channel == enums.CHANNEL_SMS:
                     twilioservice.send_sms(contact.phone_number,
-                                           '{} - {}'.format(request.data['Body'], request.data['ClientIdentity']))
+                                           f"{request.data['Body']} - {request.data['ClientIdentity']}")
 
                 # Store (or update, if this message is redundant) the message in the database
                 Message.objects.update_or_create(sid=request.data['MessageSid'], defaults={

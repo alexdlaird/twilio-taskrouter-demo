@@ -33,17 +33,17 @@ class Contact(BaseModel):
         if self.first_name:
             name += self.first_name
         if self.last_name:
-            name = '{} {}'.format(name, self.last_name).strip()
+            name = f'{name} {self.last_name}'.strip()
 
         details = []
         if self.phone_number:
             details.append('P: {}'.format(phonenumbers.format_number(phonenumbers.parse(self.phone_number),
                                                                      phonenumbers.PhoneNumberFormat.NATIONAL)))
         if self.email:
-            details.append('E: {}'.format(self.email))
+            details.append(f'E: {self.email}')
         details = ', '.join(details)
 
         if name and details:
-            return '{} ({})'.format(name, details)
+            return f'{name} ({details})'
         else:
             return details

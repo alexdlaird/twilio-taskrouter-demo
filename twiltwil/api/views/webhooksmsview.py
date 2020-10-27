@@ -21,7 +21,7 @@ logger = logging.getLogger(__name__)
 
 class WebhookSmsView(APIView):
     def post(self, request, *args, **kwargs):
-        logger.info('SMS POST received: {}'.format(json.dumps(request.data)))
+        logger.info(f'SMS POST received: {json.dumps(request.data)}')
 
         # Store (or update, if this redundant) the contact and message in the database
         contact, created = Contact.objects.get_or_create(phone_number=request.data['From'], defaults={
@@ -55,7 +55,7 @@ class WebhookSmsView(APIView):
                 if task.assignment_status not in ['pending', 'reserved', 'assigned']:
                     task = None
                 else:
-                    logger.info('Found an open Task: {}'.format(task.sid))
+                    logger.info(f'Found an open Task: {task.sid}')
 
                     message.task_sid = db_task.task_sid
                     message.worker_sid = db_task.worker_sid

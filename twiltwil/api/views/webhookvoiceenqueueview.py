@@ -22,7 +22,7 @@ logger = logging.getLogger(__name__)
 
 class WebhookVoiceEnqueueView(APIView):
     def post(self, request, *args, **kwargs):
-        logger.info('Voice Enqueue POST received: {}'.format(json.dumps(request.data)))
+        logger.info(f'Voice Enqueue POST received: {json.dumps(request.data)}')
 
         digit_pressed = int(request.data.get("Digits", "1"))
         if digit_pressed == 1:

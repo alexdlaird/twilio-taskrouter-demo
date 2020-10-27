@@ -39,9 +39,9 @@ def delete_inactive_users():
     logger.info('Deleting inactive users task ...')
 
     for user in get_user_model().objects.filter(is_superuser=False).iterator():
-        token = cache.get('tokens:workers:{}'.format(user.worker_sid))
+        token = cache.get(f'tokens:workers:{user.worker_sid}')
         if not token:
-            logger.info('Deleting user with expired token: {}'.format(user.username))
+            logger.info(f'Deleting user with expired token: {user.username}')
 
             authservice.delete_user(user)
 
@@ -53,7 +53,7 @@ def delete_orphaned_workers():
 
     for worker in twilioauthservice.get_workers():
         if not get_user_model().objects.filter(worker_sid=worker.sid).exists():
-            logger.info('Deleting a orphaned Worker with no database entry: {}'.format(worker.sid))
+            logger.info(f'Deleting a orphaned Worker with no database entry: {worker.sid}')
 
             twilioauthservice.delete_worker(worker.sid)
 
