@@ -189,7 +189,6 @@ PIPELINE = {
             'source_filenames': (
                 'js/api.js',
                 'js/portal.js',
-                'js/taskrouter.1.20.min.js',
             ),
             'output_filename': f'js/{PROJECT_ID}_portal_{PROJECT_VERSION}.min.js'
         },
