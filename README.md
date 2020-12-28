@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/alexdlaird/twilio-taskrouter-demo.svg?branch=master)](https://travis-ci.org/alexdlaird/twilio-taskrouter-demo)
+[![Build Status](https://travis-ci.com/alexdlaird/twilio-taskrouter-demo.svg?branch=master)](https://travis-ci.com/alexdlaird/twilio-taskrouter-demo)
 [![codecov](https://codecov.io/gh/alexdlaird/twilio-taskrouter-demo/branch/master/graph/badge.svg)](https://codecov.io/gh/alexdlaird/twilio-taskrouter-demo)
 
 # TwilTwil
