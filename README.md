@@ -1,5 +1,6 @@
-[![Build Status](https://travis-ci.com/alexdlaird/twilio-taskrouter-demo.svg?branch=master)](https://travis-ci.com/alexdlaird/twilio-taskrouter-demo)
-[![codecov](https://codecov.io/gh/alexdlaird/twilio-taskrouter-demo/branch/master/graph/badge.svg)](https://codecov.io/gh/alexdlaird/twilio-taskrouter-demo)
+[![CI/CD](https://github.com/alexdlaird/twilio-taskrouter-demo/workflows/CI/CD/badge.svg)](https://github.com/alexdlaird/twilio-taskrouter-demo/actions?query=workflow%3ACI%2FCD)
+[![Codecov](https://codecov.io/gh/alexdlaird/twilio-taskrouter-demo/branch/master/graph/badge.svg)](https://codecov.io/gh/alexdlaird/twilio-taskrouter-demo)
+![GitHub License](https://img.shields.io/github/license/alexdlaird/twilio-taskrouter-demo)
 
 # TwilTwil
 
