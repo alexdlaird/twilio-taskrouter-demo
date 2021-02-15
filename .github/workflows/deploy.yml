@@ -1,0 +1,33 @@
+name: "CI/CD"
+
+on:
+  release:
+    types: [ created ]
+
+jobs:
+  build:
+    name: Deploy
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python 3.x
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.x
+      - name: Install dependencies
+        run: |
+          make install
+      - name: Run tests
+        run: |
+          make test
+        shell: bash
+      - uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
+          aws-region: us-east-1
+      - uses: actions/checkout@v2
+      - id: deploy
+        uses: webfactory/create-aws-codedeploy-deployment@v0.2.2
