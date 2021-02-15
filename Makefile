@@ -47,5 +47,5 @@ migrate: virtualenv
 test: virtualenv
 	( \
 		source $(TWILTWIL_VENV)/bin/activate; \
-		python -m coverage run --source='.' manage.py test && python -m coverage html; \
+		python -m coverage run --source='.' manage.py test && python -m coverage html -d _build/coverage xml -d _build/coverage; \
 	)
