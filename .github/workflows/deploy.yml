@@ -17,12 +17,11 @@ jobs:
         with:
           python-version: 3.x
       - name: Install dependencies
-        run: |
+        run:
           make install
       - name: Run tests
-        run: |
+        run:
           make test
-        shell: bash
       - uses: aws-actions/configure-aws-credentials@v1
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
