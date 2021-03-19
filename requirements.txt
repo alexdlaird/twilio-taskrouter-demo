@@ -10,7 +10,7 @@ django-redis==4.11.0
 pytz==2020.1
 python-dateutil==2.8.1
 mock==4.0.2
-djangorestframework==3.11.0
+djangorestframework==3.11.2
 phonenumbers==8.12.5
 twilio==6.42.0
 schedule==0.6.0
