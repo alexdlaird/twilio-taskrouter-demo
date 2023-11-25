@@ -6,7 +6,7 @@
 
 ## Prerequisites
 
-- Python (>= 3.6, <= 3.9)
+- Python (>= 3.6)
 - Pip (>= 9.0)
 
 ## Getting Started

@@ -22,7 +22,7 @@ logger = logging.getLogger(__name__)
 def home(request):
     redirect = None
 
-    if request.user.is_authenticated():
+    if request.user.is_authenticated:
         redirect = reverse('portal')
 
     if request.method == 'POST':

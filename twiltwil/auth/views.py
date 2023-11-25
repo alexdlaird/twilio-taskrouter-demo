@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 
 
 def logout(request):
-    if request.user.is_authenticated():
+    if request.user.is_authenticated:
         authservice.process_logout(request)
 
     return HttpResponseRedirect(reverse('home'))
