@@ -1,4 +1,4 @@
-[![Build](https://github.com/alexdlaird/twilio-taskrouter-demo/workflows/build.yml/badge.svg)](https://github.com/alexdlaird/twilio-taskrouter-demo/actions/workflows/build.yml)
+[![Build](https://github.com/alexdlaird/twilio-taskrouter-demo/actions/workflows/build.yml/badge.svg)](https://github.com/alexdlaird/twilio-taskrouter-demo/actions/workflows/build.yml)
 [![Codecov](https://codecov.io/gh/alexdlaird/twilio-taskrouter-demo/branch/main/graph/badge.svg)](https://codecov.io/gh/alexdlaird/twilio-taskrouter-demo)
 ![GitHub License](https://img.shields.io/github/license/alexdlaird/twilio-taskrouter-demo)
 
