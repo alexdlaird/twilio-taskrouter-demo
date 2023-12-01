@@ -1,4 +1,4 @@
-name: "CD"
+name: "Deploy"
 
 run-name: "Deploy ${{ github.ref_name }}"
 
@@ -7,7 +7,7 @@ on:
     types: [ created ]
 
 jobs:
-  build:
+  deploy:
     name: Deploy
 
     runs-on: ubuntu-latest
