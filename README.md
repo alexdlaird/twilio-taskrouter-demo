@@ -1,5 +1,6 @@
 [![Build](https://github.com/alexdlaird/twilio-taskrouter-demo/actions/workflows/build.yml/badge.svg)](https://github.com/alexdlaird/twilio-taskrouter-demo/actions/workflows/build.yml)
 [![Codecov](https://codecov.io/gh/alexdlaird/twilio-taskrouter-demo/branch/main/graph/badge.svg)](https://codecov.io/gh/alexdlaird/twilio-taskrouter-demo)
+![Python Versions](https://img.shields.io/badge/python-%203.6%20|%203.7%20|%203.8%20|%203.9%20|%203.10%20|%203.11%20-blue)
 ![GitHub License](https://img.shields.io/github/license/alexdlaird/twilio-taskrouter-demo)
 
 # TwilTwil
