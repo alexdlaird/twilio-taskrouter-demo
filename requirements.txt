@@ -8,7 +8,6 @@ mysqlclient==2.2.0
 django-redis==4.12.1
 pytz==2023.3
 python-dateutil==2.8.2
-mock==5.1.0
 djangorestframework==3.12.4
 phonenumbers==8.13.26
 twilio==8.10.3
