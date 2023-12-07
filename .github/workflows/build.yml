@@ -50,5 +50,3 @@ jobs:
         with:
           target: minor
           use-github-auto-merge: true
-
-
