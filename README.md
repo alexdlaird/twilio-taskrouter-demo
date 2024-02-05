@@ -8,7 +8,6 @@
 ## Prerequisites
 
 - Python (>= 3.9)
-- Pip (>= 9.0)
 
 ## Getting Started
 The project is developed using Python and [Django](https://www.djangoproject.com).
