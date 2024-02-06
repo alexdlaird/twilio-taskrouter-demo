@@ -1,4 +1,4 @@
-.PHONY: all env virtualenv install install-dev build build-migrations migrate test
+.PHONY: all env virtualenv install install-dev nopyc clean build build-migrations migrate test
 
 SHELL := /usr/bin/env bash
 TWILTWIL_VENV ?= .venv
@@ -25,6 +25,13 @@ install-dev: install
 		source $(TWILTWIL_VENV)/bin/activate; \
 		python -m pip install -r requirements-dev.txt; \
 	)
+
+nopyc:
+	find . -name '*.pyc' | xargs rm -f || true
+	find . -name __pycache__ | xargs rm -rf || true
+
+clean: nopyc
+	rm -rf _build $(TWILTWIL_VENV)
 
 build: virtualenv
 	( \
