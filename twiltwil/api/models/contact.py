@@ -37,8 +37,9 @@ class Contact(BaseModel):
 
         details = []
         if self.phone_number:
-            details.append('P: {}'.format(phonenumbers.format_number(phonenumbers.parse(self.phone_number),
-                                                                     phonenumbers.PhoneNumberFormat.NATIONAL)))
+            formatted_number = phonenumbers.format_number(phonenumbers.parse(self.phone_number),
+                                                      phonenumbers.PhoneNumberFormat.NATIONAL)
+            details.append(f'P: {formatted_number}')
         if self.email:
             details.append(f'E: {self.email}')
         details = ', '.join(details)
