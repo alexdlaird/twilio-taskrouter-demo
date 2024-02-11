@@ -4,8 +4,8 @@ django-widget-tweaks==1.5.0
 django-dotenv==1.4.2
 django-debug-toolbar==4.3.0
 djangorestframework==3.14.0
-mysqlclient==2.2.3
 django-redis==5.4.0
+mysqlclient==2.2.3
 pytz==2024.1
 python-dateutil==2.8.2
 phonenumbers==8.13.29

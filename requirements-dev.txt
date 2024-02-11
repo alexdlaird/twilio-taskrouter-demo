@@ -1,2 +1,2 @@
-coverage==7.4.1
-pyngrok==7.1.0
+coverage
+pyngrok
