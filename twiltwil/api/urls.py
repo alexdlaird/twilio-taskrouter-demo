@@ -1,6 +1,10 @@
 """
 API URLs.
 """
+
+__copyright__ = "Copyright (c) 2018 Alex Laird"
+__license__ = "MIT"
+
 from django.urls import re_path
 
 from twiltwil.api.views.chattokenview import ChatTokenView
@@ -17,10 +21,6 @@ from twiltwil.api.views.webhookvoiceenqueueview import WebhookVoiceEnqueueView
 from twiltwil.api.views.webhookvoiceview import WebhookVoiceView
 from twiltwil.api.views.workertokenview import WorkerTokenView
 from twiltwil.api.views.workspacetokenview import WorkspaceTokenView
-
-__author__ = "Alex Laird"
-__copyright__ = "Copyright 2018, Alex Laird"
-__version__ = "0.3.0"
 
 urlpatterns = [
     # TwilTwil REST URLs

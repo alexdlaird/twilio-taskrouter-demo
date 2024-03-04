@@ -1,6 +1,10 @@
 """
 Service functions for interacting with Twilio's APIs.
 """
+
+__copyright__ = "Copyright (c) 2018 Alex Laird"
+__license__ = "MIT"
+
 import json
 import logging
 
@@ -9,10 +13,6 @@ from twilio.base.exceptions import TwilioRestException
 from twilio.rest import Client
 
 from twiltwil.auth.services import twilioauthservice
-
-__author__ = "Alex Laird"
-__copyright__ = "Copyright 2018, Alex Laird"
-__version__ = "0.2.1"
 
 logger = logging.getLogger(__name__)
 

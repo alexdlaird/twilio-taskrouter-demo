@@ -2,6 +2,9 @@
 Base URL configuration.
 """
 
+__copyright__ = "Copyright (c) 2018 Alex Laird"
+__license__ = "MIT"
+
 import sys
 
 from django.conf import settings as config
@@ -12,10 +15,6 @@ import twiltwil.auth.urls
 import twiltwil.common.urls
 import twiltwil.portal.urls
 import twiltwil.api.urls
-
-__author__ = 'Alex Laird'
-__copyright__ = 'Copyright 2018, Alex Laird'
-__version__ = '0.3.0'
 
 urlpatterns = [
     # Include app-specific URL files

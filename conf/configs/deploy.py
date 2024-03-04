@@ -2,14 +2,13 @@
 Settings specific to prod-like deployable code, reading values from system environment variables.
 """
 
+__copyright__ = "Copyright (c) 2018 Alex Laird"
+__license__ = "MIT"
+
 import os
 
 from conf.settings import PROJECT_ID
 from . import common
-
-__author__ = 'Alex Laird'
-__copyright__ = 'Copyright 2018, Alex Laird'
-__version__ = '0.1.2'
 
 # Application definition
 

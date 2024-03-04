@@ -1,3 +1,6 @@
+__copyright__ = "Copyright (c) 2018 Alex Laird"
+__license__ = "MIT"
+
 from django.conf import settings as config
 from django.urls import re_path
 from django.contrib.sitemaps.views import sitemap
@@ -6,10 +9,6 @@ from django.views.generic import RedirectView, TemplateView
 from twiltwil.common.admin import admin_site
 from twiltwil.common.sitemaps import StaticViewSitemap
 from twiltwil.common.views import home
-
-__author__ = "Alex Laird"
-__copyright__ = "Copyright 2018, Alex Laird"
-__version__ = "0.3.0"
 
 sitemaps = {
     'static': StaticViewSitemap,

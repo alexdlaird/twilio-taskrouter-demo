@@ -2,6 +2,9 @@
 User model.
 """
 
+__copyright__ = "Copyright (c) 2018 Alex Laird"
+__license__ = "MIT"
+
 import logging
 
 from django.contrib.auth.models import AbstractBaseUser
@@ -11,10 +14,6 @@ from django.db import models
 from twiltwil.common import enums
 from twiltwil.common.models.base import BaseModel
 from ..managers.usermanager import UserManager
-
-__author__ = "Alex Laird"
-__copyright__ = "Copyright 2018, Alex Laird"
-__version__ = "0.1.0"
 
 logger = logging.getLogger(__name__)
 

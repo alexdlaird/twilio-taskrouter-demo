@@ -1,3 +1,6 @@
+__copyright__ = "Copyright (c) 2018 Alex Laird"
+__license__ = "MIT"
+
 from unittest import mock
 
 from django.contrib.auth import get_user_model
@@ -6,10 +9,6 @@ from django.urls import reverse
 from twiltwil.auth.tests.helpers import userhelper, twiliohelper
 from twiltwil.common import enums
 from twiltwil.common.tests.twiltwiltestcase import TwilTwilTestCase
-
-__author__ = "Alex Laird"
-__copyright__ = "Copyright 2018, Alex Laird"
-__version__ = "0.1.0"
 
 
 class TestCaseAuthViews(TwilTwilTestCase):

@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 
-__author__ = "Alex Laird"
-__copyright__ = "Copyright 2018, Alex Laird"
-__version__ = "0.1.0"
+__copyright__ = "Copyright (c) 2018 Alex Laird"
+__license__ = "MIT"
 
 TIME_ZONE_CHOICES = (
     ('Africa',

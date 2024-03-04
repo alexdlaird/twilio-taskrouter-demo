@@ -1,6 +1,10 @@
 """
 Authentication-based service functions for interacting with Twilio's TaskRouter.
 """
+
+__copyright__ = "Copyright (c) 2018 Alex Laird"
+__license__ = "MIT"
+
 import json
 import logging
 import os
@@ -15,10 +19,6 @@ from twilio.jwt.taskrouter.capabilities import WorkerCapabilityToken, WorkspaceC
 from twilio.rest import Client
 
 from twiltwil.common import enums
-
-__author__ = "Alex Laird"
-__copyright__ = "Copyright 2018, Alex Laird"
-__version__ = "0.2.1"
 
 logger = logging.getLogger(__name__)
 

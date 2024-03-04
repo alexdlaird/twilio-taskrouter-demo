@@ -1,3 +1,6 @@
+__copyright__ = "Copyright (c) 2018 Alex Laird"
+__license__ = "MIT"
+
 import logging
 
 from django import forms
@@ -8,10 +11,6 @@ from twiltwil.auth.models import Language, Skill
 from twiltwil.auth.services import twilioauthservice
 from twiltwil.common import enums
 from twiltwil.common.forms.baseform import BaseForm
-
-__author__ = "Alex Laird"
-__copyright__ = "Copyright 2018, Alex Laird"
-__version__ = "0.1.0"
 
 logger = logging.getLogger(__name__)
 

@@ -1,8 +1,7 @@
-from twilio.rest.taskrouter.v1.workspace.worker import WorkerInstance
+__copyright__ = "Copyright (c) 2018 Alex Laird"
+__license__ = "MIT"
 
-__author__ = "Alex Laird"
-__copyright__ = "Copyright 2018, Alex Laird"
-__version__ = "0.1.0"
+from twilio.rest.taskrouter.v1.workspace.worker import WorkerInstance
 
 
 def get_worker_instance():

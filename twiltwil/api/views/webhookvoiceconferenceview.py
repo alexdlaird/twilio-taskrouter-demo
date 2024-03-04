@@ -1,13 +1,12 @@
+__copyright__ = "Copyright (c) 2018 Alex Laird"
+__license__ = "MIT"
+
 import json
 import logging
 
 from rest_framework.views import APIView
 
 from twiltwil.common.utils import viewutils
-
-__author__ = "Alex Laird"
-__copyright__ = "Copyright 2018, Alex Laird"
-__version__ = "0.2.0"
 
 logger = logging.getLogger(__name__)
 

@@ -1,10 +1,9 @@
+__copyright__ = "Copyright (c) 2018 Alex Laird"
+__license__ = "MIT"
+
 from django.contrib.auth import get_user_model
 
 from twiltwil.auth.models import Language, Skill
-
-__author__ = "Alex Laird"
-__copyright__ = "Copyright 2018, Alex Laird"
-__version__ = "0.1.0"
 
 
 def given_a_user_exists(username='test_user', password='test_pass_1!', time_zone='America/Los_Angeles', languages=None,

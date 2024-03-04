@@ -1,3 +1,6 @@
+__copyright__ = "Copyright (c) 2018 Alex Laird"
+__license__ = "MIT"
+
 import os
 import sys
 from urllib.parse import urlparse
@@ -5,10 +8,6 @@ from urllib.parse import urlparse
 from django.apps import AppConfig
 from django.conf import settings
 from twilio.rest import Client
-
-__author__ = "Alex Laird"
-__copyright__ = "Copyright 2018, Alex Laird"
-__version__ = "0.2.3"
 
 
 class CommonConfig(AppConfig):

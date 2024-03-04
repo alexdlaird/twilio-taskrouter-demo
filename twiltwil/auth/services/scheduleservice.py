@@ -1,3 +1,6 @@
+__copyright__ = "Copyright (c) 2018 Alex Laird"
+__license__ = "MIT"
+
 import logging
 import threading
 import time
@@ -7,10 +10,6 @@ from django.core.cache import cache
 from schedule import Scheduler as SchedulerBase
 
 from twiltwil.auth.services import authservice, twilioauthservice
-
-__author__ = "Alex Laird"
-__copyright__ = "Copyright 2018, Alex Laird"
-__version__ = "0.1.0"
 
 logger = logging.getLogger(__name__)
 

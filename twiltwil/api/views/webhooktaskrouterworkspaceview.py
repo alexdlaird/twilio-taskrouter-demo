@@ -1,3 +1,6 @@
+__copyright__ = "Copyright (c) 2018 Alex Laird"
+__license__ = "MIT"
+
 import json
 import logging
 
@@ -11,10 +14,6 @@ from twiltwil.api.services import twilioservice
 from twiltwil.api.utils import messageutils
 from twiltwil.auth.services import authservice
 from twiltwil.common import enums
-
-__author__ = "Alex Laird"
-__copyright__ = "Copyright 2018, Alex Laird"
-__version__ = "0.2.1"
 
 logger = logging.getLogger(__name__)
 

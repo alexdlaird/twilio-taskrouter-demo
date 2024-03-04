@@ -1,3 +1,6 @@
+__copyright__ = "Copyright (c) 2018 Alex Laird"
+__license__ = "MIT"
+
 import logging
 
 from django.conf import settings
@@ -7,10 +10,6 @@ from rest_framework.mixins import RetrieveModelMixin
 from rest_framework.response import Response
 
 from twiltwil.api.serializers.infoserializer import InfoSerializer
-
-__author__ = "Alex Laird"
-__copyright__ = "Copyright 2018, Alex Laird"
-__version__ = "0.2.0"
 
 logger = logging.getLogger(__name__)
 
