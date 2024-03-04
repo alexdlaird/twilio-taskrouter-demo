@@ -5,10 +5,6 @@
 
 # TwilTwil
 
-## Prerequisites
-
-- Python (>= 3.9)
-
 ## Getting Started
 The project is developed using Python and [Django](https://www.djangoproject.com).
 
@@ -19,7 +15,7 @@ This repository contains the source code for the TwilTwil project, ChaCha using 
 To setup the Python/Django build environment, execute:
 
 ```sh
-make install-dev
+make install
 ```
 
 Create a Twilio account and purchase a phone number. You'll also need to generate a [Twilio API key](https://www.twilio.com/docs/iam/keys/api-key-resource).
@@ -31,6 +27,18 @@ Update the `.env` file and set the following variables:
 * `TWILTWIL_TWILIO_PHONE_NUMBER`
 * `TWILTWIL_TWILIO_API_KEY`
 * `TWILTWIL_TWILIO_API_SECRET`
+
+This project is configured to work with a Virtualenv which has now been setup in the `.venv` folder. If you're
+unfamiliar with how this works, [read up on Virtualenv here](https://virtualenv.pypa.io/en/stable). The short version
+is, virtualenv creates isolated environments for each project's dependencies. To activate and use this environment when
+developing, execute:
+
+```sh
+source .venv/bin/activate
+```
+
+All commands below will now be run within the virtualenv (though `make` commands will always automatically enter the
+virtualenv before executing).
 
 To ensure the database is in sync with the latest schema, database migrations are generated and run with Django. To run migrations, execute:
 
@@ -47,7 +55,7 @@ python manage.py createsuperuser
 Now you're all set! To start the development server, execute:
 
 ```sh
-python manage.py runserver
+bin/runserver
 ```
 
 A development server will be started at <http://localhost:8000>.
