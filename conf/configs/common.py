@@ -210,3 +210,7 @@ TWILIO_REGION = os.environ.get('TWILTWIL_TWILIO_REGION', None)
 
 DISABLE_LOBBY_VIDEO = os.environ.get('TWILTWIL_DISABLE_LOBBY_VIDEO', 'False') == 'True'
 MAX_HTTP_RETRIES = os.environ.get('TWILTWIL_MAX_HTTP_RETRIES', 5)
+
+# Server
+
+USE_NGROK = os.environ.get("USE_NGROK", "False") == "True" and os.environ.get("RUN_MAIN", None) != "true"
