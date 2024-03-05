@@ -15,7 +15,7 @@ class CommonConfig(AppConfig):
     verbose_name = 'Common'
 
     def ready(self):
-        if settings.DEV_SERVER and settings.USE_NGROK:
+        if settings.USE_NGROK and os.environ.get("NGROK_AUTHTOKEN"):
             # pyngrok will only be installed, and should only ever be initialized, in a dev environment
             from pyngrok import ngrok
 
