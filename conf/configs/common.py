@@ -142,6 +142,7 @@ SECRET_KEY = os.environ.get('TWILTWIL_SECRET_KEY')
 CSRF_COOKIE_SECURE = os.environ.get('TWILTWIL_CSRF_COOKIE_SECURE', 'True') == 'True'
 SESSION_COOKIE_SECURE = os.environ.get('TWILTWIL_SESSION_COOKIE_SECURE', 'True') == 'True'
 ALLOWED_HOSTS = os.environ.get('TWILTWIL_ALLOWED_HOSTS', '').split(' ')
+CSRF_TRUSTED_ORIGINS = [PROJECT_HOST]
 
 # Logging
 
