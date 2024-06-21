@@ -20,13 +20,13 @@ client = Client(settings.TWILIO_ACCOUNT_SID, settings.TWILIO_AUTH_TOKEN, region=
 
 
 def get_task(task_sid):
-    return client.taskrouter.workspaces(twilioauthservice.get_workspace().sid).tasks(task_sid).fetch()
+    return client.taskrouter.v1.workspaces(twilioauthservice.get_workspace().sid).tasks(task_sid).fetch()
 
 
 def create_task(attributes):
     logger.info(f'Creating a Task with attributes {attributes}')
 
-    return client.taskrouter.workspaces(twilioauthservice.get_workspace().sid).tasks.create(
+    return client.taskrouter.v1.workspaces(twilioauthservice.get_workspace().sid).tasks.create(
         workflow_sid=twilioauthservice.get_workflow().sid,
         attributes=json.dumps(attributes),
         timeout=3600
@@ -36,7 +36,7 @@ def create_task(attributes):
 def complete_task(task_sid, reason=''):
     logger.info(f'Canceling/completing Task {task_sid}')
 
-    client.taskrouter.workspaces(twilioauthservice.get_workspace().sid).tasks(task_sid).update(
+    client.taskrouter.v1.workspaces(twilioauthservice.get_workspace().sid).tasks(task_sid).update(
         assignment_status='completed',
         reason=reason
     )
@@ -44,14 +44,14 @@ def complete_task(task_sid, reason=''):
 
 def get_or_create_chat_channel(number, unique_name):
     try:
-        return client.chat.services(twilioauthservice.get_service().sid).channels(unique_name).fetch()
+        return client.chat.v2.services(twilioauthservice.get_service().sid).channels(unique_name).fetch()
     except TwilioRestException as e:
         if e.status != 404:
             raise e
 
         logger.info(f'Creating a Channel for {unique_name}')
 
-        return client.chat.services(twilioauthservice.get_service().sid).channels.create(
+        return client.chat.v2.services(twilioauthservice.get_service().sid).channels.create(
             friendly_name=number,
             unique_name=unique_name
         )
@@ -60,7 +60,7 @@ def get_or_create_chat_channel(number, unique_name):
 def send_chat_message(channel, message):
     logger.info(f'Sending on Channel {channel.unique_name} a Chat with message {message}')
 
-    return client.chat.services(twilioauthservice.get_service().sid).channels(channel.sid).messages.create(
+    return client.chat.v2.services(twilioauthservice.get_service().sid).channels(channel.sid).messages.create(
         body=message.text,
         from_=message.sender
     )

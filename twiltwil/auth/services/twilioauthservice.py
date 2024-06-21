@@ -47,7 +47,7 @@ def _get_activity(friendly_name):
 def _create_service(service_name):
     project_host = apps.get_app_config('common').PROJECT_HOST
 
-    service = client.chat.services.create(
+    service = client.chat.v2.services.create(
         friendly_name=service_name,
     )
 
@@ -74,17 +74,17 @@ def _create_activities():
     """
     Create the default Activities.
     """
-    client.taskrouter.workspaces(get_workspace().sid).activities.create(
+    client.taskrouter.v1.workspaces(get_workspace().sid).activities.create(
         friendly_name="Offline"
     )
-    client.taskrouter.workspaces(get_workspace().sid).activities.create(
+    client.taskrouter.v1.workspaces(get_workspace().sid).activities.create(
         friendly_name="Idle",
         available=True
     )
-    client.taskrouter.workspaces(get_workspace().sid).activities.create(
+    client.taskrouter.v1.workspaces(get_workspace().sid).activities.create(
         friendly_name="Busy"
     )
-    client.taskrouter.workspaces(get_workspace().sid).activities.create(
+    client.taskrouter.v1.workspaces(get_workspace().sid).activities.create(
         friendly_name="Reserved"
     )
 
@@ -96,7 +96,7 @@ def _create_queues():
     :return: the created default Queues
     """
     queues = {
-        "default": client.taskrouter.workspaces(get_workspace().sid).task_queues.create(
+        "default": client.taskrouter.v1.workspaces(get_workspace().sid).task_queues.create(
             friendly_name="Default",
             reservation_activity_sid=_get_activity("Reserved").sid,
             assignment_activity_sid=_get_activity("Busy").sid,
@@ -105,7 +105,7 @@ def _create_queues():
     }
 
     for language in enums.LANGUAGE_CHOICES:
-        queues[language[0]] = client.taskrouter.workspaces(get_workspace().sid).task_queues.create(
+        queues[language[0]] = client.taskrouter.v1.workspaces(get_workspace().sid).task_queues.create(
             friendly_name=language[1],
             reservation_activity_sid=_get_activity("Reserved").sid,
             assignment_activity_sid=_get_activity("Busy").sid,
