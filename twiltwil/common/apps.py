@@ -47,16 +47,16 @@ class CommonConfig(AppConfig):
         resource_name = "twiltwil_" + os.environ.get("ENVIRONMENT")
 
         post_webhook_url = f"{public_url}/api/webhooks/chat/event"
-        for service in client.chat.services.list():
+        for service in client.chat.v2.services.list():
             if service.friendly_name == resource_name:
-                client.chat.services(service.sid).update(post_webhook_url=post_webhook_url)
+                client.chat.v2.services(service.sid).update(post_webhook_url=post_webhook_url)
 
         event_callback_url = f"{public_url}/api/webhooks/taskrouter/workspace"
-        workspaces = client.taskrouter.workspaces.list(friendly_name=resource_name)
+        workspaces = client.taskrouter.v1.workspaces.list(friendly_name=resource_name)
         if len(workspaces) > 0:
-            client.taskrouter.workspaces(workspaces[0].sid).update(event_callback_url=event_callback_url)
+            client.taskrouter.v1.workspaces(workspaces[0].sid).update(event_callback_url=event_callback_url)
 
             assignment_callback_url = f"{public_url}/api/webhooks/taskrouter/workflow"
-            for workflow in client.taskrouter.workspaces(workspaces[0].sid).workflows.list():
-                client.taskrouter.workspaces(workspaces[0].sid).workflows(workflow.sid).update(
+            for workflow in client.taskrouter.v1.workspaces(workspaces[0].sid).workflows.list():
+                client.taskrouter.v1.workspaces(workspaces[0].sid).workflows(workflow.sid).update(
                     assignment_callback_url=assignment_callback_url)
