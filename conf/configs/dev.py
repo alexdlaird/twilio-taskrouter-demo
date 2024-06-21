@@ -44,6 +44,7 @@ ALLOWED_HOSTS = common.ALLOWED_HOSTS + [
     '.ngrok.io',
     '.ngrok.app'
 ]
+
 CSRF_TRUSTED_ORIGINS = common.CSRF_TRUSTED_ORIGINS + [
     'https://*.ngrok.io',
     'https://*.ngrok.app'

@@ -14,6 +14,8 @@ class CommonConfig(AppConfig):
     name = 'twiltwil.common'
     verbose_name = 'Common'
 
+    PROJECT_HOST = settings.PROJECT_HOST
+
     def ready(self):
         if settings.USE_NGROK and os.environ.get("NGROK_AUTHTOKEN"):
             # pyngrok will only be installed, and should only ever be initialized, in a dev environment
@@ -29,7 +31,7 @@ class CommonConfig(AppConfig):
             print(f"ngrok tunnel \"{public_url}\" -> \"http://127.0.0.1:{port}\"")
 
             # Update any base URLs or webhooks to use the public ngrok URL
-            settings.PROJECT_HOST = public_url
+            self.PROJECT_HOST = public_url
             CommonConfig.init_webhooks(public_url)
 
     @staticmethod
@@ -42,7 +44,7 @@ class CommonConfig(AppConfig):
         client.incoming_phone_numbers(phone_number.sid).update(voice_url=voice_callback_url,
                                                                sms_url=sms_callback_url)
 
-        resource_name = 'twiltwil_' + os.environ.get('ENVIRONMENT')
+        resource_name = "twiltwil_" + os.environ.get("ENVIRONMENT")
 
         post_webhook_url = f"{public_url}/api/webhooks/chat/event"
         for service in client.chat.services.list():

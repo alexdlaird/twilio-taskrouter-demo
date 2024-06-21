@@ -9,6 +9,7 @@ import json
 import logging
 import os
 
+from django.apps import apps
 from django.conf import settings
 from django.core.cache import cache
 from django.urls import reverse
@@ -32,7 +33,6 @@ if settings.TWILIO_REGION and settings.TWILIO_REGION in ['dev', 'stage']:
     WorkspaceCapabilityToken.EVENTS_BASE_URL = settings.TWILIO_EVENT_BRIDGE_BASE_URL + '/v1/wschannels'
     WorkerCapabilityToken.EVENTS_BASE_URL = settings.TWILIO_EVENT_BRIDGE_BASE_URL + '/v1/wschannels'
 
-
 # TODO: refactor to use a class instead of globals
 _workspace = None
 _activities = {}
@@ -45,12 +45,14 @@ def _get_activity(friendly_name):
 
 
 def _create_service(service_name):
+    project_host = apps.get_app_config('common').PROJECT_HOST
+
     service = client.chat.services.create(
         friendly_name=service_name,
     )
 
-    service = client.chat.services(service.sid).update(
-        post_webhook_url=settings.PROJECT_HOST + reverse('api_webhooks_chat_event'),
+    service = client.chat.v2.services(service.sid).update(
+        post_webhook_url=project_host + reverse('api_webhooks_chat_event'),
         webhook_method='POST',
         webhook_filters=['onMessageSent', 'onChannelAdded', 'onChannelDestroyed']
     )
@@ -59,9 +61,11 @@ def _create_service(service_name):
 
 
 def _create_workspace(workspace_name):
-    return client.taskrouter.workspaces.create(
+    project_host = apps.get_app_config('common').PROJECT_HOST
+
+    return client.taskrouter.v1.workspaces.create(
         friendly_name=workspace_name,
-        event_callback_url=settings.PROJECT_HOST + reverse('api_webhooks_taskrouter_workspace'),
+        event_callback_url=project_host + reverse('api_webhooks_taskrouter_workspace'),
         template="EMPTY"
     )
 
@@ -118,6 +122,8 @@ def _create_workflow(queues):
     :type queues: the language queues for the Workflow
     :return: the created default Workflow
     """
+    project_host = apps.get_app_config('common').PROJECT_HOST
+
     workspace_sid = get_workspace().sid
 
     config = {
@@ -147,9 +153,9 @@ def _create_workflow(queues):
             }
         )
 
-    return client.taskrouter.workspaces(workspace_sid).workflows.create(
+    return client.taskrouter.v1.workspaces(workspace_sid).workflows.create(
         friendly_name='Default',
-        assignment_callback_url=settings.PROJECT_HOST + reverse('api_webhooks_taskrouter_workflow'),
+        assignment_callback_url=project_host + reverse('api_webhooks_taskrouter_workflow'),
         task_reservation_timeout='300',
         configuration=json.dumps(config)
     )
@@ -161,7 +167,7 @@ def get_service():
     service_name = 'twiltwil_' + os.environ.get('ENVIRONMENT')
 
     if not _service:
-        for service in client.chat.services.list():
+        for service in client.chat.v2.services.list():
             if service.friendly_name == service_name:
                 _service = service
 
@@ -179,7 +185,7 @@ def get_workspace():
     workspace_name = 'twiltwil_' + os.environ.get('ENVIRONMENT')
 
     if not _workspace:
-        for workspace in client.taskrouter.workspaces.list():
+        for workspace in client.taskrouter.v1.workspaces.list():
             if workspace.friendly_name == workspace_name:
                 _workspace = workspace
 
@@ -191,8 +197,8 @@ def get_workspace():
         _create_activities()
 
         idle_activity_sid = _get_activity("Idle").sid
-        client.taskrouter.workspaces(_workspace.sid).update(default_activity_sid=idle_activity_sid,
-                                                            timeout_activity_sid=idle_activity_sid)
+        client.taskrouter.v1.workspaces(_workspace.sid).update(default_activity_sid=idle_activity_sid,
+                                                               timeout_activity_sid=idle_activity_sid)
 
         queues = _create_queues()
 
@@ -205,7 +211,7 @@ def get_workflow():
     global _workflow
 
     if not _workflow:
-        _workflow = client.taskrouter.workspaces(get_workspace().sid).workflows.list()[0]
+        _workflow = client.taskrouter.v1.workspaces(get_workspace().sid).workflows.list()[0]
 
     return _workflow
 
@@ -214,7 +220,7 @@ def get_activities():
     global _activities
 
     if len(_activities) == 0:
-        for activity in client.taskrouter.workspaces(get_workspace().sid).activities.list():
+        for activity in client.taskrouter.v1.workspaces(get_workspace().sid).activities.list():
             _activities[activity.friendly_name] = activity
 
     return _activities
@@ -225,7 +231,7 @@ def create_worker(friendly_name, attributes):
 
     attributes['contact_uri'] = f'client:{friendly_name}'
 
-    return client.taskrouter.workspaces(get_workspace().sid).workers.create(
+    return client.taskrouter.v1.workspaces(get_workspace().sid).workers.create(
         friendly_name=friendly_name,
         activity_sid=_get_activity("Idle").sid,
         attributes=json.dumps(attributes)
@@ -235,7 +241,7 @@ def create_worker(friendly_name, attributes):
 def delete_worker(worker_sid):
     logger.info(f'Deleting Worker {worker_sid}')
 
-    worker = client.taskrouter.workspaces(get_workspace().sid).workers(worker_sid).fetch()
+    worker = client.taskrouter.v1.workspaces(get_workspace().sid).workers(worker_sid).fetch()
     worker = worker.update(activity_sid=_get_activity("Offline").sid)
     worker.delete()
 
@@ -258,7 +264,7 @@ def get_chat_token(username):
     # Expire token in three minutes
     expiration = 180
 
-    jwt_token = token.to_jwt(ttl=expiration).decode("utf-8")
+    jwt_token = token.to_jwt(ttl=expiration)
 
     # Cache the token, set to expire after the token expires
     cache.set(f'tokens:chat:{username}', jwt_token, expiration)
@@ -275,7 +281,7 @@ def get_voice_token(username):
     # Expire token in three minutes
     expiration = 180
 
-    jwt_token = token.to_jwt(ttl=expiration).decode("utf-8")
+    jwt_token = token.to_jwt(ttl=expiration)
 
     # Cache the token, set to expire after the token expires
     cache.set(f'tokens:voice:{username}', jwt_token, expiration)
@@ -300,7 +306,7 @@ def get_workspace_token():
     # Expire token in three minutes
     expiration = 180
 
-    jwt_token = token.to_jwt(ttl=expiration).decode("utf-8")
+    jwt_token = token.to_jwt(ttl=expiration)
 
     # Cache the token, set to expire after the token expires
     cache.set(f'tokens:workspaces:{workspace_sid}', jwt_token, expiration)
@@ -324,7 +330,7 @@ def get_worker_token(worker_sid):
     # Expire token in three minutes
     expiration = 180
 
-    jwt_token = token.to_jwt(ttl=expiration).decode("utf-8")
+    jwt_token = token.to_jwt(ttl=expiration)
 
     # Cache the token, set to expire after the token expires
     cache.set(f'tokens:workers:{worker_sid}', jwt_token, expiration)
@@ -333,11 +339,11 @@ def get_worker_token(worker_sid):
 
 
 def get_workers():
-    return client.taskrouter.workspaces(get_workspace().sid).workers.list()
+    return client.taskrouter.v1.workspaces(get_workspace().sid).workers.list()
 
 
 def get_worker_by_username(username):
-    return client.taskrouter.workspaces(get_workspace().sid).workers.list(friendly_name=username)
+    return client.taskrouter.v1.workspaces(get_workspace().sid).workers.list(friendly_name=username)
 
 
 def delete_chat_user(username):
@@ -345,8 +351,5 @@ def delete_chat_user(username):
 
     service_sid = get_service().sid
 
-    user = client.chat \
-        .services(service_sid) \
-        .users(username) \
-        .fetch()
+    user = client.chat.v2.services(service_sid).users(username).fetch()
     user.delete()
