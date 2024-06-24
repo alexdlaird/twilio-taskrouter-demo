@@ -11,8 +11,8 @@ from twilio.rest import Client
 
 
 class CommonConfig(AppConfig):
-    name = 'twiltwil.common'
-    verbose_name = 'Common'
+    name = "twiltwil.common"
+    verbose_name = "Common"
 
     PROJECT_HOST = settings.PROJECT_HOST
 
@@ -47,9 +47,10 @@ class CommonConfig(AppConfig):
         resource_name = "twiltwil_" + os.environ.get("ENVIRONMENT")
 
         post_webhook_url = f"{public_url}/api/webhooks/chat/event"
-        for service in client.chat.v2.services.list():
+        for service in client.conversations.v1.services.list():
             if service.friendly_name == resource_name:
-                client.chat.v2.services(service.sid).update(post_webhook_url=post_webhook_url)
+                (client.conversations.v1.services(service.sid)
+                 .configuration.webhooks().update(post_webhook_url=post_webhook_url))
 
         event_callback_url = f"{public_url}/api/webhooks/taskrouter/workspace"
         workspaces = client.taskrouter.v1.workspaces.list(friendly_name=resource_name)

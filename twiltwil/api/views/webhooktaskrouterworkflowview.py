@@ -13,6 +13,6 @@ logger = logging.getLogger(__name__)
 
 class WebhookTaskRouterWorkflowView(APIView):
     def post(self, request, *args, **kwargs):
-        logger.info(f'Workflow POST received: {json.dumps(request.data)}')
+        logger.info(f"Workflow POST received: {json.dumps(request.data)}")
 
         return Response(status=status.HTTP_204_NO_CONTENT)

@@ -13,7 +13,7 @@ $(function () {
     var WORKSPACE_CLIENT;
     var WORKER_CLIENT;
 
-    var currentChannel;
+    var currentConversation;
     var currentContact;
     var currentConnection;
     var taskInterval;
@@ -86,14 +86,14 @@ $(function () {
     }
 
     function displayMessage(message) {
-        console.log(message);
+        console.log("displayMessage", message);
 
         var $time = $('<small class="pull-right time"><i class="fa fa-clock-o"></i></small>')
-            .text(message.timestamp.toLocaleString());
+            .text(message.dateCreated.toLocaleString());
         var $user;
         if (message.author === USER.username) {
             $user = $('<h5 class="media-heading me"></h5>').text(USER.username + " (me)");
-        } else if (message.author !== currentContact.uuid) {
+        } else if (message.author !== currentContact.uuid && message.author !== currentContact.phone_number) {
             $user = $('<h5 class="media-heading me"></h5>').text(message.author + " (previous agent)");
         } else {
             $user = $('<h5 class="media-heading"></h5>').text(currentContact.card);
@@ -105,19 +105,19 @@ $(function () {
         $messages.scrollTop($messages[0].scrollHeight);
     }
 
-    function initChannel(channel) {
-        currentChannel = channel;
+    function initConversation(conversation) {
+        currentConversation = conversation;
 
-        twiltwilapi.getContact(currentChannel.uniqueName).done(function (contact) {
+        twiltwilapi.getContact(currentConversation.uniqueName).done(function (contact) {
             currentContact = contact;
 
             lobbyVideoCommand('pauseVideo');
             $lobbyWindow.hide();
             $chatWindow.show();
 
-            console.log('Joined channel ' + currentChannel.uniqueName);
+            console.log('Joined Conversation ' + currentConversation.uniqueName);
 
-            currentChannel.getMessages().then(function (messages) {
+            currentConversation.getMessages().then(function (messages) {
                 $.each(messages.items, function (index, message) {
                     displayMessage(message);
                 });
@@ -125,12 +125,11 @@ $(function () {
         });
     }
 
-    function joinChannel(uniqueName) {
-        CHAT_CLIENT.getChannelByUniqueName(uniqueName).then(function (channel) {
-            console.log('Found ' + channel.uniqueName + ' channel');
-            console.log(channel);
+    function joinConversation(uniqueName) {
+        CHAT_CLIENT.getConversationByUniqueName(uniqueName).then(function (conversation) {
+            console.log("conversation", conversation);
 
-            channel.join().then(initChannel);
+            initConversation(conversation);
         });
     }
 
@@ -150,25 +149,25 @@ $(function () {
                 options.realm = INFO.region.concat('-us1');
             }
 
-            Twilio.Chat.Client.create(token, options).then(function (client) {
-                CHAT_CLIENT = client;
+            CHAT_CLIENT = new Twilio.Conversations.Client(token, options)
 
-                CHAT_CLIENT.on('messageAdded', function (message) {
-                    displayMessage(message);
+            CHAT_CLIENT.on('messageAdded', function (message) {
+                displayMessage(message);
+            });
+
+            CHAT_CLIENT.getSubscribedConversations().then(function (conversations) {
+                $.each(conversations.items, function (index, conversation) {
+                    console.log("conversation", conversation);
+
+                    initConversation(conversation);
                 });
 
-                CHAT_CLIENT.getSubscribedChannels().then(function (channels) {
-                    $.each(channels.items, function (index, channel) {
-                        initChannel(channel);
-                    });
+                getCurrentTask().then(function (task) {
+                    if (task) {
+                        initTaskTimer(task);
+                    }
 
-                    getCurrentTask().then(function (task) {
-                        if (task) {
-                            initTaskTimer(task);
-                        }
-
-                        resolve();
-                    });
+                    resolve();
                 });
             });
         });
@@ -188,8 +187,7 @@ $(function () {
     function updateWorkspaceStatistics() {
         WORKSPACE_CLIENT.statistics.fetch({"Minutes": statisticsTimeRange}, function (error, statistics) {
             if (error) {
-                console.log(error.code);
-                console.log(error.message);
+                console.log("error", error);
                 return;
             }
 
@@ -212,15 +210,14 @@ $(function () {
             $userDetailsStatistics.html("").append($onlineAgents).append($pendingTasks).append($assignedTasks)
                 .append($completedTasks).append($longestWaitTime).append($averageWaitTime);
 
-            console.log(statistics);
+            console.log("updateWorkspaceStatistics", statistics);
         });
     }
 
     function updateWorkerStatistics() {
         WORKER_CLIENT.statistics.fetch({"Minutes": statisticsTimeRange}, function (error, statistics) {
             if (error) {
-                console.log(error.code);
-                console.log(error.message);
+                console.log("error", error);
                 return;
             }
 
@@ -239,7 +236,7 @@ $(function () {
                     busyActivity.avg % 60)));
             }
 
-            console.log(statistics);
+            console.log("updateWorkerStatistics", statistics);
         });
     }
 
@@ -255,10 +252,7 @@ $(function () {
         });
 
         WORKSPACE_CLIENT.on("ready", function (workspace) {
-            console.log(workspace.sid);
-            console.log(workspace.friendlyName);
-            console.log(workspace.prioritizeQueueOrder);
-            console.log(workspace.defaultActivityName);
+            console.log("workspace.ready", workspace);
         });
 
         // Refresh token every 2 minutes
@@ -277,30 +271,19 @@ $(function () {
         });
 
         WORKER_CLIENT.on("ready", function (worker) {
-            console.log(worker.sid);
-            console.log(worker.friendlyName);
-            console.log(worker.activityName);
-            console.log(worker.available);
-            console.log(worker.attributes);
+            console.log("worker.ready", worker);
 
             $userDetailsStatus.html(worker.activityName);
         });
 
         WORKER_CLIENT.on("activity.update", function (worker) {
-            console.log(worker.sid);
-            console.log(worker.friendlyName);
-            console.log(worker.activityName);
-            console.log(worker.available);
+            console.log("worker.activity.update", worker);
 
             $userDetailsStatus.html(worker.activityName);
         });
 
         WORKER_CLIENT.on("reservation.created", function (reservation) {
-            console.log(reservation.sid);
-            console.log(reservation.task.sid);
-            console.log(reservation.task.priority);
-            console.log(reservation.task.age);
-            console.log(reservation.task.attributes);
+            console.log("reservation.created", reservation);
 
             if (reservation.task.taskChannelUniqueName === "voice") {
                 $("#mark-solved-text").text("Mark Solved (Hang Up)");
@@ -318,8 +301,7 @@ $(function () {
                 };
                 reservation.conference(null, null, null, null, function (error, reservation) {
                     if (error) {
-                        console.log(error.code);
-                        console.log(error.message);
+                        console.log("error", error);
                         return;
                     }
 
@@ -334,12 +316,12 @@ $(function () {
                 reservation.accept();
             }
 
-            var chatContact = reservation.task.attributes.channel;
+            var conversation = reservation.task.attributes.conversation;
 
             initTaskTimer(reservation.task);
 
-            CHAT_CLIENT.getSubscribedChannels().then(function () {
-                joinChannel(chatContact);
+            WORKER_CLIENT.on("reservation.accepted", function (reservation) {
+                joinConversation(conversation);
             });
         });
 
@@ -348,11 +330,7 @@ $(function () {
         });
 
         WORKER_CLIENT.on("reservation.wrapup", function (reservation) {
-            console.log(reservation.sid);
-            console.log(reservation.task.sid);
-            console.log(reservation.task.priority);
-            console.log(reservation.task.age);
-            console.log(reservation.task.attributes);
+            console.log("reservation.wrapup", reservation);
 
             markTaskComplete(reservation.task);
         });
@@ -410,10 +388,10 @@ $(function () {
         $chatWindow.hide();
         $lobbyWindow.show();
         lobbyVideoCommand('playVideo');
-        currentChannel.leave().then(function () {
-            console.log('Left channel ' + currentChannel.uniqueName);
+        currentConversation.leave().then(function () {
+            console.log('Left Conversation ' + currentConversation.uniqueName);
 
-            currentChannel = null;
+            currentConversation = null;
             currentContact = null;
 
             updateWorkerActivity("Idle");
@@ -467,8 +445,8 @@ $(function () {
         var message = $replyBox.val();
 
         if ($.trim(message) !== "") {
-            currentChannel.sendMessage($replyBox.val(), {
-                "To": currentChannel.uniqueName
+            currentConversation.sendMessage($replyBox.val(), {
+                "To": currentConversation.uniqueName
             });
             $replyBox.val("").focus();
         }

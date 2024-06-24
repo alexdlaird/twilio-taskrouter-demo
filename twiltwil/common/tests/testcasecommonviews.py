@@ -13,7 +13,7 @@ class TestCaseCommonViews(TwilTwilTestCase):
         userhelper.given_a_user_exists_and_is_logged_in(self.client)
 
         # WHEN
-        response = self.client.get(reverse('home'))
+        response = self.client.get(reverse("home"))
 
         # THEN
-        self.assertRedirects(response, reverse('portal'))
+        self.assertRedirects(response, reverse("portal"))

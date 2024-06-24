@@ -18,7 +18,7 @@ class ContactView(GenericAPIView, RetrieveModelMixin):
     queryset = Contact.objects.all()
     serializer_class = ContactSerializer
     permission_classes = (IsAuthenticated,)
-    lookup_field = 'uuid'
+    lookup_field = "uuid"
 
     def get(self, request, *args, **kwargs):
         user = self.get_object()

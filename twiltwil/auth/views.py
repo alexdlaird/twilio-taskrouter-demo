@@ -19,4 +19,4 @@ def logout(request):
     if request.user.is_authenticated:
         authservice.process_logout(request)
 
-    return HttpResponseRedirect(reverse('home'))
+    return HttpResponseRedirect(reverse("home"))

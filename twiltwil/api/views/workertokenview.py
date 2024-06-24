@@ -17,7 +17,7 @@ class WorkerTokenView(APIView):
 
     def post(self, request, *args, **kwargs):
         data = {
-            'token': twilioauthservice.get_worker_token(request.user.worker_sid)
+            "token": twilioauthservice.get_worker_token(request.user.worker_sid)
         }
 
         return Response(data)

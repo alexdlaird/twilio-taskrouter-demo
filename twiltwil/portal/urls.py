@@ -11,5 +11,5 @@ from twiltwil.portal.views import portal
 
 urlpatterns = [
     # Authenticated URLs
-    re_path(r'^portal', portal, name='portal'),
+    re_path(r"^portal", portal, name="portal"),
 ]

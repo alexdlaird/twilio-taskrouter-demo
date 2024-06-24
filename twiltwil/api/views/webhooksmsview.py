@@ -20,27 +20,27 @@ logger = logging.getLogger(__name__)
 
 class WebhookSmsView(APIView):
     def post(self, request, *args, **kwargs):
-        logger.info(f'SMS POST received: {json.dumps(request.data)}')
+        logger.info(f"SMS POST received: {json.dumps(request.data)}")
 
         # Store (or update, if this redundant) the contact and message in the database
-        contact, created = Contact.objects.get_or_create(phone_number=request.data['From'], defaults={
+        contact, created = Contact.objects.get_or_create(phone_number=request.data["From"], defaults={
             "uuid": uuid.uuid4(),
-            "phone_number": request.data['From'],
+            "phone_number": request.data["From"],
         })
 
-        message, created = Message.objects.update_or_create(sid=request.data['MessageSid'], defaults={
+        message, created = Message.objects.update_or_create(sid=request.data["MessageSid"], defaults={
             "timestamp": timezone.now(),
             "channel": enums.CHANNEL_SMS,
             "sender": contact.uuid,
-            "recipient": request.data['To'],
+            "recipient": request.data["To"],
             "direction": enums.MESSAGE_INBOUND,
-            "status": request.data['SmsStatus'],
-            "text": request.data['Body'],
-            "addons": messageutils.cleanup_json(request.data['AddOns']) if 'AddOns' in request.data else None,
+            "status": request.data["SmsStatus"],
+            "text": request.data["Body"],
+            "addons": messageutils.cleanup_json(request.data["AddOns"]) if "AddOns" in request.data else None,
             "raw": json.dumps(request.data),
         })
 
-        channel = twilioservice.get_or_create_chat_channel(contact.phone_number, str(contact.uuid))
+        conversation = twilioservice.get_or_create_conversation(contact.phone_number, str(contact.uuid))
 
         # Check if the other messages exist from this sender that are associated with an open Task
         sender_messages_with_tasks = Message.objects.not_resolved().inbound().for_contact(contact.uuid).has_task()
@@ -51,10 +51,10 @@ class WebhookSmsView(APIView):
             try:
                 task = twilioservice.get_task(db_task.task_sid)
 
-                if task.assignment_status not in ['pending', 'reserved', 'assigned']:
+                if task.assignment_status not in ["pending", "reserved", "assigned"]:
                     task = None
                 else:
-                    logger.info(f'Found an open Task: {task.sid}')
+                    logger.info(f"Found an open Task: {task.sid}")
 
                     message.task_sid = db_task.task_sid
                     message.worker_sid = db_task.worker_sid
@@ -82,13 +82,11 @@ class WebhookSmsView(APIView):
                             "language" in message_addons["results"]["ibm_watson_insights"]["result"]:
                 attributes["language"] = message_addons["results"]["ibm_watson_insights"]["result"]["language"]
 
-            attributes["channel"] = channel.unique_name
+            attributes["conversation"] = conversation.unique_name
 
             twilioservice.create_task(attributes)
 
             twilioservice.send_sms(contact.phone_number,
                                    "Hey, your question has been received. Sit tight and we'll get you an answer ASAP!")
-
-        twilioservice.send_chat_message(channel, message)
 
         return viewutils.get_empty_messaging_webhook_response()

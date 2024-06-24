@@ -21,24 +21,24 @@ logger = logging.getLogger(__name__)
 class User(AbstractBaseUser, BaseModel):
     # Authentication fields
 
-    username = models.CharField(help_text='A unique name used to login to the system.',
+    username = models.CharField(help_text="A unique name used to login to the system.",
                                 max_length=255, unique=True,
-                                validators=[validators.RegexValidator(r'^[\w.@+-]+$',
-                                                                      'Enter a valid username, which means less than '
-                                                                      '30 characters consisting of letters, numbers, '
-                                                                      'or these symbols: @+-_.',
-                                                                      'invalid'), ],
-                                error_messages={'unique': "Sorry, that username is already in use."})
+                                validators=[validators.RegexValidator(r"^[\w.@+-]+$",
+                                                                      "Enter a valid username, which means less than "
+                                                                      "30 characters consisting of letters, numbers, "
+                                                                      "or these symbols: @+-_.",
+                                                                      "invalid"), ],
+                                error_messages={"unique": "Sorry, that username is already in use."})
 
     is_superuser = models.BooleanField(default=False)
 
     # Profile fields
 
-    time_zone = models.CharField(default='America/Los_Angeles', max_length=255, choices=enums.TIME_ZONE_CHOICES)
+    time_zone = models.CharField(default="America/Los_Angeles", max_length=255, choices=enums.TIME_ZONE_CHOICES)
 
-    languages = models.ManyToManyField('Language', blank=True, default=None)
+    languages = models.ManyToManyField("Language", blank=True, default=None)
 
-    skills = models.ManyToManyField('Skill', blank=True, default=None)
+    skills = models.ManyToManyField("Skill", blank=True, default=None)
 
     worker_sid = models.CharField(max_length=255, blank=True, null=True, unique=True)
 
@@ -46,13 +46,13 @@ class User(AbstractBaseUser, BaseModel):
     objects = UserManager()
 
     # Fields required to define the abstracted Django user
-    USERNAME_FIELD = 'username'
+    USERNAME_FIELD = "username"
 
     def get_full_name(self):  # pragma: no cover
         """
         Retrieve the long name for the user.
 
-        :return: The user's username.
+        :return: The user"s username.
         """
         return self.username
 
@@ -60,7 +60,7 @@ class User(AbstractBaseUser, BaseModel):
         """
         Retrieve the short name for the user.
 
-        :return: The user's username.
+        :return: The user"s username.
         """
         return self.username
 

@@ -19,32 +19,27 @@ logger = logging.getLogger(__name__)
 
 class WebhookChatEventView(APIView):
     def post(self, request, *args, **kwargs):
-        logger.info(f'Chat POST received: {json.dumps(request.data)}')
+        logger.info(f"Chat POST received: {json.dumps(request.data)}")
 
-        if 'EventType' in request.data:
-            if request.data['EventType'] == 'onMessageSent':
-                logger.info('Processing onMessageSent')
+        if "EventType" in request.data:
+            if request.data["EventType"] == "onMessageSent":
+                logger.info("Processing onMessageSent")
 
-                attributes = json.loads(messageutils.cleanup_json(request.data['Attributes']))
+                attributes = json.loads(messageutils.cleanup_json(request.data["Attributes"]))
 
-                # TODO: detect the originating channel of the inbound (ex. SMS)
+                # TODO: automatically detect the originating channel of the inbound (ex. SMS)
                 channel = enums.CHANNEL_SMS
-                contact = Contact.objects.get(uuid=attributes['To'])
-
-                # TODO: here you would execute different "sends" for different originating channels
-                if channel == enums.CHANNEL_SMS:
-                    twilioservice.send_sms(contact.phone_number,
-                                           f"{request.data['Body']} - {request.data['ClientIdentity']}")
+                contact = Contact.objects.get(uuid=attributes["To"])
 
                 # Store (or update, if this message is redundant) the message in the database
-                Message.objects.update_or_create(sid=request.data['MessageSid'], defaults={
-                    "timestamp": parser.parse(request.data['DateCreated']),
+                Message.objects.update_or_create(sid=request.data["MessageSid"], defaults={
+                    "timestamp": parser.parse(request.data["DateCreated"]),
                     "channel": channel,
                     "sender": settings.TWILIO_PHONE_NUMBER,
                     "recipient": contact.uuid,
                     "direction": enums.MESSAGE_OUTBOUND,
                     "status": enums.MESSAGE_STATUS_SENT,
-                    "text": request.data['Body'],
+                    "text": request.data["Body"],
                     "raw": json.dumps(request.data),
                 })
 

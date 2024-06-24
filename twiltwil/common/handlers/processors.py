@@ -17,9 +17,9 @@ def template(request):
     :return: a dictionary of context elements
     """
     context = {
-        'PROJECT_NAME': settings.PROJECT_NAME,
-        'PROJECT_VERSION': settings.PROJECT_VERSION,
-        'PHONE_NUMBER': phonenumbers.format_number(phonenumbers.parse(settings.TWILIO_PHONE_NUMBER),
+        "PROJECT_NAME": settings.PROJECT_NAME,
+        "PROJECT_VERSION": settings.PROJECT_VERSION,
+        "PHONE_NUMBER": phonenumbers.format_number(phonenumbers.parse(settings.TWILIO_PHONE_NUMBER),
                                                    phonenumbers.PhoneNumberFormat.NATIONAL)
     }
     return context

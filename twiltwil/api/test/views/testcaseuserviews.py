@@ -14,7 +14,7 @@ class TestCaseUserViews(TwilTwilTestCase):
         user = userhelper.given_a_user_exists_and_is_logged_in(self.client)
 
         # WHEN
-        response = self.client.get(reverse('api_user'))
+        response = self.client.get(reverse("api_user"))
 
         # THEN
         self.assertEqual(response.status_code, status.HTTP_200_OK)

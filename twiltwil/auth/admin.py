@@ -31,13 +31,13 @@ class UserAdmin(admin.UserAdmin, BaseModelAdmin):
     form = UserChangeForm
     add_form = AdminUserCreationForm
 
-    list_display = ('username', 'created_at', 'last_login', 'is_superuser')
-    list_filter = ('is_superuser',)
-    search_fields = ('username',)
-    ordering = ('-last_login',)
+    list_display = ("username", "created_at", "last_login", "is_superuser")
+    list_filter = ("is_superuser",)
+    search_fields = ("username",)
+    ordering = ("-last_login",)
     add_fieldsets = (
         (None, {
-            'fields': ('username', 'password1', 'password2',),
+            "fields": ("username", "password1", "password2",),
         }),
     )
     fieldsets = None
@@ -45,7 +45,7 @@ class UserAdmin(admin.UserAdmin, BaseModelAdmin):
 
     def get_readonly_fields(self, request, obj=None):
         if obj:
-            return self.readonly_fields + ('created_at', 'last_login',)
+            return self.readonly_fields + ("created_at", "last_login",)
 
         return self.readonly_fields
 

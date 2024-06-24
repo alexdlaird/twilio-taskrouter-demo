@@ -1,5 +1,5 @@
 """
-Service functions for interacting with Twilio's APIs.
+Service functions for interacting with Twilio"s APIs.
 """
 
 __copyright__ = "Copyright (c) 2018 Alex Laird"
@@ -24,7 +24,7 @@ def get_task(task_sid):
 
 
 def create_task(attributes):
-    logger.info(f'Creating a Task with attributes {attributes}')
+    logger.info(f"Creating a Task with attributes {attributes}")
 
     return client.taskrouter.v1.workspaces(twilioauthservice.get_workspace().sid).tasks.create(
         workflow_sid=twilioauthservice.get_workflow().sid,
@@ -33,41 +33,71 @@ def create_task(attributes):
     )
 
 
-def complete_task(task_sid, reason=''):
-    logger.info(f'Canceling/completing Task {task_sid}')
+def complete_task(task_sid, reason=""):
+    logger.info(f"Canceling/completing Task {task_sid}")
 
     client.taskrouter.v1.workspaces(twilioauthservice.get_workspace().sid).tasks(task_sid).update(
-        assignment_status='completed',
+        assignment_status="completed",
         reason=reason
     )
 
 
-def get_or_create_chat_channel(number, unique_name):
+def get_or_create_conversation(number, unique_name):
     try:
-        return client.chat.v2.services(twilioauthservice.get_service().sid).channels(unique_name).fetch()
+        conversation = client.conversations.v1.services(twilioauthservice.get_service().sid).conversations(
+            unique_name).fetch()
+
+        logger.info(f"Found existing Conversation for {unique_name}")
     except TwilioRestException as e:
         if e.status != 404:
             raise e
 
-        logger.info(f'Creating a Channel for {unique_name}')
+        logger.info(f"Creating a Conversation for {unique_name}")
 
-        return client.chat.v2.services(twilioauthservice.get_service().sid).channels.create(
+        conversation = client.conversations.v1.services(twilioauthservice.get_service().sid).conversations.create(
             friendly_name=number,
             unique_name=unique_name
         )
 
+    # Ensure Participant is in Conversation
+    try:
+        client.conversations.v1.services(twilioauthservice.get_service().sid).conversations(
+            conversation.sid).participants.create(
+            messaging_binding_address=number,
+            messaging_binding_proxy_address=settings.TWILIO_PHONE_NUMBER,
+        )
 
-def send_chat_message(channel, message):
-    logger.info(f'Sending on Channel {channel.unique_name} a Chat with message {message}')
+        logger.info(f"Added Participant {number} to Conversation {unique_name}")
+    except TwilioRestException as e:
+        if e.code != 50416:
+            raise e
 
-    return client.chat.v2.services(twilioauthservice.get_service().sid).channels(channel.sid).messages.create(
-        body=message.text,
-        from_=message.sender
-    )
+        logger.info(f"Participant {number} already added to Conversation {unique_name}")
+
+    return conversation
+
+
+def get_conversation(unique_name):
+    return client.conversations.v1.services(twilioauthservice.get_service().sid).conversations(unique_name).fetch()
+
+
+def add_worker_to_conversation(conversation, identity):
+    try:
+        client.conversations.v1.services(twilioauthservice.get_service().sid).conversations(
+            conversation.sid).participants.create(
+            identity=identity
+        )
+
+        logger.info(f"Added Participant {identity} to Conversation {conversation.unique_name}")
+    except TwilioRestException as e:
+        if e.code != 50433:
+            raise e
+
+        logger.info(f"Participant {identity} already added to Conversation {conversation.unique_name}")
 
 
 def send_sms(phone, message):
-    logger.info(f'Sending SMS message {message} to {phone}')
+    logger.info(f"Sending SMS message {message} to {phone}")
 
     client.api.account.messages.create(
         to=phone,

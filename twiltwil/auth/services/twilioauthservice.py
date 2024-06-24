@@ -1,5 +1,5 @@
 """
-Authentication-based service functions for interacting with Twilio's TaskRouter.
+Authentication-based service functions for interacting with Twilio"s TaskRouter.
 """
 
 __copyright__ = "Copyright (c) 2018 Alex Laird"
@@ -25,13 +25,13 @@ logger = logging.getLogger(__name__)
 
 client = Client(settings.TWILIO_ACCOUNT_SID, settings.TWILIO_AUTH_TOKEN, region=settings.TWILIO_REGION)
 
-if settings.TWILIO_REGION and settings.TWILIO_REGION in ['dev', 'stage']:
-    head, tail = WorkspaceCapabilityToken.DOMAIN.split('.', 1)
+if settings.TWILIO_REGION and settings.TWILIO_REGION in ["dev", "stage"]:
+    head, tail = WorkspaceCapabilityToken.DOMAIN.split(".", 1)
     if not tail.startswith(settings.TWILIO_REGION):
-        WorkspaceCapabilityToken.DOMAIN = '.'.join([head, settings.TWILIO_REGION, tail])
-        WorkerCapabilityToken.DOMAIN = '.'.join([head, settings.TWILIO_REGION, tail])
-    WorkspaceCapabilityToken.EVENTS_BASE_URL = settings.TWILIO_EVENT_BRIDGE_BASE_URL + '/v1/wschannels'
-    WorkerCapabilityToken.EVENTS_BASE_URL = settings.TWILIO_EVENT_BRIDGE_BASE_URL + '/v1/wschannels'
+        WorkspaceCapabilityToken.DOMAIN = ".".join([head, settings.TWILIO_REGION, tail])
+        WorkerCapabilityToken.DOMAIN = ".".join([head, settings.TWILIO_REGION, tail])
+    WorkspaceCapabilityToken.EVENTS_BASE_URL = settings.TWILIO_EVENT_BRIDGE_BASE_URL + "/v1/wschannels"
+    WorkerCapabilityToken.EVENTS_BASE_URL = settings.TWILIO_EVENT_BRIDGE_BASE_URL + "/v1/wschannels"
 
 # TODO: refactor to use a class instead of globals
 _workspace = None
@@ -45,27 +45,27 @@ def _get_activity(friendly_name):
 
 
 def _create_service(service_name):
-    project_host = apps.get_app_config('common').PROJECT_HOST
+    project_host = apps.get_app_config("common").PROJECT_HOST
 
-    service = client.chat.v2.services.create(
+    service = client.conversations.v1.services.create(
         friendly_name=service_name,
     )
 
-    service = client.chat.v2.services(service.sid).update(
-        post_webhook_url=project_host + reverse('api_webhooks_chat_event'),
-        webhook_method='POST',
-        webhook_filters=['onMessageSent', 'onChannelAdded', 'onChannelDestroyed']
+    service = client.conversations.v1.services(service.sid).configuration.webhooks().update(
+        post_webhook_url=project_host + reverse("api_webhooks_chat_event"),
+        method="POST",
+        filters=["onMessageSent", "onChannelAdded", "onChannelDestroyed"]
     )
 
     return service
 
 
 def _create_workspace(workspace_name):
-    project_host = apps.get_app_config('common').PROJECT_HOST
+    project_host = apps.get_app_config("common").PROJECT_HOST
 
     return client.taskrouter.v1.workspaces.create(
         friendly_name=workspace_name,
-        event_callback_url=project_host + reverse('api_webhooks_taskrouter_workspace'),
+        event_callback_url=project_host + reverse("api_webhooks_taskrouter_workspace"),
         template="EMPTY"
     )
 
@@ -122,41 +122,41 @@ def _create_workflow(queues):
     :type queues: the language queues for the Workflow
     :return: the created default Workflow
     """
-    project_host = apps.get_app_config('common').PROJECT_HOST
+    project_host = apps.get_app_config("common").PROJECT_HOST
 
     workspace_sid = get_workspace().sid
 
     config = {
-        'task_routing': {
+        "task_routing": {
             # Specific filters will be appended below
-            'filters': [
+            "filters": [
             ],
             # If the Task does not match any of the defined filters (below), the default Queue will catch it
-            'default_filter': {
-                'queue': queues['default'].sid
+            "default_filter": {
+                "queue": queues["default"].sid
             }
         }
     }
 
     for language in enums.LANGUAGE_CHOICES:
-        config['task_routing']['filters'].append(
+        config["task_routing"]["filters"].append(
             {
                 # Map a Task to the appropriate Queue based on language, then filter to a Worker with the matching
                 # skills, falling back to "default" (above) if no matching is made
                 "filter_friendly_name": language[0],
-                'expression': f"language=='{language[0]}'",
-                'targets': [
+                "expression": f'language=="{language[0]}"',
+                "targets": [
                     {
-                        'queue': queues[language[0]].sid
+                        "queue": queues[language[0]].sid
                     }
                 ]
             }
         )
 
     return client.taskrouter.v1.workspaces(workspace_sid).workflows.create(
-        friendly_name='Default',
-        assignment_callback_url=project_host + reverse('api_webhooks_taskrouter_workflow'),
-        task_reservation_timeout='300',
+        friendly_name="Default",
+        assignment_callback_url=project_host + reverse("api_webhooks_taskrouter_workflow"),
+        task_reservation_timeout="300",
         configuration=json.dumps(config)
     )
 
@@ -164,10 +164,10 @@ def _create_workflow(queues):
 def get_service():
     global _service
 
-    service_name = 'twiltwil_' + os.environ.get('ENVIRONMENT')
+    service_name = "twiltwil_" + os.environ.get("ENVIRONMENT")
 
     if not _service:
-        for service in client.chat.v2.services.list():
+        for service in client.conversations.v1.services.list():
             if service.friendly_name == service_name:
                 _service = service
 
@@ -182,7 +182,7 @@ def get_service():
 def get_workspace():
     global _workspace, _workflow
 
-    workspace_name = 'twiltwil_' + os.environ.get('ENVIRONMENT')
+    workspace_name = "twiltwil_" + os.environ.get("ENVIRONMENT")
 
     if not _workspace:
         for workspace in client.taskrouter.v1.workspaces.list():
@@ -227,9 +227,9 @@ def get_activities():
 
 
 def create_worker(friendly_name, attributes):
-    logger.info(f'Creating Worker {friendly_name} with attributes {attributes}')
+    logger.info(f"Creating Worker {friendly_name} with attributes {attributes}")
 
-    attributes['contact_uri'] = f'client:{friendly_name}'
+    attributes["contact_uri"] = f"client:{friendly_name}"
 
     return client.taskrouter.v1.workspaces(get_workspace().sid).workers.create(
         friendly_name=friendly_name,
@@ -239,7 +239,13 @@ def create_worker(friendly_name, attributes):
 
 
 def delete_worker(worker_sid):
-    logger.info(f'Deleting Worker {worker_sid}')
+    logger.info(f"Deleting Worker {worker_sid}")
+
+    # Fetch any Tasks associated with the Worker
+    for task in client.taskrouter.v1.workspaces(get_workspace().sid).tasks.list():
+        logger.info(f"Deleting Task {task.sid}")
+
+        task.delete()
 
     worker = client.taskrouter.v1.workspaces(get_workspace().sid).workers(worker_sid).fetch()
     worker = worker.update(activity_sid=_get_activity("Offline").sid)
@@ -247,7 +253,7 @@ def delete_worker(worker_sid):
 
 
 def get_chat_token(username):
-    logger.info(f'Generating Chat token for {username}')
+    logger.info(f"Generating Chat token for {username}")
 
     # This call is simply to ensure the service exists
     service = get_service()
@@ -255,7 +261,7 @@ def get_chat_token(username):
     token = AccessToken(settings.TWILIO_ACCOUNT_SID, settings.TWILIO_API_KEY, settings.TWILIO_API_SECRET,
                         identity=username)
 
-    sync_grant = SyncGrant(service_sid='default')
+    sync_grant = SyncGrant(service_sid="default")
     token.add_grant(sync_grant)
 
     chat_grant = ChatGrant(service_sid=service.sid)
@@ -267,13 +273,13 @@ def get_chat_token(username):
     jwt_token = token.to_jwt(ttl=expiration)
 
     # Cache the token, set to expire after the token expires
-    cache.set(f'tokens:chat:{username}', jwt_token, expiration)
+    cache.set(f"tokens:chat:{username}", jwt_token, expiration)
 
     return jwt_token
 
 
 def get_voice_token(username):
-    logger.info(f'Generating Voice token for {username}')
+    logger.info(f"Generating Voice token for {username}")
 
     token = ClientCapabilityToken(settings.TWILIO_ACCOUNT_SID, settings.TWILIO_AUTH_TOKEN)
     token.allow_client_incoming(username)
@@ -284,7 +290,7 @@ def get_voice_token(username):
     jwt_token = token.to_jwt(ttl=expiration)
 
     # Cache the token, set to expire after the token expires
-    cache.set(f'tokens:voice:{username}', jwt_token, expiration)
+    cache.set(f"tokens:voice:{username}", jwt_token, expiration)
 
     return jwt_token
 
@@ -292,7 +298,7 @@ def get_voice_token(username):
 def get_workspace_token():
     workspace_sid = get_workspace().sid
 
-    logger.info(f'Generating Workspace token for {workspace_sid}')
+    logger.info(f"Generating Workspace token for {workspace_sid}")
 
     token = WorkspaceCapabilityToken(
         account_sid=settings.TWILIO_ACCOUNT_SID,
@@ -309,13 +315,13 @@ def get_workspace_token():
     jwt_token = token.to_jwt(ttl=expiration)
 
     # Cache the token, set to expire after the token expires
-    cache.set(f'tokens:workspaces:{workspace_sid}', jwt_token, expiration)
+    cache.set(f"tokens:workspaces:{workspace_sid}", jwt_token, expiration)
 
     return jwt_token
 
 
 def get_worker_token(worker_sid):
-    logger.info(f'Generating Worker token for {worker_sid}')
+    logger.info(f"Generating Worker token for {worker_sid}")
 
     token = WorkerCapabilityToken(
         account_sid=settings.TWILIO_ACCOUNT_SID,
@@ -333,7 +339,7 @@ def get_worker_token(worker_sid):
     jwt_token = token.to_jwt(ttl=expiration)
 
     # Cache the token, set to expire after the token expires
-    cache.set(f'tokens:workers:{worker_sid}', jwt_token, expiration)
+    cache.set(f"tokens:workers:{worker_sid}", jwt_token, expiration)
 
     return jwt_token
 
@@ -346,10 +352,10 @@ def get_worker_by_username(username):
     return client.taskrouter.v1.workspaces(get_workspace().sid).workers.list(friendly_name=username)
 
 
-def delete_chat_user(username):
-    logger.info(f'Deleting Chat user {username}')
+def delete_conversation_user(username):
+    logger.info(f"Deleting Chat user {username}")
 
     service_sid = get_service().sid
 
-    user = client.chat.v2.services(service_sid).users(username).fetch()
+    user = client.conversations.v1.services(service_sid).users(username).fetch()
     user.delete()

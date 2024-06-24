@@ -28,22 +28,22 @@ class Contact(BaseModel):
 
     @property
     def card(self):
-        name = ''
+        name = ""
         if self.first_name:
             name += self.first_name
         if self.last_name:
-            name = f'{name} {self.last_name}'.strip()
+            name = f"{name} {self.last_name}".strip()
 
         details = []
         if self.phone_number:
             formatted_number = phonenumbers.format_number(phonenumbers.parse(self.phone_number),
                                                       phonenumbers.PhoneNumberFormat.NATIONAL)
-            details.append(f'P: {formatted_number}')
+            details.append(f"P: {formatted_number}")
         if self.email:
-            details.append(f'E: {self.email}')
-        details = ', '.join(details)
+            details.append(f"E: {self.email}")
+        details = ", ".join(details)
 
         if name and details:
-            return f'{name} ({details})'
+            return f"{name} ({details})"
         else:
             return details

@@ -11,19 +11,19 @@ from twiltwil.common.sitemaps import StaticViewSitemap
 from twiltwil.common.views import home
 
 sitemaps = {
-    'static': StaticViewSitemap,
+    "static": StaticViewSitemap,
 }
 
 urlpatterns = [
     # Top-level URLs
-    re_path(r'^admin/', admin_site.urls),
+    re_path(r"^admin/", admin_site.urls),
 
     # Crawler shortcuts and placeholders
-    re_path(r'^sitemap\.xml$', sitemap, {'sitemaps': sitemaps}),
-    re_path(r'^robots\.txt$', TemplateView.as_view(template_name='robots.txt', content_type='text/plain; charset=utf-8')),
-    re_path(r'^favicon\.ico$', RedirectView.as_view(url=config.STATIC_URL + 'favicon.ico', permanent=True)),
-    re_path(r'^favicon\.png$', RedirectView.as_view(url=config.STATIC_URL + 'favicon.png', permanent=True)),
+    re_path(r"^sitemap\.xml$", sitemap, {"sitemaps": sitemaps}),
+    re_path(r"^robots\.txt$", TemplateView.as_view(template_name="robots.txt", content_type="text/plain; charset=utf-8")),
+    re_path(r"^favicon\.ico$", RedirectView.as_view(url=config.STATIC_URL + "favicon.ico", permanent=True)),
+    re_path(r"^favicon\.png$", RedirectView.as_view(url=config.STATIC_URL + "favicon.png", permanent=True)),
 
     # General URLs
-    re_path(r'^$', home, name='home'),
+    re_path(r"^$", home, name="home"),
 ]

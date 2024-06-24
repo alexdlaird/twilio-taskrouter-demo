@@ -5,5 +5,5 @@ from django.apps import AppConfig
 
 
 class PortalConfig(AppConfig):
-    name = 'twiltwil.portal'
-    verbose_name = 'Portal'
+    name = "twiltwil.portal"
+    verbose_name = "Portal"

@@ -8,10 +8,10 @@ from twiltwil.common import enums
 
 
 class AuthConfig(AppConfig):
-    name = 'twiltwil.auth'
-    label = 'twiltwil_auth'
-    verbose_name = 'Authentication'
-    default_auto_field = 'django.db.models.AutoField'
+    name = "twiltwil.auth"
+    label = "twiltwil_auth"
+    verbose_name = "Authentication"
+    default_auto_field = "django.db.models.AutoField"
 
     def ready(self):
         AuthConfig.init_languages_and_skills()
@@ -25,12 +25,12 @@ class AuthConfig(AppConfig):
 
         for language in enums.LANGUAGE_CHOICES:
             Language.objects.get_or_create(id=language[0], defaults={
-                'id': language[0],
-                'name': language[1],
+                "id": language[0],
+                "name": language[1],
             })
 
         for skill in enums.SKILL_CHOICES:
             Skill.objects.get_or_create(id=skill[0], defaults={
-                'id': skill[0],
-                'name': skill[1],
+                "id": skill[0],
+                "name": skill[1],
             })

@@ -23,9 +23,9 @@ _lock = threading.Lock()
 
 def _restart(path):
     _queue.put(True)
-    prefix = 'monitor (pid=%d):' % os.getpid()
-    print(f'{prefix} Change detected to "{path}".')
-    print(f'{prefix} Triggering process restart.')
+    prefix = "monitor (pid=%d):" % os.getpid()
+    print(f"{prefix} Change detected to '{path}'.")
+    print(f"{prefix} Triggering process restart.")
     os.kill(os.getpid(), signal.SIGINT)
 
 
@@ -67,12 +67,12 @@ def _monitor():
         # Check modification times on all files in sys.modules.
 
         for module in list(sys.modules.values()):
-            if not hasattr(module, '__file__'):
+            if not hasattr(module, "__file__"):
                 continue
-            path = getattr(module, '__file__')
+            path = getattr(module, "__file__")
             if not path:
                 continue
-            if os.path.splitext(path)[1] in ['.pyc', '.pyo', '.pyd']:
+            if os.path.splitext(path)[1] in [".pyc", ".pyo", ".pyd"]:
                 path = path[:-1]
             if _modified(path):
                 return _restart(path)
@@ -120,7 +120,7 @@ def start(interval=0.5):
     global _running
     _lock.acquire()
     if not _running:
-        print(f'Monitoring codebase for changes: (pid={os.getpid()})')
+        print(f"Monitoring codebase for changes: (pid={os.getpid()})")
         _running = True
         _thread.start()
     _lock.release()

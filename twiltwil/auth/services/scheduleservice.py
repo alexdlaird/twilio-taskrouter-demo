@@ -35,36 +35,36 @@ class Scheduler(SchedulerBase):
 
 
 def delete_inactive_users():
-    logger.info('Deleting inactive users task ...')
+    logger.info("Deleting inactive users task ...")
 
     for user in get_user_model().objects.filter(is_superuser=False).iterator():
-        token = cache.get(f'tokens:workers:{user.worker_sid}')
+        token = cache.get(f"tokens:workers:{user.worker_sid}")
         if not token:
-            logger.info(f'Deleting user with expired token: {user.username}')
+            logger.info(f"Deleting user with expired token: {user.username}")
 
             authservice.delete_user(user)
 
-    logger.info('... done deleting inactive users task')
+    logger.info("... done deleting inactive users task")
 
 
 def delete_orphaned_workers():
-    logger.info('Deleting orphaned Workers ...')
+    logger.info("Deleting orphaned Workers ...")
 
     for worker in twilioauthservice.get_workers():
         if not get_user_model().objects.filter(worker_sid=worker.sid).exists():
-            logger.info(f'Deleting a orphaned Worker with no database entry: {worker.sid}')
+            logger.info(f"Deleting a orphaned Worker with no database entry: {worker.sid}")
 
             twilioauthservice.delete_worker(worker.sid)
 
-    logger.info('Done deleting orphaned Workers task ...')
+    logger.info("Done deleting orphaned Workers task ...")
 
 
 def reconcile_contact_data():
-    logger.info('Deleting reconciling contact data ...')
+    logger.info("Deleting reconciling contact data ...")
 
     # TODO: here we could periodically check to see if two contacts, based on a shared unique value, can be merged
 
-    logger.info('Done reconciling contact data task ...')
+    logger.info("Done reconciling contact data task ...")
 
 
 scheduler = Scheduler()

@@ -11,5 +11,5 @@ from twiltwil.auth.views import logout
 
 urlpatterns = [
     # Authentication URLs
-    re_path(r'^logout', logout, name='logout'),
+    re_path(r"^logout", logout, name="logout"),
 ]

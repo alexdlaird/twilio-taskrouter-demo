@@ -14,12 +14,12 @@ logger = logging.getLogger(__name__)
 
 class WebhookVoiceView(APIView):
     def post(self, request, *args, **kwargs):
-        logger.info(f'Voice POST received: {json.dumps(request.data)}')
+        logger.info(f"Voice POST received: {json.dumps(request.data)}")
 
         response = VoiceResponse()
         gather = Gather(num_digits=1, action=reverse("api_webhooks_voice_enqueue"), method="POST", timeout=5)
-        gather.say("For English, please hold or press one.", language='en')
-        gather.say("Para Español oprime dos.", language='es')
+        gather.say("For English, please hold or press one.", language="en")
+        gather.say("Para Español oprime dos.", language="es")
         response.append(gather)
         response.redirect(reverse("api_webhooks_voice_enqueue"))
 

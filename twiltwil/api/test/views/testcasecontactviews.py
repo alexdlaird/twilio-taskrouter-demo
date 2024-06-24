@@ -16,7 +16,7 @@ class TestCaseContactViews(TwilTwilTestCase):
         contact = contacthelper.given_a_contact_exists()
 
         # WHEN
-        response = self.client.get(reverse('api_contacts_detail', args=(contact.uuid,)))
+        response = self.client.get(reverse("api_contacts_detail", args=(contact.uuid,)))
 
         # THEN
         self.assertEqual(response.status_code, status.HTTP_200_OK)

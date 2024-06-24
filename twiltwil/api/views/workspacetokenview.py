@@ -17,7 +17,7 @@ class WorkspaceTokenView(APIView):
 
     def post(self, request, *args, **kwargs):
         data = {
-            'token': twilioauthservice.get_workspace_token()
+            "token": twilioauthservice.get_workspace_token()
         }
 
         return Response(data)

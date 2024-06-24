@@ -47,4 +47,4 @@ class Message(BaseModel):
     objects = MessageManager()
 
     class Meta:
-        ordering = ('timestamp',)
+        ordering = ("timestamp",)

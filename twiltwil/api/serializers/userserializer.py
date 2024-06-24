@@ -12,4 +12,4 @@ logger = logging.getLogger(__name__)
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = get_user_model()
-        fields = ('id', 'username', 'worker_sid', 'time_zone', 'languages', 'skills',)
+        fields = ("id", "username", "worker_sid", "time_zone", "languages", "skills",)

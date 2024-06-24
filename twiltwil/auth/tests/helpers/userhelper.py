@@ -6,12 +6,12 @@ from django.contrib.auth import get_user_model
 from twiltwil.auth.models import Language, Skill
 
 
-def given_a_user_exists(username='test_user', password='test_pass_1!', time_zone='America/Los_Angeles', languages=None,
+def given_a_user_exists(username="test_user", password="test_pass_1!", time_zone="America/Los_Angeles", languages=None,
                         skills=None):
     if languages is None:
-        languages = ['english']
+        languages = ["english"]
     if skills is None:
-        skills = ['general']
+        skills = ["general"]
 
     user = get_user_model().objects.create_user(username=username,
                                                 password=password)
@@ -28,9 +28,9 @@ def given_a_user_exists(username='test_user', password='test_pass_1!', time_zone
     return user
 
 
-def given_a_user_exists_and_is_logged_in(client, username='test_user', password='test_pass_1!',
-                                         time_zone='America/Los_Angeles', languages=None,
-                                         skills=None, worker_sid='WORKERSID12345'):
+def given_a_user_exists_and_is_logged_in(client, username="test_user", password="test_pass_1!",
+                                         time_zone="America/Los_Angeles", languages=None,
+                                         skills=None, worker_sid="WORKERSID12345"):
     user = given_a_user_exists(username, password, time_zone, languages, skills)
 
     user.worker_sid = worker_sid
@@ -42,8 +42,8 @@ def given_a_user_exists_and_is_logged_in(client, username='test_user', password=
 
 
 def verify_user_not_logged_in(test_case):
-    test_case.assertNotIn('_auth_user_id', test_case.client.session)
+    test_case.assertNotIn("_auth_user_id", test_case.client.session)
 
 
 def verify_user_logged_in(test_case):
-    test_case.assertIn('_auth_user_id', test_case.client.session)
+    test_case.assertIn("_auth_user_id", test_case.client.session)

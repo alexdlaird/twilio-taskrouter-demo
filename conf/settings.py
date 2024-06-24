@@ -20,39 +20,39 @@ from builtins import str
 # Are we running on the dev server
 DEV_SERVER = False
 
-if 'test' not in sys.argv:
-    if os.environ.get('ENVIRONMENT') == 'dev' or (len(sys.argv) > 1 and sys.argv[1] == 'runserver'):
-        conf = 'dev'
-        if len(sys.argv) > 1 and sys.argv[1] == 'runserver':
+if "test" not in sys.argv:
+    if os.environ.get("ENVIRONMENT") == "dev" or (len(sys.argv) > 1 and sys.argv[1] == "runserver"):
+        conf = "dev"
+        if len(sys.argv) > 1 and sys.argv[1] == "runserver":
             DEV_SERVER = True
     else:
-        conf = 'deploy'
+        conf = "deploy"
 
-    if conf == 'dev':
-        print('Loading .env file')
+    if conf == "dev":
+        print("Loading .env file")
 
         import dotenv
 
         dotenv.read_dotenv(os.path.join(os.path.dirname(__file__), "..", ".env"), True)
 # If we're running tests, run a streamlined settings file for efficiency
 else:
-    conf = 'test'
+    conf = "test"
 
-    print('Loading .env file')
+    print("Loading .env file")
 
     import dotenv
 
     dotenv.read_dotenv(os.path.join(os.path.dirname(__file__), "..", ".env"), True)
 
 # Initialize some global settings
-locals()['DEV_SERVER'] = DEV_SERVER
-PROJECT_ID = os.environ.get('TWILTWIL_ID')
-locals()['PROJECT_ID'] = PROJECT_ID
+locals()["DEV_SERVER"] = DEV_SERVER
+PROJECT_ID = os.environ.get("TWILTWIL_ID")
+locals()["PROJECT_ID"] = PROJECT_ID
 
 # Load conf properties into the local scope
-print(f'Using conf.configs.{conf}')
-common_conf_module = __import__('conf.configs.common', globals(), locals(), [PROJECT_ID])
-conf_module = __import__(f'conf.configs.{conf}', globals(), locals(), [PROJECT_ID])
+print(f"Using conf.configs.{conf}")
+common_conf_module = __import__("conf.configs.common", globals(), locals(), [PROJECT_ID])
+conf_module = __import__(f"conf.configs.{conf}", globals(), locals(), [PROJECT_ID])
 
 # Load common conf properties into the local scope
 for setting in dir(common_conf_module):

@@ -5,6 +5,6 @@ from django.apps import AppConfig
 
 
 class ApiConfig(AppConfig):
-    name = 'twiltwil.api'
-    verbose_name = 'API'
-    default_auto_field = 'django.db.models.AutoField'
+    name = "twiltwil.api"
+    verbose_name = "API"
+    default_auto_field = "django.db.models.AutoField"
