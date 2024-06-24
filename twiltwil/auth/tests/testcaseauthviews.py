@@ -49,8 +49,8 @@ class TestCaseAuthViews(TwilTwilTestCase):
 
     @mock.patch("twiltwil.auth.services.authservice.twilioservice.complete_task")
     @mock.patch("twiltwil.auth.services.authservice.twilioauthservice.delete_worker")
-    @mock.patch("twiltwil.auth.services.authservice.twilioauthservice.delete_chat_user")
-    def test_logout_success(self, mock_delete_chat_user, mock_delete_worker, mock_complete_task):
+    @mock.patch("twiltwil.auth.services.authservice.twilioauthservice.delete_conversation_user")
+    def test_logout_success(self, mock_delete_conversation_user, mock_delete_worker, mock_complete_task):
         # GIVEN
         userhelper.given_a_user_exists_and_is_logged_in(self.client)
 

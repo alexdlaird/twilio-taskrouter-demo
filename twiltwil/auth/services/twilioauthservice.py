@@ -353,7 +353,7 @@ def get_worker_by_username(username):
 
 
 def delete_conversation_user(username):
-    logger.info(f"Deleting Chat user {username}")
+    logger.info(f"Deleting Conversation user {username}")
 
     service_sid = get_service().sid
 
