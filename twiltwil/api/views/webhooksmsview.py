@@ -40,7 +40,7 @@ class WebhookSmsView(APIView):
             "raw": json.dumps(request.data),
         })
 
-        conversation = twilioservice.get_or_create_conversation(contact.phone_number, str(contact.uuid))
+        conversation = twilioservice.get_or_create_conversation(contact, message)
 
         # Check if the other messages exist from this sender that are associated with an open Task
         sender_messages_with_tasks = Message.objects.not_resolved().inbound().for_contact(contact.uuid).has_task()
@@ -76,17 +76,17 @@ class WebhookSmsView(APIView):
 
             message_addons = json.loads(message.addons)
             if message_addons and \
-                            "results" in message_addons and \
-                            "ibm_watson_insights" in message_addons["results"] and \
-                            "result" in message_addons["results"]["ibm_watson_insights"] and \
-                            "language" in message_addons["results"]["ibm_watson_insights"]["result"]:
+                    "results" in message_addons and \
+                    "ibm_watson_insights" in message_addons["results"] and \
+                    "result" in message_addons["results"]["ibm_watson_insights"] and \
+                    "language" in message_addons["results"]["ibm_watson_insights"]["result"]:
                 attributes["language"] = message_addons["results"]["ibm_watson_insights"]["result"]["language"]
 
             attributes["conversation"] = conversation.unique_name
 
             twilioservice.create_task(attributes)
 
-            twilioservice.send_sms(contact.phone_number,
-                                   "Hey, your question has been received. Sit tight and we'll get you an answer ASAP!")
+            auto_response = "Hey, your question has been received. Sit tight and we'll get you an answer ASAP!"
+            twilioservice.send_conversation_message(conversation, None, auto_response)
 
         return viewutils.get_empty_messaging_webhook_response()

@@ -42,37 +42,41 @@ def complete_task(task_sid, reason=""):
     )
 
 
-def get_or_create_conversation(number, unique_name):
+def get_or_create_conversation(contact, message):
     try:
         conversation = client.conversations.v1.services(twilioauthservice.get_service().sid).conversations(
-            unique_name).fetch()
+            contact.uuid).fetch()
 
-        logger.info(f"Found existing Conversation for {unique_name}")
+        logger.info(f"Found existing Conversation for {contact.uuid}")
     except TwilioRestException as e:
         if e.status != 404:
             raise e
 
-        logger.info(f"Creating a Conversation for {unique_name}")
+        logger.info(f"Creating a Conversation for {contact.uuid}")
 
         conversation = client.conversations.v1.services(twilioauthservice.get_service().sid).conversations.create(
-            friendly_name=number,
-            unique_name=unique_name
+            friendly_name=contact.phone_number,
+            unique_name=contact.uuid
         )
+
+        # Since this is a new Conversation, the sender has not been added as a Participant, thus we must
+        # manually add the first message
+        send_conversation_message(conversation, contact.phone_number, message.text)
 
     # Ensure Participant is in Conversation
     try:
         client.conversations.v1.services(twilioauthservice.get_service().sid).conversations(
             conversation.sid).participants.create(
-            messaging_binding_address=number,
+            messaging_binding_address=contact.phone_number,
             messaging_binding_proxy_address=settings.TWILIO_PHONE_NUMBER,
         )
 
-        logger.info(f"Added Participant {number} to Conversation {unique_name}")
+        logger.info(f"Added Participant {contact.phone_number} to Conversation {contact.uuid}")
     except TwilioRestException as e:
         if e.code != 50416:
             raise e
 
-        logger.info(f"Participant {number} already added to Conversation {unique_name}")
+        logger.info(f"Participant {contact.phone_number} already added to Conversation {contact.uuid}")
 
     return conversation
 
@@ -96,10 +100,11 @@ def add_worker_to_conversation(conversation, identity):
         logger.info(f"Participant {identity} already added to Conversation {conversation.unique_name}")
 
 
-def send_sms(phone, message):
-    logger.info(f"Sending SMS message {message} to {phone}")
+def send_conversation_message(conversation, author, message):
+    logger.info(f"Sending on Conversation {conversation.unique_name} Message '{message}' from {author}")
 
-    client.api.account.messages.create(
-        to=phone,
-        from_=settings.TWILIO_PHONE_NUMBER,
-        body=message)
+    return client.conversations.v1.services(twilioauthservice.get_service().sid).conversations(
+        conversation.sid).messages.create(
+        body=message,
+        author=author
+    )

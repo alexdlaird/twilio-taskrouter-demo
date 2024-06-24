@@ -17,19 +17,17 @@ from twiltwil.common.utils import viewutils
 logger = logging.getLogger(__name__)
 
 
-class WebhookChatEventView(APIView):
+class WebhookConversationEventView(APIView):
     def post(self, request, *args, **kwargs):
-        logger.info(f"Chat POST received: {json.dumps(request.data)}")
+        logger.info(f"Conversation POST received: {json.dumps(request.data)}")
 
         if "EventType" in request.data:
-            if request.data["EventType"] == "onMessageSent":
-                logger.info("Processing onMessageSent")
-
-                attributes = json.loads(messageutils.cleanup_json(request.data["Attributes"]))
+            if request.data["EventType"] == "onMessageAdded":
+                logger.info("Processing onMessageAdded")
 
                 # TODO: automatically detect the originating channel of the inbound (ex. SMS)
                 channel = enums.CHANNEL_SMS
-                contact = Contact.objects.get(uuid=attributes["To"])
+                contact = Contact.objects.get(phone_number=request.data["Author"])
 
                 # Store (or update, if this message is redundant) the message in the database
                 Message.objects.update_or_create(sid=request.data["MessageSid"], defaults={

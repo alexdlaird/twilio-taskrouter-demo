@@ -35,7 +35,7 @@ class WebhookVoiceEnqueueView(APIView):
             "phone_number": request.data["From"],
         })
 
-        Message.objects.update_or_create(sid=request.data["CallSid"], defaults={
+        message = Message.objects.update_or_create(sid=request.data["CallSid"], defaults={
             "timestamp": timezone.now(),
             "channel": enums.CHANNEL_VOICE,
             "sender": contact.uuid,
@@ -46,7 +46,7 @@ class WebhookVoiceEnqueueView(APIView):
             "raw": json.dumps(request.data),
         })
 
-        conversation = twilioservice.get_or_create_conversation(contact.phone_number, str(contact.uuid))
+        conversation = twilioservice.get_or_create_conversation(contact, message)
 
         attributes = {
             "from": str(contact.uuid),

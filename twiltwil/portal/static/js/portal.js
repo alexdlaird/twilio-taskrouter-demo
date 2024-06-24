@@ -8,7 +8,7 @@
 $(function () {
     var INFO;
     var USER;
-    var CHAT_CLIENT;
+    var CONVERSATION_CLIENT;
     var VOICE_CLIENT;
     var WORKSPACE_CLIENT;
     var WORKER_CLIENT;
@@ -38,11 +38,11 @@ $(function () {
     }
 
     function refreshTokens() {
-        if (CHAT_CLIENT) {
+        if (CONVERSATION_CLIENT) {
             console.log("Getting refresh token for Chat.");
 
             twiltwilapi.getTwilioChatToken(USER.username).done(function (data) {
-                CHAT_CLIENT.updateToken(data.token);
+                CONVERSATION_CLIENT.updateToken(data.token);
             });
         }
 
@@ -68,7 +68,7 @@ $(function () {
         ++taskSecondCounter;
 
         $userDetailsCurrentTaskTime.html("Time since question asked: " + pad(parseInt(taskSecondCounter / 60) + ":"
-                                         + pad(taskSecondCounter % 60)));
+            + pad(taskSecondCounter % 60)));
     }
 
     function updateWorkerActivity(activityName) {
@@ -93,7 +93,10 @@ $(function () {
         var $user;
         if (message.author === USER.username) {
             $user = $('<h5 class="media-heading me"></h5>').text(USER.username + " (me)");
-        } else if (message.author !== currentContact.uuid && message.author !== currentContact.phone_number) {
+        } else if (message.author === "system") {
+            $user = $('<h5 class="media-heading me"></h5>').text("system");
+        } else if (message.author !== currentContact.uuid &&
+            message.author !== currentContact.phone_number) {
             $user = $('<h5 class="media-heading me"></h5>').text(message.author + " (previous agent)");
         } else {
             $user = $('<h5 class="media-heading"></h5>').text(currentContact.card);
@@ -126,7 +129,7 @@ $(function () {
     }
 
     function joinConversation(uniqueName) {
-        CHAT_CLIENT.getConversationByUniqueName(uniqueName).then(function (conversation) {
+        CONVERSATION_CLIENT.getConversationByUniqueName(uniqueName).then(function (conversation) {
             console.log("conversation", conversation);
 
             initConversation(conversation);
@@ -149,13 +152,13 @@ $(function () {
                 options.realm = INFO.region.concat('-us1');
             }
 
-            CHAT_CLIENT = new Twilio.Conversations.Client(token, options)
+            CONVERSATION_CLIENT = new Twilio.Conversations.Client(token, options)
 
-            CHAT_CLIENT.on('messageAdded', function (message) {
+            CONVERSATION_CLIENT.on("messageAdded", function (message) {
                 displayMessage(message);
             });
 
-            CHAT_CLIENT.getSubscribedConversations().then(function (conversations) {
+            CONVERSATION_CLIENT.getSubscribedConversations().then(function (conversations) {
                 $.each(conversations.items, function (index, conversation) {
                     console.log("conversation", conversation);
 
@@ -174,7 +177,7 @@ $(function () {
     }
 
     function initVoiceDevice(token) {
-        VOICE_CLIENT = new Twilio.Device(region=INFO.region);
+        VOICE_CLIENT = new Twilio.Device(region = INFO.region);
         VOICE_CLIENT.setup(token);
 
         VOICE_CLIENT.on("incoming", function (connection) {
@@ -193,19 +196,19 @@ $(function () {
 
             var $onlineAgents = $('<li>Online agents: ' + statistics.realtime.totalWorkers + '</li>');
             var $pendingTasks = $('<li>Queued questions: ' + statistics.realtime.tasksByStatus.pending
-                                  + '</li>');
+                + '</li>');
             var $assignedTasks = $('<li>Assigned questions: ' + statistics.realtime.tasksByStatus.assigned
-                                   + '</li>');
+                + '</li>');
             var $completedTasks = $('<li>Answered this week: ' + statistics.cumulative.tasksCompleted
-                                    + '</li>');
+                + '</li>');
             var $longestWaitTime = $('<li>Longest wait time: '
-                                     + (pad(parseInt(statistics.cumulative.waitDurationUntilAccepted.max / 60) + ":"
-                                     + pad(statistics.cumulative.waitDurationUntilAccepted.max % 60)))
-                                     + '</li>');
+                + (pad(parseInt(statistics.cumulative.waitDurationUntilAccepted.max / 60) + ":"
+                    + pad(statistics.cumulative.waitDurationUntilAccepted.max % 60)))
+                + '</li>');
             var $averageWaitTime = $('<li>Average wait time: '
-                                     + (pad(parseInt(statistics.cumulative.waitDurationUntilAccepted.avg / 60) + ":"
-                                     + pad(statistics.cumulative.waitDurationUntilAccepted.avg % 60)))
-                                     + '</li>');
+                + (pad(parseInt(statistics.cumulative.waitDurationUntilAccepted.avg / 60) + ":"
+                    + pad(statistics.cumulative.waitDurationUntilAccepted.avg % 60)))
+                + '</li>');
 
             $userDetailsStatistics.html("").append($onlineAgents).append($pendingTasks).append($assignedTasks)
                 .append($completedTasks).append($longestWaitTime).append($averageWaitTime);
@@ -461,26 +464,26 @@ $(function () {
 
         if ($chatWindow.filter(":visible").length) {
             bootbox.confirm({
-                                title: "Unsolved Question",
-                                message: "<p>Hey, a question is currently assigned to you but hasn't been solved. If you have "
-                                         +
-                                         "already answered this question, click \"Mark Solved\" before logging out.</p><p>Logging out anyway "
-                                         +
-                                         "will caused the question to be reasigned to the next available agent.</p>",
-                                buttons: {
-                                    cancel: {
-                                        label: '<i class="fa fa-times"></i> Cancel'
-                                    },
-                                    confirm: {
-                                        label: '<i class="fa fa-check"></i> Logout'
-                                    }
-                                },
-                                callback: function (result) {
-                                    if (result) {
-                                        window.location = $("#logout-button").attr("href");
-                                    }
-                                }
-                            });
+                title: "Unsolved Question",
+                message: "<p>Hey, a question is currently assigned to you but hasn't been solved. If you have "
+                    +
+                    "already answered this question, click \"Mark Solved\" before logging out.</p><p>Logging out anyway "
+                    +
+                    "will caused the question to be reasigned to the next available agent.</p>",
+                buttons: {
+                    cancel: {
+                        label: '<i class="fa fa-times"></i> Cancel'
+                    },
+                    confirm: {
+                        label: '<i class="fa fa-check"></i> Logout'
+                    }
+                },
+                callback: function (result) {
+                    if (result) {
+                        window.location = $("#logout-button").attr("href");
+                    }
+                }
+            });
         } else {
             window.location = $("#logout-button").attr("href");
         }

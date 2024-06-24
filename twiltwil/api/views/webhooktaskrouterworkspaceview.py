@@ -9,11 +9,10 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from twiltwil.api.models import Message, Contact
+from twiltwil.api.models import Message
 from twiltwil.api.services import twilioservice
 from twiltwil.api.utils import messageutils
 from twiltwil.auth.services import authservice
-from twiltwil.common import enums
 
 logger = logging.getLogger(__name__)
 
@@ -56,20 +55,13 @@ class WebhookTaskRouterWorkspaceView(APIView):
 
                 task_attributes = json.loads(messageutils.cleanup_json(request.data["TaskAttributes"]))
 
-                # TODO: detect other types of originating channels
-                task_channel = request.data.get("TaskChannelUniqueName", "default")
-                if task_channel == "voice":
-                    channel = enums.CHANNEL_VOICE
-                else:
-                    channel = enums.CHANNEL_SMS
-                contact = Contact.objects.get(uuid=task_attributes["conversation"])
+                conversation = twilioservice.get_conversation(task_attributes["conversation"])
 
-                # TODO: here you would execute different "sends" for different originating channels
                 cancelled_message = "Sorry, your question could not be answered because the agent assigned to it is " \
                                     "no longer available. Try submitting it again!"
-                if channel == enums.CHANNEL_SMS:
-                    twilioservice.send_sms(contact.phone_number,
-                                           cancelled_message)
+                twilioservice.send_conversation_message(conversation,
+                                                        None,
+                                                        cancelled_message)
             elif request.data["EventType"] == "task.completed":
                 logger.info("Processing task.completed")
 

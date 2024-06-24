@@ -12,7 +12,7 @@ from twiltwil.api.views.contactview import ContactView
 from twiltwil.api.views.infoview import InfoView
 from twiltwil.api.views.userview import UserView
 from twiltwil.api.views.voicetokenview import VoiceTokenView
-from twiltwil.api.views.webhookchateventview import WebhookChatEventView
+from twiltwil.api.views.webhookconversationeventview import WebhookConversationEventView
 from twiltwil.api.views.webhooksmsview import WebhookSmsView
 from twiltwil.api.views.webhooktaskrouterworkflowview import WebhookTaskRouterWorkflowView
 from twiltwil.api.views.webhooktaskrouterworkspaceview import WebhookTaskRouterWorkspaceView
@@ -38,7 +38,7 @@ urlpatterns = [
     re_path(r"^api/webhooks/voice/conference$", WebhookVoiceConferenceView.as_view(),
             name="api_webhooks_voice_conference"),
     re_path(r"^api/webhooks/sms$", WebhookSmsView.as_view(), name="api_webhooks_sms"),
-    re_path(r"^api/webhooks/chat/event$", WebhookChatEventView.as_view(), name="api_webhooks_chat_event"),
+    re_path(r"^api/webhooks/conversation/event$", WebhookConversationEventView.as_view(), name="api_webhooks_conversation_event"),
     re_path(r"^api/webhooks/taskrouter/workspace$", WebhookTaskRouterWorkspaceView.as_view(),
             name="api_webhooks_taskrouter_workspace"),
     re_path(r"^api/webhooks/taskrouter/workflow$", WebhookTaskRouterWorkflowView.as_view(),

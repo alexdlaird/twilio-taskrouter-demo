@@ -33,7 +33,6 @@ if settings.TWILIO_REGION and settings.TWILIO_REGION in ["dev", "stage"]:
     WorkspaceCapabilityToken.EVENTS_BASE_URL = settings.TWILIO_EVENT_BRIDGE_BASE_URL + "/v1/wschannels"
     WorkerCapabilityToken.EVENTS_BASE_URL = settings.TWILIO_EVENT_BRIDGE_BASE_URL + "/v1/wschannels"
 
-# TODO: refactor to use a class instead of globals
 _workspace = None
 _activities = {}
 _workflow = None
@@ -45,27 +44,23 @@ def _get_activity(friendly_name):
 
 
 def _create_service(service_name):
-    project_host = apps.get_app_config("common").PROJECT_HOST
-
     service = client.conversations.v1.services.create(
         friendly_name=service_name,
     )
 
-    service = client.conversations.v1.services(service.sid).configuration.webhooks().update(
-        post_webhook_url=project_host + reverse("api_webhooks_chat_event"),
+    client.conversations.v1.services(service.sid).configuration.webhooks().update(
+        post_webhook_url=settings.PROJECT_HOST + reverse("api_webhooks_conversation_event"),
         method="POST",
-        filters=["onMessageSent", "onChannelAdded", "onChannelDestroyed"]
+        filters=["onMessageAdded", "onConversationAdded", "onConversationRemoved"]
     )
 
     return service
 
 
 def _create_workspace(workspace_name):
-    project_host = apps.get_app_config("common").PROJECT_HOST
-
     return client.taskrouter.v1.workspaces.create(
         friendly_name=workspace_name,
-        event_callback_url=project_host + reverse("api_webhooks_taskrouter_workspace"),
+        event_callback_url=settings.PROJECT_HOST + reverse("api_webhooks_taskrouter_workspace"),
         template="EMPTY"
     )
 
@@ -155,7 +150,7 @@ def _create_workflow(queues):
 
     return client.taskrouter.v1.workspaces(workspace_sid).workflows.create(
         friendly_name="Default",
-        assignment_callback_url=project_host + reverse("api_webhooks_taskrouter_workflow"),
+        assignment_callback_url=settings.PROJECT_HOST + reverse("api_webhooks_taskrouter_workflow"),
         task_reservation_timeout="300",
         configuration=json.dumps(config)
     )

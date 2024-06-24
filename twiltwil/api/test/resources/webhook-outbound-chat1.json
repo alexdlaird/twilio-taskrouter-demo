@@ -6,7 +6,7 @@
   "ChannelSid": "CHc126e49f8ccc4cd79c530c76990f0cb1",
   "Body": "I'd encourage you to err on the side of caution. Probably worth a trip to the vet.",
   "DateCreated": "2018-03-30T06:59:31.094Z",
-  "EventType": "onMessageSent",
+  "EventType": "onMessageAdded",
   "ClientIdentity": "test_user",
   "InstanceSid": "ISd4d339bac3904fffa7296d9dce5cc7eb",
   "Attributes": "{\"To\":\"SMc213c7d3150cc4fe9dba9892cfa5dc14\"}",

@@ -3,7 +3,6 @@ __license__ = "MIT"
 
 import logging
 
-from django.apps import apps
 from django.conf import settings
 from django.urls import reverse
 from rest_framework.generics import GenericAPIView
@@ -17,13 +16,11 @@ logger = logging.getLogger(__name__)
 
 class InfoView(GenericAPIView, RetrieveModelMixin):
     def get(self, request, *args, **kwargs):
-        project_host = apps.get_app_config("common").PROJECT_HOST
-
         serializer = InfoSerializer({
             "name": settings.PROJECT_NAME,
             "version": settings.PROJECT_VERSION,
             "disable_lobby_video": settings.DISABLE_LOBBY_VIDEO,
-            "conference_status_callback_url": project_host + reverse("api_webhooks_voice_conference"),
+            "conference_status_callback_url": settings.PROJECT_HOST + reverse("api_webhooks_voice_conference"),
             "max_http_retries": settings.MAX_HTTP_RETRIES,
             "api_base_url": settings.TWILIO_API_BASE_URL,
             "event_bridge_base_url": settings.TWILIO_EVENT_BRIDGE_BASE_URL,
