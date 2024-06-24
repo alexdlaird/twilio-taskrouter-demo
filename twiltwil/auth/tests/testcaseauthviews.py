@@ -72,6 +72,6 @@ class TestCaseAuthViews(TwilTwilTestCase):
         response2 = self.client.get(reverse("portal"))
 
         # THEN
-        self.assertRedirects(response1, reverse("home") + f"?next={reverse("portal")}",
+        self.assertRedirects(response1, reverse("home") + f"?next={reverse('portal')}",
                              fetch_redirect_response=False)
         self.assertEqual(response2.status_code, 200)
