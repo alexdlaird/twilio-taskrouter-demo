@@ -47,14 +47,6 @@ def _create_service(service_name):
         friendly_name=service_name,
     )
 
-    client.conversations.v1.address_configurations.create(
-        type="sms",
-        address=settings.TWILIO_PHONE_NUMBER,
-        friendly_name="Inbound Auto-Create",
-        auto_creation_enabled=True,
-        auto_creation_conversation_service_sid=service.sid
-    )
-
     return service
 
 
