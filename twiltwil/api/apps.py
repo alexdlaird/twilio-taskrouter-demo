@@ -28,7 +28,8 @@ class ApiConfig(AppConfig):
             public_url = ngrok.connect(port).public_url
             print(f"ngrok tunnel \"{public_url}\" -> \"http://127.0.0.1:{port}\"")
 
-        ApiConfig.provision_twilio_resources()
+        if sys.argv[1:2] != ['test']:
+            ApiConfig.provision_twilio_resources()
 
     @staticmethod
     def provision_twilio_resources():
