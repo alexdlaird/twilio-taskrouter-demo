@@ -9,7 +9,6 @@ import json
 import logging
 import os
 
-from django.apps import apps
 from django.conf import settings
 from django.core.cache import cache
 from django.urls import reverse
@@ -48,10 +47,12 @@ def _create_service(service_name):
         friendly_name=service_name,
     )
 
-    client.conversations.v1.services(service.sid).configuration.webhooks().update(
-        post_webhook_url=settings.PROJECT_HOST + reverse("api_webhooks_conversation_event"),
-        method="POST",
-        filters=["onMessageAdded", "onConversationAdded", "onConversationRemoved"]
+    client.conversations.v1.address_configurations.create(
+        type="sms",
+        address=settings.TWILIO_PHONE_NUMBER,
+        friendly_name="Inbound Auto-Create",
+        auto_creation_enabled=True,
+        auto_creation_conversation_service_sid=service.sid
     )
 
     return service
@@ -60,7 +61,6 @@ def _create_service(service_name):
 def _create_workspace(workspace_name):
     return client.taskrouter.v1.workspaces.create(
         friendly_name=workspace_name,
-        event_callback_url=settings.PROJECT_HOST + reverse("api_webhooks_taskrouter_workspace"),
         template="EMPTY"
     )
 
@@ -117,8 +117,6 @@ def _create_workflow(queues):
     :type queues: the language queues for the Workflow
     :return: the created default Workflow
     """
-    project_host = apps.get_app_config("common").PROJECT_HOST
-
     workspace_sid = get_workspace().sid
 
     config = {
@@ -150,7 +148,6 @@ def _create_workflow(queues):
 
     return client.taskrouter.v1.workspaces(workspace_sid).workflows.create(
         friendly_name="Default",
-        assignment_callback_url=settings.PROJECT_HOST + reverse("api_webhooks_taskrouter_workflow"),
         task_reservation_timeout="300",
         configuration=json.dumps(config)
     )
@@ -159,7 +156,7 @@ def _create_workflow(queues):
 def get_service():
     global _service
 
-    service_name = "twiltwil_" + os.environ.get("ENVIRONMENT")
+    service_name = os.environ.get("TWILTWIL_ID") + "_" + os.environ.get("ENVIRONMENT")
 
     if not _service:
         for service in client.conversations.v1.services.list():
@@ -170,6 +167,7 @@ def get_service():
 
     if not _service:
         _service = _create_service(service_name)
+        update_service_webhooks(_service)
 
     return _service
 
@@ -177,7 +175,7 @@ def get_service():
 def get_workspace():
     global _workspace, _workflow
 
-    workspace_name = "twiltwil_" + os.environ.get("ENVIRONMENT")
+    workspace_name = os.environ.get("TWILTWIL_ID") + "_" + os.environ.get("ENVIRONMENT")
 
     if not _workspace:
         for workspace in client.taskrouter.v1.workspaces.list():
@@ -188,6 +186,7 @@ def get_workspace():
 
     if not _workspace:
         _workspace = _create_workspace(workspace_name)
+        update_workspace_webhooks(_workspace)
 
         _create_activities()
 
@@ -198,6 +197,7 @@ def get_workspace():
         queues = _create_queues()
 
         _workflow = _create_workflow(queues)
+        update_workflow_webhooks(_workspace, _workflow)
 
     return _workspace
 
@@ -354,3 +354,28 @@ def delete_conversation_user(username):
 
     user = client.conversations.v1.services(service_sid).users(username).fetch()
     user.delete()
+
+
+def update_phone_number_webhooks():
+    phone_number = client.incoming_phone_numbers.list(phone_number=settings.TWILIO_PHONE_NUMBER)[0]
+    client.incoming_phone_numbers(phone_number.sid).update(
+        voice_url=settings.PROJECT_HOST + reverse("api_webhooks_voice"),
+        sms_url=settings.PROJECT_HOST + reverse("api_webhooks_sms"))
+
+
+def update_service_webhooks(service):
+    client.conversations.v1.services(service.sid).configuration.webhooks().update(
+        post_webhook_url=settings.PROJECT_HOST + reverse("api_webhooks_conversation_event"),
+        method="POST",
+        filters=["onMessageAdded", "onConversationAdded", "onConversationRemoved"]
+    )
+
+
+def update_workspace_webhooks(workspace):
+    client.taskrouter.v1.workspaces(workspace.sid).update(
+        event_callback_url=settings.PROJECT_HOST + reverse("api_webhooks_taskrouter_workspace"))
+
+
+def update_workflow_webhooks(workspace, workflow):
+    client.taskrouter.v1.workspaces(workspace.sid).workflows(workflow.sid).update(
+        assignment_callback_url=settings.PROJECT_HOST + reverse("api_webhooks_taskrouter_workflow"))
