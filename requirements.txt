@@ -9,5 +9,5 @@ mysqlclient==2.2.4
 pytz==2024.1
 python-dateutil==2.9.0.post0
 phonenumbers==8.13.44
-twilio==9.2.3
+twilio==9.2.4
 schedule==1.2.2
