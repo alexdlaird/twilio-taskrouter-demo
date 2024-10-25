@@ -1,6 +1,6 @@
 [run]
 omit =
-    .venv/**
+    venv/**
     conf/**
     twiltwil/common/sitemaps.py
     twiltwil/common/cache/locmemkeys.py

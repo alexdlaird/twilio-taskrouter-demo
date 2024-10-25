@@ -2,7 +2,7 @@
 *.pyc
 .idea/
 *.iml
-.venv
+venv
 /static
 db.sqlite3
 db.sqlite3-journal

@@ -28,13 +28,13 @@ Update the `.env` file and set the following variables:
 * `TWILTWIL_TWILIO_API_KEY`
 * `TWILTWIL_TWILIO_API_SECRET`
 
-This project is configured to work with a Virtualenv which has now been setup in the `.venv` folder. If you're
+This project is configured to work with a Virtualenv which has now been setup in the `venv` folder. If you're
 unfamiliar with how this works, [read up on Virtualenv here](https://virtualenv.pypa.io/en/stable). The short version
 is, virtualenv creates isolated environments for each project's dependencies. To activate and use this environment when
 developing, execute:
 
 ```sh
-source .venv/bin/activate
+source venv/bin/activate
 ```
 
 All commands below will now be run within the virtualenv (though `make` commands will always automatically enter the

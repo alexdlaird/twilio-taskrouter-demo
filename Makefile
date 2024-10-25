@@ -1,20 +1,19 @@
-.PHONY: all env virtualenv install nopyc clean build build-migrations migrate test
+.PHONY: all env install nopyc clean build build-migrations migrate test
 
 SHELL := /usr/bin/env bash
-TWILTWIL_VENV ?= .venv
+PYTHON_BIN ?= python
+TWILTWIL_VENV ?= venv
 
-all: env virtualenv install build migrate test
+all: build migrate test
 
 env:
 	cp -n .env.example .env | true
 
-virtualenv:
-	if [ ! -d "$(TWILTWIL_VENV)" ]; then \
-		python3 -m pip install virtualenv --user; \
-        python3 -m virtualenv $(TWILTWIL_VENV); \
-	fi
+venv:
+	$(PYTHON_BIN) -m pip install virtualenv --user
+	$(PYTHON_BIN) -m virtualenv $(TWILTWIL_VENV)
 
-install: env virtualenv
+install: env venv
 	( \
 		source $(TWILTWIL_VENV)/bin/activate; \
 		python -m pip install -r requirements.txt -r requirements-dev.txt; \
