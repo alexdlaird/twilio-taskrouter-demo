@@ -8,6 +8,6 @@ django-redis==5.4.0
 mysqlclient==2.2.7
 pytz==2025.1
 python-dateutil==2.9.0.post0
-phonenumbers==9.0.0
+phonenumbers==9.0.1
 twilio==9.5.0
 schedule==1.2.2
