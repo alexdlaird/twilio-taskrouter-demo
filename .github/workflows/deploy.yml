@@ -10,6 +10,9 @@ jobs:
   deploy:
     name: Deploy
 
+    env:
+      FORCE_COLOR: 1
+
     runs-on: ubuntu-latest
 
     steps:
